@@ -37,7 +37,7 @@ body::after{
 }
 
 /* ── Layout ──────────────────────────────────────────────────────────────── */
-.wrap{max-width:1400px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
 
 /* ── Nav ─────────────────────────────────────────────────────────────────── */
 nav{
@@ -47,8 +47,9 @@ nav{
   border-bottom:1px solid var(--line);
 }
 .nav-inner{
-  max-width:1400px;margin:0 auto;padding:0 28px;
-  display:flex;align-items:center;gap:6px;flex-wrap:wrap;height:52px;
+  max-width:1180px;margin:0 auto;padding:0 28px;
+  display:flex;align-items:center;gap:6px;flex-wrap:nowrap;height:52px;
+  overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;
 }
 .nav-logo{
   font-family:var(--font-display);font-weight:700;font-size:14px;
@@ -311,10 +312,26 @@ footer{
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+@media(max-width:900px){
+  section{margin-top:56px}
+  .hero{padding:64px 0 48px}
+}
 @media(max-width:600px){
-  .hero h1{font-size:36px}
+  .wrap{padding:0 16px}
+  .nav-inner{padding:0 16px}
+  .hero{padding:44px 0 36px}
+  .hero h1{font-size:34px}
+  .hero-q{margin-bottom:36px;font-size:16px}
+  section{margin-top:52px}
+  .sec-head h2{font-size:24px}
+  .tax-grid{grid-template-columns:1fr;gap:12px}
+  .eco-grid{grid-template-columns:1fr}
+  .debate-grid{grid-template-columns:1fr}
   .impact-grid{grid-template-columns:1fr}
   .debate-sides{grid-template-columns:1fr}
+  .t-card-head{padding:18px}
+  .t-body{padding:20px 18px}
+  .axis-wrap{padding:16px}
 }
 </style>
 </head>
