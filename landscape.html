@@ -1,0 +1,1204 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta name="robots" content="noindex,nofollow"/>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Quantum Art — Taxonomy & Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ── Tokens ───────────────────────────────────────────────────────────────── */
+:root{
+  --bg:#0C0A1A; --s1:#141228; --s2:#1C1840; --line:#2D2850;
+  --txt:#EAE6FF; --muted:#8A7FB5; --dim:#4A4570;
+  --c1:#C8F547; --c2:#E040A0; --c3:#38D4C8; --c4:#F5934A;
+  --c5:#A78BFA; --c6:#F87171;
+  --r:14px; --r-sm:8px;
+  --font-display:'Space Grotesk',system-ui,sans-serif;
+  --font-body:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--txt);
+  line-height:1.65;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── Noise overlay ───────────────────────────────────────────────────────── */
+body::after{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:.6;
+}
+
+/* ── Layout ──────────────────────────────────────────────────────────────── */
+.wrap{max-width:1400px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+
+/* ── Nav ─────────────────────────────────────────────────────────────────── */
+nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(12,10,26,.88);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{
+  max-width:1400px;margin:0 auto;padding:0 28px;
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;height:52px;
+}
+.nav-logo{
+  font-family:var(--font-display);font-weight:700;font-size:14px;
+  color:var(--c1);margin-right:20px;letter-spacing:-.02em;white-space:nowrap;
+}
+.nav-pill{
+  font-size:12px;padding:4px 12px;border-radius:999px;
+  border:1px solid var(--line);color:var(--muted);text-decoration:none;
+  transition:all .15s;white-space:nowrap;
+}
+.nav-pill:hover{border-color:var(--c1);color:var(--c1)}
+
+/* ── Hero ────────────────────────────────────────────────────────────────── */
+.hero{padding:88px 0 64px;position:relative}
+.hero-label{
+  font-family:var(--font-display);font-size:11px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--c3);margin-bottom:20px;
+  display:flex;align-items:center;gap:8px;
+}
+.hero-label::before{content:"";display:block;width:24px;height:1px;background:var(--c3)}
+.hero h1{
+  font-family:var(--font-display);font-weight:700;
+  font-size:clamp(38px,6vw,80px);line-height:1.05;letter-spacing:-.03em;
+  margin-bottom:24px;
+}
+.hero h1 em{font-style:normal;color:var(--c1)}
+.hero-q{
+  font-size:18px;color:var(--muted);max-width:680px;
+  border-left:2px solid var(--c2);padding-left:18px;margin-bottom:48px;
+  line-height:1.7;
+}
+.hero-pills{display:flex;flex-wrap:wrap;gap:10px}
+.hero-pill{
+  font-family:var(--font-display);font-size:13px;font-weight:500;
+  padding:9px 18px;border-radius:999px;text-decoration:none;
+  border:1px solid var(--line);color:var(--muted);transition:all .2s;
+}
+.hero-pill:hover{background:var(--s2);color:var(--txt);border-color:var(--muted)}
+
+/* ── Section header ──────────────────────────────────────────────────────── */
+.sec-head{margin-bottom:32px}
+.sec-label{
+  font-family:var(--font-display);font-size:11px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--c3);margin-bottom:10px;
+}
+.sec-head h2{
+  font-family:var(--font-display);font-weight:700;
+  font-size:clamp(22px,3vw,34px);letter-spacing:-.02em;color:var(--txt);
+  margin-bottom:8px;
+}
+.sec-head p{font-size:14px;color:var(--muted);max-width:760px;line-height:1.7}
+
+/* ── Filter bar ──────────────────────────────────────────────────────────── */
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;align-items:center}
+.filter-chip{
+  font-family:var(--font-display);font-size:12px;font-weight:500;
+  padding:6px 14px;border-radius:999px;border:1px solid var(--line);
+  background:transparent;color:var(--muted);cursor:pointer;
+  transition:all .15s;display:flex;align-items:center;gap:6px;
+}
+.filter-chip .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.filter-chip.active{background:var(--s2);color:var(--txt);border-color:var(--muted)}
+.filter-chip:hover:not(.active){border-color:var(--dim);color:var(--txt)}
+
+/* ── Taxonomy grid ───────────────────────────────────────────────────────── */
+section{margin-top:80px}
+.tax-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+
+/* ── Taxonomy card ───────────────────────────────────────────────────────── */
+.t-card{
+  background:var(--s1);border:1px solid var(--line);border-radius:var(--r);
+  overflow:hidden;transition:border-color .2s,transform .18s;
+  cursor:pointer;
+}
+.t-card:hover{border-color:var(--muted);transform:translateY(-2px)}
+.t-card.open{border-color:var(--active-c, var(--muted))}
+
+.t-card-head{padding:22px 22px 18px}
+.t-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.t-icon{font-size:26px;line-height:1}
+.t-num{
+  font-family:'Space Grotesk',monospace;font-size:11px;font-weight:600;
+  color:var(--dim);letter-spacing:.08em;
+}
+.t-spectrum{
+  height:4px;border-radius:2px;margin-bottom:14px;
+  background:linear-gradient(90deg, var(--from-c), var(--to-c));
+}
+.t-title-en{
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:600;margin-bottom:6px;
+}
+.t-title-th{
+  font-family:var(--font-display);font-weight:700;font-size:19px;
+  letter-spacing:-.01em;margin-bottom:10px;color:var(--txt);
+}
+.t-def{font-size:13px;color:var(--muted);line-height:1.7}
+.t-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 22px;border-top:1px solid var(--line2,var(--line));
+  font-size:12px;color:var(--dim);transition:color .15s;
+}
+.t-card:hover .t-toggle{color:var(--muted)}
+.t-arrow{transition:transform .25s;font-size:14px}
+.t-card.open .t-arrow{transform:rotate(180deg)}
+
+/* ── Expanded body ───────────────────────────────────────────────────────── */
+.t-body{
+  display:none;border-top:1px solid var(--line);
+  padding:24px 22px;background:var(--s2);
+}
+.t-card.open .t-body{display:block}
+
+.t-section{margin-bottom:22px}
+.t-section:last-child{margin-bottom:0}
+.t-section-label{
+  font-family:var(--font-display);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;font-weight:600;color:var(--dim);
+  margin-bottom:10px;
+}
+.t-section p{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* method pills */
+.method-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.m-pill{
+  font-size:11px;padding:3px 10px;border-radius:5px;
+  background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--muted);
+}
+
+/* works */
+.works-list{display:flex;flex-direction:column;gap:10px;margin-top:2px}
+.work-item{
+  background:rgba(255,255,255,.03);border:1px solid var(--line);
+  border-radius:var(--r-sm);padding:12px 14px;
+  display:flex;align-items:flex-start;gap:12px;
+}
+.work-item-main{flex:1;min-width:0}
+.work-title{font-size:13px;font-weight:600;color:var(--txt);margin-bottom:3px}
+.work-artist{font-size:12px;color:var(--muted)}
+.work-links{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.work-link{
+  font-size:11px;padding:3px 9px;border-radius:5px;
+  border:1px solid var(--line);color:var(--muted);text-decoration:none;
+  transition:all .15s;white-space:nowrap;
+}
+.work-link:hover{border-color:var(--c3);color:var(--c3)}
+.work-icon{font-size:18px;flex-shrink:0;margin-top:2px}
+
+/* impact */
+.impact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.impact-item{
+  background:rgba(255,255,255,.03);border:1px solid var(--line);
+  border-radius:var(--r-sm);padding:10px 12px;
+}
+.impact-label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+.impact-val{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* ── Spectrum axis ───────────────────────────────────────────────────────── */
+#spectrum{margin-top:80px}
+.axis-wrap{
+  background:var(--s1);border:1px solid var(--line);border-radius:var(--r);
+  padding:32px;overflow:auto;
+}
+.axis-grid{
+  position:relative;
+  width:min(760px,100%);height:400px;margin:0 auto;
+}
+.axis-line-h,.axis-line-v{position:absolute;background:var(--line)}
+.axis-line-h{left:0;right:0;top:50%;height:1px}
+.axis-line-v{top:0;bottom:0;left:50%;width:1px}
+.axis-label{
+  position:absolute;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dim);font-family:var(--font-display);font-weight:600;
+}
+.axis-label.top{top:0;left:50%;transform:translateX(-50%);text-align:center}
+.axis-label.bottom{bottom:0;left:50%;transform:translateX(-50%);text-align:center}
+.axis-label.left{left:0;top:50%;transform:translateY(-50%) rotate(-90deg);transform-origin:center}
+.axis-label.right{right:0;top:50%;transform:translateY(-50%) rotate(90deg);transform-origin:center}
+.axis-node{
+  position:absolute;transform:translate(-50%,-50%);
+  background:var(--s2);border:1px solid var(--line);border-radius:6px;
+  padding:5px 9px;font-size:11px;color:var(--muted);white-space:nowrap;
+  cursor:default;transition:all .15s;z-index:2;
+}
+.axis-node:hover{border-color:var(--node-c,var(--muted));color:var(--node-c,var(--txt));z-index:3}
+.axis-node .dot{
+  display:inline-block;width:7px;height:7px;border-radius:50%;
+  margin-right:5px;vertical-align:middle;
+}
+
+/* ── Ecosystem ───────────────────────────────────────────────────────────── */
+#ecosystem{margin-top:80px}
+.eco-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.eco-card{
+  background:var(--s1);border:1px solid var(--line);border-radius:var(--r);
+  padding:20px;transition:border-color .2s;
+}
+.eco-card:hover{border-color:var(--muted)}
+.eco-who{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--dim);margin-bottom:8px}
+.eco-name{font-family:var(--font-display);font-size:17px;font-weight:700;color:var(--txt);margin-bottom:8px}
+.eco-body{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px}
+.eco-tags{display:flex;flex-wrap:wrap;gap:5px}
+.eco-tag{font-size:11px;padding:2px 8px;border-radius:5px;background:var(--s2);color:var(--muted)}
+
+/* ── Reference table ─────────────────────────────────────────────────────── */
+#refs{margin-top:80px}
+.ref-controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.ref-search{
+  flex:1;min-width:200px;background:var(--s1);border:1px solid var(--line);
+  border-radius:var(--r-sm);padding:10px 14px;color:var(--txt);font-size:13px;
+  font-family:var(--font-body);outline:none;
+}
+.ref-search:focus{border-color:var(--muted)}
+.ref-filter-sel{
+  background:var(--s1);border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:10px 14px;color:var(--muted);font-size:13px;
+  font-family:var(--font-body);outline:none;cursor:pointer;
+}
+.ref-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;min-width:720px}
+th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}
+th{background:var(--s2);color:var(--txt);font-size:11px;letter-spacing:.06em;text-transform:uppercase;position:sticky;top:0;z-index:1;font-family:var(--font-display)}
+tr:hover td{background:rgba(255,255,255,.02)}
+td:first-child{font-weight:600;color:var(--txt)}
+.ref-tag{font-size:10px;padding:2px 7px;border-radius:4px;background:var(--s2);color:var(--muted)}
+.ref-link{font-size:12px;color:var(--c3);text-decoration:none}
+.ref-link:hover{text-decoration:underline}
+tr.hidden-row{display:none}
+
+/* ── Debates ─────────────────────────────────────────────────────────────── */
+#debates{margin-top:80px}
+.debate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.debate-card{
+  background:var(--s1);border:1px solid var(--line);border-radius:var(--r);padding:22px;
+  position:relative;overflow:hidden;
+}
+.debate-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+}
+.dc1::before{background:linear-gradient(90deg,var(--c3),var(--c2))}
+.dc2::before{background:linear-gradient(90deg,var(--c2),var(--c4))}
+.dc3::before{background:linear-gradient(90deg,var(--c4),var(--c1))}
+.dc4::before{background:linear-gradient(90deg,var(--c5),var(--c3))}
+.debate-num{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;font-family:var(--font-display);font-weight:600}
+.debate-q{font-family:var(--font-display);font-size:17px;font-weight:700;color:var(--txt);margin-bottom:14px;line-height:1.3}
+.debate-sides{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.debate-side{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px}
+.side-label{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+.side-txt{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+footer{
+  margin-top:96px;padding:32px 0 40px;border-top:1px solid var(--line);
+  color:var(--dim);font-size:12px;
+}
+.footer-inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+/* ── Util ────────────────────────────────────────────────────────────────── */
+.hidden{display:none!important}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+@media(max-width:600px){
+  .hero h1{font-size:36px}
+  .impact-grid{grid-template-columns:1fr}
+  .debate-sides{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">⬡ Quantum Art Taxonomy</span>
+    <a href="#taxonomy" class="nav-pill">6 ลักษณะหลัก</a>
+    <a href="#spectrum" class="nav-pill">Spectrum</a>
+    <a href="#ecosystem" class="nav-pill">Ecosystem</a>
+    <a href="#debates" class="nav-pill">Debates</a>
+    <a href="#refs" class="nav-pill">Reference</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Field Guide · ฉบับภาษาไทย</div>
+  <h1>ศิลปะ<em>ควอนตัม</em><br>ทำงานอย่างไร</h1>
+  <p class="hero-q">
+    ควอนตัมฟิสิกส์เข้าสู่วงการศิลปะด้วย 6 รูปแบบที่ต่างกัน — ตั้งแต่การใช้เป็นอุปมา ไปจนถึงการใช้เป็นสื่อกลางจริงๆ และการใช้เป็นเครื่องมือวิจารณ์การเมือง แต่ละรูปแบบมีวิธีสร้างงาน บริบท และผลกระทบต่อชุมชนที่ต่างกัน
+  </p>
+  <div class="hero-pills">
+    <a href="#taxonomy" class="hero-pill">→ ดู 6 ลักษณะหลัก</a>
+    <a href="#spectrum" class="hero-pill">→ Spectrum ของงาน</a>
+    <a href="#debates" class="hero-pill">→ Debates สำคัญ</a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     TAXONOMY
+══════════════════════════════════════════════════════════ -->
+<section id="taxonomy">
+  <div class="sec-head">
+    <div class="sec-label">อนุกรมวิธาน</div>
+    <h2>6 ลักษณะหลักของศิลปะควอนตัม</h2>
+    <p>กดที่การ์ดเพื่อดูวิธีสร้างงาน ตัวอย่าง และผลกระทบเชิงสังคมในแต่ละลักษณะ</p>
+  </div>
+
+  <div class="filter-row">
+    <button class="filter-chip active" onclick="filterTax('all',this)">ทั้งหมด</button>
+    <button class="filter-chip" onclick="filterTax('metaphor',this)" style="--dot-c:#38D4C8"><span class="dot" style="background:#38D4C8"></span>อุปมา</button>
+    <button class="filter-chip" onclick="filterTax('medium',this)" style="--dot-c:#C8F547"><span class="dot" style="background:#C8F547"></span>สื่อกลาง</button>
+    <button class="filter-chip" onclick="filterTax('phenomenology',this)" style="--dot-c:#E040A0"><span class="dot" style="background:#E040A0"></span>ปรากฏการณ์วิทยา</button>
+    <button class="filter-chip" onclick="filterTax('ontology',this)" style="--dot-c:#F5934A"><span class="dot" style="background:#F5934A"></span>ภววิทยา</button>
+    <button class="filter-chip" onclick="filterTax('epistemology',this)" style="--dot-c:#A78BFA"><span class="dot" style="background:#A78BFA"></span>ญาณวิทยา</button>
+    <button class="filter-chip" onclick="filterTax('political',this)" style="--dot-c:#F87171"><span class="dot" style="background:#F87171"></span>การเมือง</button>
+  </div>
+
+  <div class="tax-grid" id="taxGrid">
+
+    <!-- ── 1: METAPHOR ──────────────────────────────────────── -->
+    <div class="t-card" data-cat="metaphor" onclick="toggleCard(this)" style="--active-c:#38D4C8">
+      <div class="t-card-head">
+        <div class="t-card-top">
+          <span class="t-icon">〰️</span>
+          <span class="t-num">01 / 06</span>
+        </div>
+        <div class="t-spectrum" style="--from-c:#38D4C8;--to-c:#1A3A50"></div>
+        <div class="t-title-en" style="color:#38D4C8">Quantum as Metaphor</div>
+        <div class="t-title-th">ควอนตัมเป็นอุปมา</div>
+        <p class="t-def">ใช้แนวคิดควอนตัม (superposition, entanglement, uncertainty) เป็นภาษาเชิงกวีหรือปรัชญา โดยไม่ได้อ้างถึงกลไกฟิสิกส์โดยตรง ความแม่นยำทางวิทยาศาสตร์ไม่ใช่เป้าหมาย — ความสั่นสะเทือนเชิงความหมายคือเป้าหมาย</p>
+      </div>
+      <div class="t-toggle">
+        <span>วิธีสร้างงาน · ตัวอย่าง · บริบท</span>
+        <span class="t-arrow">↓</span>
+      </div>
+      <div class="t-body">
+        <div class="t-section">
+          <div class="t-section-label">วิธีสร้างงาน (Method)</div>
+          <p>ศิลปินหยิบคำศัพท์ควอนตัมมาใส่ในโครงสร้างงาน — ชื่องาน, บทกวีที่แนบมา, แถลงการณ์ศิลปิน, หรือการตั้งชื่อวัสดุ/กระบวนการ โดยที่งานจริงอาจเป็น painting, sculpture, หรือ performance ที่ไม่ได้ใช้เทคโนโลยีควอนตัมเลย</p>
+          <div class="method-pills">
+            <span class="m-pill">Artist statement</span>
+            <span class="m-pill">Conceptual framing</span>
+            <span class="m-pill">Linguistic layering</span>
+            <span class="m-pill">Material analogy</span>
+          </div>
+        </div>
+        <div class="t-section">
+          <div class="t-section-label">ตัวอย่างงาน</div>
+          <div class="works-list">
+            <div class="work-item">
+              <span class="work-icon">🌊</span>
+              <div class="work-item-main">
+                <div class="work-title">Quantum Man (2006)</div>
+                <div class="work-artist">Julian Voss-Andreae — ประติมากรรมเหล็กที่เปลี่ยนรูปร่างตามมุมมอง อ้างอิง wave-particle duality เชิงภาพ</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://julianvossandreae.com/works/quantum-sculptures-quantum-man/" target="_blank">→ doc</a>
+              </div>
+            </div>
+            <div class="work-item">
+              <span class="work-icon">🔮</span>
+              <div class="work-item-main">
+                <div class="work-title">Quantum Art Practice</div>
+                <div class="work-artist">Pradissitto — ใช้แสงและวัสดุเลียนแบบความเป็นคู่ของอนุภาค โดยมีพื้นหลังเป็น physicist-turned-artist</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://www.pradissitto.com/quantum-art-what-does-it-mean" target="_blank">→ doc</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="t-section">
+          <div class="t-section-label">บริบทและผลกระทบต่อชุมชน / นิเวศ</div>
+          <div class="impact-grid">
+            <div class="impact-item">
+              <div class="impact-label">บริบท</div>
+              <div class="impact-val">เกิดก่อน quantum computer จะเข้าถึงได้จริง — เป็นช่วงที่คำว่า "quantum" เริ่มแพร่ในวัฒนธรรมป็อปและ New Age</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">ฟังก์ชัน</div>
+              <div class="impact-val">เปิดประตูภาษาใหม่ให้ศิลปะพูดถึงความไม่แน่นอน ความสัมพันธ์ และสภาวะระหว่างกลาง</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">ความเสี่ยง</div>
+              <div class="impact-val">"Quantum sludge" — การใช้คำว่า quantum เป็น buzzword โดยไม่มีความลึกทางความหมาย (Yalcinkaya, ArtReview 2025)</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">มีประโยชน์กับใคร</div>
+              <div class="impact-val">ผู้ชมทั่วไป, นักปรัชญา, ชุมชนที่ต้องการภาษาเพื่อพูดถึงความซับซ้อน</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 2: MEDIUM ────────────────────────────────────────── -->
+    <div class="t-card" data-cat="medium" onclick="toggleCard(this)" style="--active-c:#C8F547">
+      <div class="t-card-head">
+        <div class="t-card-top">
+          <span class="t-icon">⚙️</span>
+          <span class="t-num">02 / 06</span>
+        </div>
+        <div class="t-spectrum" style="--from-c:#2A3A00;--to-c:#C8F547"></div>
+        <div class="t-title-en" style="color:#C8F547">Quantum as Medium</div>
+        <div class="t-title-th">ควอนตัมเป็นสื่อกลาง</div>
+        <p class="t-def">ใช้ quantum computer (หรือ simulation ของมัน) เป็นเครื่องมือผลิตงานโดยตรง — ผลลัพธ์ของ qubits, quantum circuits, หรือ quantum noise กลายเป็นวัสดุทางศิลปะ ไม่ใช่แค่แรงบันดาลใจ</p>
+      </div>
+      <div class="t-toggle">
+        <span>วิธีสร้างงาน · ตัวอย่าง · บริบท</span>
+        <span class="t-arrow">↓</span>
+      </div>
+      <div class="t-body">
+        <div class="t-section">
+          <div class="t-section-label">วิธีสร้างงาน (Method)</div>
+          <p>ศิลปินเขียน quantum circuits, ใช้ IBM Quantum, Qiskit, หรือ qBraid เพื่อรัน computations แล้วแปลง output (probability distributions, measurement results, quantum noise patterns) เป็น visual, sound, หรือ immersive environment โดยส่วนใหญ่ยังเป็น <em>simulation</em> ไม่ใช่ hardware จริง ยกเว้นบางงานที่เข้าถึง cloud QC จริง</p>
+          <div class="method-pills">
+            <span class="m-pill">Quantum circuits</span>
+            <span class="m-pill">Qubit-to-pixel mapping</span>
+            <span class="m-pill">IBM Quantum / Qiskit</span>
+            <span class="m-pill">Quantum noise as texture</span>
+            <span class="m-pill">Cloud QC access</span>
+          </div>
+        </div>
+        <div class="t-section">
+          <div class="t-section-label">ตัวอย่างงาน</div>
+          <div class="works-list">
+            <div class="work-item">
+              <span class="work-icon">🌀</span>
+              <div class="work-item-main">
+                <div class="work-title">Ent- (2022)</div>
+                <div class="work-artist">Libby Heaney × LAS Art Foundation — 360° immersive ที่ใช้ IBM Quantum hardware จริง ผ่าน Qiskit "taking quantum computing as both medium and subject matter"</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://www.las-art.foundation/programme/ent" target="_blank">→ doc</a>
+                <a class="work-link" href="https://libbyheaney.co.uk" target="_blank">→ artist</a>
+              </div>
+            </div>
+            <div class="work-item">
+              <span class="work-icon">🖼️</span>
+              <div class="work-item-main">
+                <div class="work-title">Quantum Drawings</div>
+                <div class="work-artist">David Young — ใช้ IBM Quantum outputs แล้วประมวลผลด้วย custom code ให้กลายเป็นภาพ generative ที่ print ออกมา</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://www.katevassgalerie.com/blog/quantum-art" target="_blank">→ doc</a>
+              </div>
+            </div>
+            <div class="work-item">
+              <span class="work-icon">💀</span>
+              <div class="work-item-main">
+                <div class="work-title">Quantum Skull</div>
+                <div class="work-artist">Pindar Van Arman / Russell Huffman — qubit-to-pixel mapping, color values เข้ารหัสผ่าน qubit rotations</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://www.katevassgalerie.com/blog/quantum-art" target="_blank">→ doc</a>
+              </div>
+            </div>
+            <div class="work-item">
+              <span class="work-icon">🎨</span>
+              <div class="work-item-main">
+                <div class="work-title">WE FELT A STAR DYING (2025)</div>
+                <div class="work-artist">Laure Prouvost × LAS Art Foundation — Kraftwerk Berlin: video คู่ classical+quantum version, quantum version ตีความโดย AI + philosopher Tobias Reed ใส่ random quantum noise simulations</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://www.las-art.foundation/programme/sensing-quantum" target="_blank">→ doc</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="t-section">
+          <div class="t-section-label">บริบทและผลกระทบต่อชุมชน / นิเวศ</div>
+          <div class="impact-grid">
+            <div class="impact-item">
+              <div class="impact-label">บริบท</div>
+              <div class="impact-val">เป็นไปได้จริงหลัง IBM เปิด Quantum Network ต่อสาธารณะ (2016+) และมี cloud access ผ่าน qBraid, AWS Braket</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">ฟังก์ชัน</div>
+              <div class="impact-val">พิสูจน์ว่าศิลปินสามารถเป็น "first adopters" ของเทคโนโลยีควอนตัม — นำ aesthetic intelligence เข้าสู่วงการที่ปกติถูกครอบครองโดยวิศวกร</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">ผลต่อนิเวศ</div>
+              <div class="impact-val">สร้าง demand ใหม่ให้ quantum cloud platforms, เปิดทาง residency ศิลปิน-นักฟิสิกส์ ผลักดันให้เกิดโครงการเช่น Arts at CERN, Sensing Quantum</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">มีประโยชน์กับใคร</div>
+              <div class="impact-val">นักวิทยาศาสตร์ที่ต้องการภาษาใหม่, สถาบันศิลปะที่ต้องการ R&D, สาธารณะที่เข้าไม่ถึง QC โดยตรง</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 3: PHENOMENOLOGY ─────────────────────────────────── -->
+    <div class="t-card" data-cat="phenomenology" onclick="toggleCard(this)" style="--active-c:#E040A0">
+      <div class="t-card-head">
+        <div class="t-card-top">
+          <span class="t-icon">👁️</span>
+          <span class="t-num">03 / 06</span>
+        </div>
+        <div class="t-spectrum" style="--from-c:#E040A0;--to-c:#5A1040"></div>
+        <div class="t-title-en" style="color:#E040A0">Quantum as Phenomenology</div>
+        <div class="t-title-th">ควอนตัมเป็นปรากฏการณ์วิทยา</div>
+        <p class="t-def">แปลงปรากฏการณ์ควอนตัมให้เป็นประสบการณ์ทางร่างกายและประสาทสัมผัส — ผู้ชมไม่ได้ "เรียนรู้" ควอนตัม แต่ "รู้สึก" กับตรรกะของมัน ผ่านการเคลื่อนไหว แสง เสียง สัมผัส และพื้นที่</p>
+      </div>
+      <div class="t-toggle">
+        <span>วิธีสร้างงาน · ตัวอย่าง · บริบท</span>
+        <span class="t-arrow">↓</span>
+      </div>
+      <div class="t-body">
+        <div class="t-section">
+          <div class="t-section-label">วิธีสร้างงาน (Method)</div>
+          <p>ออกแบบพื้นที่หรือประสบการณ์ที่โครงสร้างของมันเลียนแบบ logic ควอนตัม: superposition (สองสถานะพร้อมกัน), observer effect (การมองเปลี่ยนสิ่งที่มอง), entanglement (สองส่วนของงานเชื่อมกันอย่างลึกซึ้ง) — เน้น embodied cognition ไม่ใช่ intellectual understanding</p>
+          <div class="method-pills">
+            <span class="m-pill">Immersive installation</span>
+            <span class="m-pill">Sensory design</span>
+            <span class="m-pill">Participatory space</span>
+            <span class="m-pill">Real-time responsive</span>
+            <span class="m-pill">Multi-channel video/sound</span>
+          </div>
+        </div>
+        <div class="t-section">
+          <div class="t-section-label">ตัวอย่างงาน</div>
+          <div class="works-list">
+            <div class="work-item">
+              <span class="work-icon">🌸</span>
+              <div class="work-item-main">
+                <div class="work-title">Future World / Flowers and People</div>
+                <div class="work-artist">teamLab × ArtScience Museum Singapore — ดอกไม้เปลี่ยนตามการมีอยู่ของผู้ชม "The interaction of viewers causes the flowers to shed their petals"</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://www.teamlab.art/en/e/artsciencemuseum/" target="_blank">→ doc</a>
+              </div>
+            </div>
+            <div class="work-item">
+              <span class="work-icon">🌡️</span>
+              <div class="work-item-main">
+                <div class="work-title">WE FELT A STAR DYING (2025) — มิติร่างกาย</div>
+                <div class="work-artist">Laure Prouvost — heat-sensing cameras, scent, sculptured helmets ("cute bits" ล้อ qubits), เน้น "feeling first as opposed to thinking"</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://artreview.com/how-art-went-quantum-laure-prouvost-las-foundation-cern-ai-opinion-gunseli-yalcinkaya/" target="_blank">→ review</a>
+              </div>
+            </div>
+            <div class="work-item">
+              <span class="work-icon">💃</span>
+              <div class="work-item-main">
+                <div class="work-title">Spooky Action (at a Distance) II</div>
+                <div class="work-artist">Strangeweather Movement Group + Andy Yang × ArtScience Museum — dance improvisation ที่ใช้ entanglement เป็น structural scaffold ไม่ใช่ธีมภาพลักษณ์</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://www.youtube.com/watch?v=5elDYCc1Aj0" target="_blank">→ video</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="t-section">
+          <div class="t-section-label">บริบทและผลกระทบต่อชุมชน / นิเวศ</div>
+          <div class="impact-grid">
+            <div class="impact-item">
+              <div class="impact-label">บริบท</div>
+              <div class="impact-val">เติบโตในยุค immersive art (teamLab, Meow Wolf) และการวิจัย embodied cognition — ตอบโต้กับ "science communication" แบบอธิบายตรงๆ</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">ฟังก์ชัน</div>
+              <div class="impact-val">ทำให้ผู้ชมที่ไม่มีพื้นฟิสิกส์สามารถ "รู้สึก" กับ intuition ที่นักฟิสิกส์มี — เป็น democratic access ไปสู่ quantum logic</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">ผลต่อนิเวศ</div>
+              <div class="impact-val">นำพื้นที่ศิลปะ (museum, gallery, black box) เข้าสู่บทสนทนาวิทยาศาสตร์ สร้าง audience ใหม่ให้ quantum research</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">มีประโยชน์กับใคร</div>
+              <div class="impact-val">เด็ก, ผู้ที่เรียนรู้ผ่านการสัมผัส, นักออกแบบ UX ที่สนใจ non-linear systems</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 4: ONTOLOGY ──────────────────────────────────────── -->
+    <div class="t-card" data-cat="ontology" onclick="toggleCard(this)" style="--active-c:#F5934A">
+      <div class="t-card-head">
+        <div class="t-card-top">
+          <span class="t-icon">🌐</span>
+          <span class="t-num">04 / 06</span>
+        </div>
+        <div class="t-spectrum" style="--from-c:#F5934A;--to-c:#3A1A00"></div>
+        <div class="t-title-en" style="color:#F5934A">Quantum as Ontology</div>
+        <div class="t-title-th">ควอนตัมเป็นภววิทยา</div>
+        <p class="t-def">ยอมรับว่าควอนตัมเปลี่ยนความเข้าใจพื้นฐานเกี่ยวกับ "ความเป็นจริงคืออะไร" — วัตถุไม่มีคุณสมบัติตายตัว, ความสัมพันธ์มาก่อนตัวตน, การสังเกตร่วมสร้างสิ่งที่ถูกสังเกต งานศิลปะในกลุ่มนี้ออกแบบ "โลกใหม่" ที่มีกฎต่างจาก Newtonian physics</div>
+      </div>
+      <div class="t-toggle">
+        <span>วิธีสร้างงาน · ตัวอย่าง · บริบท</span>
+        <span class="t-arrow">↓</span>
+      </div>
+      <div class="t-body">
+        <div class="t-section">
+          <div class="t-section-label">วิธีสร้างงาน (Method)</div>
+          <p>สร้างระบบหรือสภาพแวดล้อมที่มีกฎเฉพาะ — ผู้ชมเข้าไปอยู่ในนั้นและค้นพบว่ากฎที่คุ้นเคยในชีวิตประจำวันไม่ใช้ได้อีกต่อไป ดึงแนวคิดจาก Karen Barad (intra-action), New Materialism, และ relational ontologies</p>
+          <div class="method-pills">
+            <span class="m-pill">World-building</span>
+            <span class="m-pill">Rule-based systems</span>
+            <span class="m-pill">Relational design</span>
+            <span class="m-pill">Speculative environment</span>
+            <span class="m-pill">Karen Barad / intra-action</span>
+          </div>
+        </div>
+        <div class="t-section">
+          <div class="t-section-label">ตัวอย่างงาน</div>
+          <div class="works-list">
+            <div class="work-item">
+              <span class="work-icon">🔭</span>
+              <div class="work-item-main">
+                <div class="work-title">Quantum Visions (2024)</div>
+                <div class="work-artist">Arts at CERN (11 ศิลปิน) — "reality is, to a large extent, arbitrary" — โลกในนิทรรศการไม่มีความจริงเดียว</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://arts.cern/exhibition/quantum-visions/" target="_blank">→ exhibition</a>
+              </div>
+            </div>
+            <div class="work-item">
+              <span class="work-icon">🧲</span>
+              <div class="work-item-main">
+                <div class="work-title">Polymorphic sculpture</div>
+                <div class="work-artist">Yunchul Kim — polymers ที่เปลี่ยนสีและรูปแบบตามการเคลื่อนไหว ไม่มีสถานะ "final" — ออนโทโลยีของวัตถุเป็น dynamic relational field</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://arts.cern/exhibition/quantum-visions/" target="_blank">→ doc</a>
+              </div>
+            </div>
+            <div class="work-item">
+              <span class="work-icon">🕸️</span>
+              <div class="work-item-main">
+                <div class="work-title">entangled binary network / NO MATTER</div>
+                <div class="work-artist">Joan Heemskerk × Arts at CERN — "two entangled fields exchange the phrase within a speculative quantum internet network" — language across galaxies</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://home.cern/news/news/knowledge-sharing/arts-cern-artists-showcased-copenhagen" target="_blank">→ doc</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="t-section">
+          <div class="t-section-label">บริบทและผลกระทบต่อชุมชน / นิเวศ</div>
+          <div class="impact-grid">
+            <div class="impact-item">
+              <div class="impact-label">บริบท</div>
+              <div class="impact-val">งอกมาจากทั้ง quantum physics และ continental philosophy (Barad, Haraway, Deleuze) — เป็นโซนที่วิทยาศาสตร์กับมนุษยศาสตร์ตัดกันโดยตั้งใจ</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">ฟังก์ชัน</div>
+              <div class="impact-val">ท้าทาย "สามัญสำนึก" ของโลกทุนนิยมที่ตั้งอยู่บน Newtonian mechanics — วัตถุมีราคา, มีพรมแดน, และมีเจ้าของ</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">ผลต่อนิเวศ</div>
+              <div class="impact-val">สร้างภาษาร่วมระหว่างนักฟิสิกส์ทฤษฎี, นักปรัชญา, และศิลปิน — เปิดหลักสูตรใหม่ใน art schools และ STS programs</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">มีประโยชน์กับใคร</div>
+              <div class="impact-val">นักปรัชญา, นักวิทยาศาสตร์ที่ต้องการ framework ใหม่, ชุมชนที่ต้องการโต้แย้งแนวคิดเรื่องความเป็นเจ้าของและพรมแดน</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 5: EPISTEMOLOGY ──────────────────────────────────── -->
+    <div class="t-card" data-cat="epistemology" onclick="toggleCard(this)" style="--active-c:#A78BFA">
+      <div class="t-card-head">
+        <div class="t-card-top">
+          <span class="t-icon">🔬</span>
+          <span class="t-num">05 / 06</span>
+        </div>
+        <div class="t-spectrum" style="--from-c:#A78BFA;--to-c:#2A1A60"></div>
+        <div class="t-title-en" style="color:#A78BFA">Quantum as Epistemology</div>
+        <div class="t-title-th">ควอนตัมเป็นญาณวิทยา</div>
+        <p class="t-def">ใช้ quantum เป็นกรอบตั้งคำถามว่า "เรารู้อะไรได้และรู้ได้อย่างไร" — เน้น limits of knowledge, ข้อจำกัดของการวัด, และ ความสัมพันธ์ระหว่างผู้สังเกตกับสิ่งที่ถูกสังเกต งานในกลุ่มนี้มักเป็น documentary, performance, หรือ dialogue ระหว่างศิลปิน-นักวิทยาศาสตร์</p>
+      </div>
+      <div class="t-toggle">
+        <span>วิธีสร้างงาน · ตัวอย่าง · บริบท</span>
+        <span class="t-arrow">↓</span>
+      </div>
+      <div class="t-body">
+        <div class="t-section">
+          <div class="t-section-label">วิธีสร้างงาน (Method)</div>
+          <p>สร้างสถานการณ์ที่ผู้ชมต้องตั้งคำถามต่อวิธีที่ตัวเองรับรู้และรู้จัก — ผ่าน documentary ที่ใส่คำถามเปิดไว้แทนคำตอบ, บทสนทนา podcast, residency ที่ศิลปินทำงานกับนักฟิสิกส์จริงๆ</p>
+          <div class="method-pills">
+            <span class="m-pill">Artist-scientist dialogue</span>
+            <span class="m-pill">Documentary / film</span>
+            <span class="m-pill">Residency programme</span>
+            <span class="m-pill">Podcast / conversation</span>
+            <span class="m-pill">Symposium</span>
+          </div>
+        </div>
+        <div class="t-section">
+          <div class="t-section-label">ตัวอย่างงาน</div>
+          <div class="works-list">
+            <div class="work-item">
+              <span class="work-icon">🎙️</span>
+              <div class="work-item-main">
+                <div class="work-title">Arts at CERN Podcast</div>
+                <div class="work-artist">Arts at CERN — "brings together artists and physicists to shed light on some of the themes that inspire their work" — quantum เป็นกรอบตั้งคำถาม ไม่ใช่คำตอบ</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://arts.cern/arts-at-cern-podcast/" target="_blank">→ podcast</a>
+              </div>
+            </div>
+            <div class="work-item">
+              <span class="work-icon">🎬</span>
+              <div class="work-item-main">
+                <div class="work-title">Reality Lost / Spooky Action (documentary)</div>
+                <div class="work-artist">CQT / NUS Singapore — "Objective reality had to go. Was it regained?" — นักวิทยาศาสตร์บนจอ, การเต้น, และคำถามที่ไม่มีคำตอบ</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://www.quantumlah.org" target="_blank">→ CQT</a>
+              </div>
+            </div>
+            <div class="work-item">
+              <span class="work-icon">📚</span>
+              <div class="work-item-main">
+                <div class="work-title">Adventures in Quantumland</div>
+                <div class="work-artist">Omar Costa Hamido — PhD research ที่สำรวจ implications ของ quantum computing สำหรับการสร้างงานศิลปะ ในโหมด artist-researcher</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://www.quantumland.art/" target="_blank">→ site</a>
+              </div>
+            </div>
+            <div class="work-item">
+              <span class="work-icon">🏛️</span>
+              <div class="work-item-main">
+                <div class="work-title">Sensing Quantum Symposium (2025)</div>
+                <div class="work-artist">LAS Art Foundation — "fundamental questions about the rise of quantum technologies and the implications they open up" ร่วมกับ Calarco, Steyerl, Reed</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://www.las-art.foundation/programme/sensing-quantum-symposium" target="_blank">→ doc</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="t-section">
+          <div class="t-section-label">บริบทและผลกระทบต่อชุมชน / นิเวศ</div>
+          <div class="impact-grid">
+            <div class="impact-item">
+              <div class="impact-label">บริบท</div>
+              <div class="impact-val">ตอบสนองต่อ "science communication" แบบเดิมที่มักให้ผู้เชี่ยวชาญอธิบายให้คนทั่วไปฟัง โดยเปลี่ยนเป็น dialogue ที่เท่าเทียม</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">ฟังก์ชัน</div>
+              <div class="impact-val">สร้าง "critical literacy" เกี่ยวกับ quantum — ผู้ชมออกไปพร้อมคำถามที่ดีขึ้น ไม่ใช่คำตอบสำเร็จรูป</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">ผลต่อนิเวศ</div>
+              <div class="impact-val">เชื่อมสถาบันวิทยาศาสตร์ (CERN, IBM Research) กับสถาบันศิลปะ เปิด residency, fellowship, และโปรแกรมร่วมใหม่ๆ</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">มีประโยชน์กับใคร</div>
+              <div class="impact-val">นักนโยบาย, นักข่าว, ครู, นักศึกษา, ชุมชนที่ต้องตัดสินใจเกี่ยวกับเทคโนโลยีใหม่</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 6: POLITICAL ─────────────────────────────────────── -->
+    <div class="t-card" data-cat="political" onclick="toggleCard(this)" style="--active-c:#F87171">
+      <div class="t-card-head">
+        <div class="t-card-top">
+          <span class="t-icon">✊</span>
+          <span class="t-num">06 / 06</span>
+        </div>
+        <div class="t-spectrum" style="--from-c:#F87171;--to-c:#3A0A0A"></div>
+        <div class="t-title-en" style="color:#F87171">Quantum as Political Critique</div>
+        <div class="t-title-th">ควอนตัมเป็นการวิจารณ์การเมือง</div>
+        <p class="t-def">ใช้ quantum เป็นเครื่องมือวิจารณ์โครงสร้างอำนาจ — ตั้งคำถามต่อประวัติศาสตร์ทางทหารของ quantum physics, arms race ควอนตัม, ว่าใครได้ประโยชน์และใครถูกกีดกัน งานกลุ่มนี้ไม่ได้แค่ "แสดง" ควอนตัม แต่ใช้มันเป็นอาวุธวิพากษ์</div>
+      </div>
+      <div class="t-toggle">
+        <span>วิธีสร้างงาน · ตัวอย่าง · บริบท</span>
+        <span class="t-arrow">↓</span>
+      </div>
+      <div class="t-body">
+        <div class="t-section">
+          <div class="t-section-label">วิธีสร้างงาน (Method)</div>
+          <p>รวม Afrofuturism, feminist theory, decolonial thought เข้ากับ quantum concepts เพื่อตั้งคำถามว่า "ใครมีสิทธิ์นิยาม quantum?" และ "ควอนตัมถูกนำมาใช้รับใช้อะไร?" — มักอยู่ในรูป performance, publishing, research-based art</p>
+          <div class="method-pills">
+            <span class="m-pill">Afrofuturism</span>
+            <span class="m-pill">Research-based art</span>
+            <span class="m-pill">Publishing / manifesto</span>
+            <span class="m-pill">Performance lecture</span>
+            <span class="m-pill">Counter-narrative</span>
+          </div>
+        </div>
+        <div class="t-section">
+          <div class="t-section-label">ตัวอย่างงาน</div>
+          <div class="works-list">
+            <div class="work-item">
+              <span class="work-icon">⏳</span>
+              <div class="work-item-main">
+                <div class="work-title">Black Quantum Futurism</div>
+                <div class="work-artist">Camae Ayewa + Rasheedah Phillips — รวม Afrofuturist ideas กับ quantum principles สำรวจ Black diasporic temporalities และ non-linear time ในฐานะ quantum phenomenon</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://blackquantumfuturism.com" target="_blank">→ site</a>
+              </div>
+            </div>
+            <div class="work-item">
+              <span class="work-icon">🎮</span>
+              <div class="work-item-main">
+                <div class="work-title">SMALL VOID (2024)</div>
+                <div class="work-artist">Alice Bucknell × Arts at CERN — "queer dating sim" ที่ใช้ quantum entanglement + black holes เป็น scaffold สำรวจ attachment theory, language, cosmic annihilation</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://arts.cern/commission/small-void/" target="_blank">→ doc</a>
+                <a class="work-link" href="https://alicebucknell.com" target="_blank">→ artist</a>
+              </div>
+            </div>
+            <div class="work-item">
+              <span class="work-icon">🛡️</span>
+              <div class="work-item-main">
+                <div class="work-title">QuantArt Bridge</div>
+                <div class="work-artist">NCCR SPIN — "transform equations into emotions and data into wonder" — ตั้งคำถามว่าใครควรมีส่วนร่วมในการกำหนดทิศทางของ quantum technology</div>
+              </div>
+              <div class="work-links">
+                <a class="work-link" href="https://www.nccr-spin.ch/quantart-bridge" target="_blank">→ doc</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="t-section">
+          <div class="t-section-label">บริบทและผลกระทบต่อชุมชน / นิเวศ</div>
+          <div class="impact-grid">
+            <div class="impact-item">
+              <div class="impact-label">บริบท</div>
+              <div class="impact-val">เกิดท่ามกลาง quantum arms race (US, China, EU) และการถกเถียงเรื่อง quantum supremacy — ตั้งคำถามว่า "ควอนตัมเพื่อใคร?"</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">ฟังก์ชัน</div>
+              <div class="impact-val">เปิดพื้นที่ให้ชุมชนที่ถูกกีดกันจากเทคโนโลยี (ชุมชน Global South, ชุมชน LGBTQ+, ชุมชน Indigenous) มีส่วนในการนิยาม quantum ใหม่</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">ผลต่อนิเวศ</div>
+              <div class="impact-val">ท้าทาย Quantum Manifesto ที่กำหนด quantum เป็นทรัพยากรเชิงพาณิชย์และยุทธศาสตร์ของยุโรป — เปิดวาทกรรม "quantum justice"</div>
+            </div>
+            <div class="impact-item">
+              <div class="impact-label">มีประโยชน์กับใคร</div>
+              <div class="impact-val">ชุมชนที่ถูกกีดกันจากกระแสหลัก quantum, นักเคลื่อนไหว, นักปรัชญาที่สนใจ decolonial science</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tax-grid -->
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     SPECTRUM
+══════════════════════════════════════════════════════════ -->
+<section id="spectrum">
+  <div class="sec-head">
+    <div class="sec-label">การวางตำแหน่ง</div>
+    <h2>Spectrum ของงานศิลปะควอนตัม</h2>
+    <p>แกน X: วิธีใช้ควอนตัม (อุปมา ↔ สื่อกลางจริง) · แกน Y: จุดเน้น (ปรากฏการณ์วิทยา ↔ วิจารณ์การเมือง) hover ที่ชื่อเพื่อดูสี</p>
+  </div>
+  <div class="axis-wrap">
+    <div class="axis-grid">
+      <div class="axis-line-h"></div>
+      <div class="axis-line-v"></div>
+      <div class="axis-label top">การวิจารณ์การเมือง</div>
+      <div class="axis-label bottom">ปรากฏการณ์วิทยา / ร่างกาย</div>
+      <div class="axis-label left">อุปมา / เก็งกำไร</div>
+      <div class="axis-label right">สื่อกลางจริง</div>
+
+      <!-- nodes: left=X%, top=Y% (0%=top=political, 100%=bottom=phenom) -->
+      <div class="axis-node" style="left:18%;top:22%;--node-c:#F87171"><span class="dot" style="background:#F87171"></span>Black Quantum Futurism</div>
+      <div class="axis-node" style="left:28%;top:32%;--node-c:#F87171"><span class="dot" style="background:#F87171"></span>Alice Bucknell / SMALL VOID</div>
+      <div class="axis-node" style="left:70%;top:28%;--node-c:#F87171"><span class="dot" style="background:#F87171"></span>Libby Heaney / Ent-</div>
+      <div class="axis-node" style="left:55%;top:18%;--node-c:#A78BFA"><span class="dot" style="background:#A78BFA"></span>LAS Sensing Quantum</div>
+      <div class="axis-node" style="left:15%;top:52%;--node-c:#38D4C8"><span class="dot" style="background:#38D4C8"></span>Julian Voss-Andreae</div>
+      <div class="axis-node" style="left:22%;top:58%;--node-c:#38D4C8"><span class="dot" style="background:#38D4C8"></span>Pradissitto</div>
+      <div class="axis-node" style="left:38%;top:48%;--node-c:#A78BFA"><span class="dot" style="background:#A78BFA"></span>Arts at CERN Podcast</div>
+      <div class="axis-node" style="left:42%;top:65%;--node-c:#F5934A"><span class="dot" style="background:#F5934A"></span>Quantum Visions / CERN</div>
+      <div class="axis-node" style="left:25%;top:75%;--node-c:#E040A0"><span class="dot" style="background:#E040A0"></span>Spooky Action II</div>
+      <div class="axis-node" style="left:58%;top:72%;--node-c:#E040A0"><span class="dot" style="background:#E040A0"></span>teamLab / Future World</div>
+      <div class="axis-node" style="left:65%;top:60%;--node-c:#E040A0"><span class="dot" style="background:#E040A0"></span>Laure Prouvost</div>
+      <div class="axis-node" style="left:72%;top:45%;--node-c:#C8F547"><span class="dot" style="background:#C8F547"></span>David Young / QC Drawings</div>
+      <div class="axis-node" style="left:80%;top:55%;--node-c:#C8F547"><span class="dot" style="background:#C8F547"></span>Quantum Skull</div>
+      <div class="axis-node" style="left:48%;top:38%;--node-c:#A78BFA"><span class="dot" style="background:#A78BFA"></span>Adventures in Quantumland</div>
+      <div class="axis-node" style="left:35%;top:22%;--node-c:#F5934A"><span class="dot" style="background:#F5934A"></span>Joan Heemskerk</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     ECOSYSTEM
+══════════════════════════════════════════════════════════ -->
+<section id="ecosystem">
+  <div class="sec-head">
+    <div class="sec-label">นิเวศและผลกระทบสังคม</div>
+    <h2>ศิลปะควอนตัมสัมพันธ์กับใคร อย่างไร</h2>
+    <p>งานศิลปะไม่ได้อยู่โดดๆ แต่เป็นส่วนหนึ่งของ ecosystem ที่เชื่อมผู้คน สถาบัน และขบวนการ</p>
+  </div>
+  <div class="eco-grid">
+    <div class="eco-card">
+      <div class="eco-who">นักฟิสิกส์ / นักวิทยาศาสตร์</div>
+      <div class="eco-name">ได้ภาษาและผู้ชมใหม่</div>
+      <div class="eco-body">ศิลปินในโปรแกรม residency เช่น Arts at CERN ทำให้งานวิจัยที่ซับซ้อนเข้าถึงสาธารณะได้โดยไม่ต้องลดความซับซ้อน — ผ่านการสร้างประสบการณ์แทนการอธิบาย</div>
+      <div class="eco-tags"><span class="eco-tag">CERN</span><span class="eco-tag">IBM Research</span><span class="eco-tag">LAS Symposium</span></div>
+    </div>
+    <div class="eco-card">
+      <div class="eco-who">สถาบันศิลปะ / museum</div>
+      <div class="eco-name">R&D ที่ไม่ใช่แค่ exhibit</div>
+      <div class="eco-body">LAS Art Foundation ประกาศตัวเองเป็น "a new type of arts organisation" ที่ทำ R&D จริงๆ — quantum art เป็น test bed ให้สถาบันศิลปะพิสูจน์ว่ามีบทบาทในการกำหนดทิศทางเทคโนโลยี</div>
+      <div class="eco-tags"><span class="eco-tag">LAS Art Foundation</span><span class="eco-tag">ArtScience Museum</span><span class="eco-tag">S+T+ARTS Prize</span></div>
+    </div>
+    <div class="eco-card">
+      <div class="eco-who">สาธารณะทั่วไป</div>
+      <div class="eco-name">สิทธิ์ในการกำหนดอนาคต</div>
+      <div class="eco-body">LAS เชื่อว่า "more people, not just scientists, can understand and shape how quantum technologies are used" — ศิลปะเป็นเครื่องมือ democratic access ให้สาธารณะมีส่วนในการกำหนด agenda ของเทคโนโลยี</div>
+      <div class="eco-tags"><span class="eco-tag">Public engagement</span><span class="eco-tag">learning programme</span><span class="eco-tag">family workshops</span></div>
+    </div>
+    <div class="eco-card">
+      <div class="eco-who">ชุมชนที่ถูกกีดกัน</div>
+      <div class="eco-name">Counter-narrative ต่อ quantum supremacy</div>
+      <div class="eco-body">Black Quantum Futurism ใช้ quantum เป็นเครื่องมือ reclaim ประวัติศาสตร์ที่ถูกลบ — เวลาแบบ non-linear, temporality ของ diaspora, และการปฏิเสธ narrative ของความก้าวหน้าแบบตะวันตก</div>
+      <div class="eco-tags"><span class="eco-tag">Afrofuturism</span><span class="eco-tag">Decolonial</span><span class="eco-tag">Black Quantum Futurism</span></div>
+    </div>
+    <div class="eco-card">
+      <div class="eco-who">นักนโยบาย / รัฐบาล</div>
+      <div class="eco-name">ความตึงเครียดและโอกาส</div>
+      <div class="eco-body">Quantum Manifesto (2016) นำไปสู่ EU Quantum Flagship €1B แต่ศิลปะควอนตัมที่วิพากษ์การเมืองตั้งคำถามต่อกรอบนี้ — ควอนตัมเป็นทรัพยากรของใคร? ใช้เพื่ออะไร? สำหรับใคร? ได้รับ S+T+ARTS Prize จาก EU เอง</div>
+      <div class="eco-tags"><span class="eco-tag">EU Quantum Flagship</span><span class="eco-tag">S+T+ARTS</span><span class="eco-tag">IYQ 2025</span></div>
+    </div>
+    <div class="eco-card">
+      <div class="eco-who">อุตสาหกรรมและ startup</div>
+      <div class="eco-name">Soft power และ public trust</div>
+      <div class="eco-body">บริษัทอย่าง IBM, qBraid เป็นพันธมิตรของโปรแกรม quantum art — ได้ประโยชน์ด้าน brand legitimacy และ community of practice ขณะที่ศิลปินได้ access ไปยัง quantum hardware</div>
+      <div class="eco-tags"><span class="eco-tag">IBM Quantum</span><span class="eco-tag">qBraid</span><span class="eco-tag">AWS Braket</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     DEBATES
+══════════════════════════════════════════════════════════ -->
+<section id="debates">
+  <div class="sec-head">
+    <div class="sec-label">ความตึงเครียดและ debates</div>
+    <h2>คำถามที่ยังไม่มีคำตอบ</h2>
+    <p>สังเคราะห์จาก ArtReview (Yalcinkaya, 2025), LAS Art Foundation, Quantum Manifesto, และงานศิลปินที่กล่าวถึงทั้งหมด</p>
+  </div>
+  <div class="debate-grid">
+    <div class="debate-card dc1">
+      <div class="debate-num">Debate 01</div>
+      <div class="debate-q">Speculative vs. Actual — งานที่ใช้แค่ simulation ยังชอบธรรมไหม?</div>
+      <div class="debate-sides">
+        <div class="debate-side">
+          <div class="side-label">ใช่</div>
+          <div class="side-txt">ความเป็น speculative ไม่ใช่ข้อด้อย มันคือ framing ที่ถูกต้องสำหรับเทคโนโลยีที่ยังไม่สมบูรณ์ เหมือน cyberpunk ไม่รอ internet ก่อนสร้าง</div>
+        </div>
+        <div class="debate-side">
+          <div class="side-label">ไม่ใช่</div>
+          <div class="side-txt">ถ้าเรียกตัวเองว่า "quantum art" แต่ใช้แค่ classical simulation มันต่างจาก "sci-fi art" อย่างไร? ความแม่นยำทางเทคโนโลยีมีความสำคัญ</div>
+        </div>
+      </div>
+    </div>
+    <div class="debate-card dc2">
+      <div class="debate-num">Debate 02</div>
+      <div class="debate-q">Feeling vs. Knowing — "feel first" เป็นทางเข้าที่ถูกต้องหรือการหลีกเลี่ยง?</div>
+      <div class="debate-sides">
+        <div class="debate-side">
+          <div class="side-label">ถูกต้อง</div>
+          <div class="side-txt">แม้แต่นักฟิสิกส์เองก็ยังอธิบายไม่ได้ว่า quantum คืออะไรจริงๆ การรับรู้ทางร่างกายอาจเข้าถึงสิ่งที่ภาษาไม่สามารถอธิบายได้</div>
+        </div>
+        <div class="debate-side">
+          <div class="side-label">หลีกเลี่ยง</div>
+          <div class="side-txt">"The world might be quantum but humans still process information classically" (Yalcinkaya) — feeling ไม่ใช่ understanding และการสับสนทั้งสองอาจนำไปสู่ mystification</div>
+        </div>
+      </div>
+    </div>
+    <div class="debate-card dc3">
+      <div class="debate-num">Debate 03</div>
+      <div class="debate-q">Metaphor vs. Ontology — ควอนตัมเปลี่ยนความจริงของเราจริงๆ หรือเป็นแค่ภาษาสวยงาม?</div>
+      <div class="debate-sides">
+        <div class="debate-side">
+          <div class="side-label">เปลี่ยนจริง</div>
+          <div class="side-txt">Karen Barad: intra-action เป็นข้อเสนอออนโทโลยีจริง ไม่ใช่อุปมา — ความสัมพันธ์มาก่อนตัวตน และนั่นเปลี่ยนวิธีที่เราออกแบบสังคม</div>
+        </div>
+        <div class="debate-side">
+          <div class="side-label">แค่ภาษา</div>
+          <div class="side-txt">ความเสี่ยงของการ "steeped and even lost in metaphor" — quantum discourse ในศิลปะอาจแปะป้ายใหม่บน conversation ที่มีอยู่แล้วโดยไม่สร้างความเข้าใจใหม่จริงๆ</div>
+        </div>
+      </div>
+    </div>
+    <div class="debate-card dc4">
+      <div class="debate-num">Debate 04</div>
+      <div class="debate-q">Political vs. Phenomenological — ศิลปะควอนตัมต้องมีจุดยืนทางการเมืองไหม?</div>
+      <div class="debate-sides">
+        <div class="debate-side">
+          <div class="side-label">ต้องมี</div>
+          <div class="side-txt">ควอนตัมมีประวัติศาสตร์ทางทหาร (Manhattan Project, CIA) และ arms race ปัจจุบัน การไม่ตั้งคำถามคือการเลือกสนับสนุนโครงสร้างอำนาจที่มีอยู่</div>
+        </div>
+        <div class="debate-side">
+          <div class="side-label">ไม่จำเป็น</div>
+          <div class="side-txt">การเปิดประสบการณ์การรับรู้ใหม่ก็มีคุณค่าในตัวมันเอง — ไม่จำเป็นต้องทุกงานเป็น political statement เพื่อมีความหมาย</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     REFERENCE TABLE
+══════════════════════════════════════════════════════════ -->
+<section id="refs">
+  <div class="sec-head">
+    <div class="sec-label">ดัชนีอ้างอิง</div>
+    <h2>งาน ศิลปิน และสถาบัน ทั้งหมด</h2>
+    <p>กรองหรือค้นหาเพื่อเข้าถึง documentation โดยตรง</p>
+  </div>
+  <div class="ref-controls">
+    <input class="ref-search" id="refSearch" type="text" placeholder="ค้นหาชื่องาน ศิลปิน สถาบัน..." oninput="filterRefs()"/>
+    <select class="ref-filter-sel" id="refCat" onchange="filterRefs()">
+      <option value="all">ทุกประเภท</option>
+      <option value="work">ผลงาน</option>
+      <option value="institution">สถาบัน</option>
+      <option value="programme">โปรแกรม</option>
+      <option value="text">บทความ/หนังสือ</option>
+    </select>
+  </div>
+  <div class="ref-table-wrap">
+    <table id="refTable">
+      <thead>
+        <tr><th>ชื่อ</th><th>ศิลปิน / ผู้ผลิต</th><th>ประเภท</th><th>ลักษณะ</th><th>ลิงก์</th></tr>
+      </thead>
+      <tbody id="refBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-inner">
+      <span>Quantum Art Taxonomy — สังเคราะห์จากการวิจัยในโปรเจกต์ Khwantum, ArtReview, LAS Art Foundation, Arts at CERN, และเอกสารสาธารณะ</span>
+      <span>อัพเดต: กรกฎาคม 2569</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── Reference data ──────────────────────────────────────────────────────── */
+const refs = [
+  { name:"Quantum Man", maker:"Julian Voss-Andreae", type:"work", cat:"metaphor", url:"https://julianvossandreae.com/works/quantum-sculptures-quantum-man/" },
+  { name:"Quantum Art Practice", maker:"Pradissitto", type:"work", cat:"metaphor", url:"https://www.pradissitto.com/quantum-art-what-does-it-mean" },
+  { name:"Ent-", maker:"Libby Heaney", type:"work", cat:"medium", url:"https://www.las-art.foundation/programme/ent" },
+  { name:"Quantum Drawings", maker:"David Young", type:"work", cat:"medium", url:"https://www.katevassgalerie.com/blog/quantum-art" },
+  { name:"Quantum Skull", maker:"Pindar Van Arman / Russell Huffman", type:"work", cat:"medium", url:"https://www.katevassgalerie.com/blog/quantum-art" },
+  { name:"WE FELT A STAR DYING", maker:"Laure Prouvost × LAS", type:"work", cat:"medium", url:"https://www.las-art.foundation/programme/sensing-quantum" },
+  { name:"Future World / Flowers and People", maker:"teamLab", type:"work", cat:"phenomenology", url:"https://www.teamlab.art/en/e/artsciencemuseum/" },
+  { name:"Spooky Action (at a Distance) II", maker:"Strangeweather Movement Group", type:"work", cat:"phenomenology", url:"https://www.youtube.com/watch?v=5elDYCc1Aj0" },
+  { name:"Sketch Aquarium", maker:"teamLab", type:"work", cat:"phenomenology", url:"https://www.teamlab.art/en/e/artsciencemuseum/" },
+  { name:"Quantum Visions", maker:"Arts at CERN (11 artists)", type:"work", cat:"ontology", url:"https://arts.cern/exhibition/quantum-visions/" },
+  { name:"entangled binary network / NO MATTER", maker:"Joan Heemskerk", type:"work", cat:"ontology", url:"https://home.cern/news/news/knowledge-sharing/arts-cern-artists-showcased-copenhagen" },
+  { name:"Polymorphic sculpture", maker:"Yunchul Kim", type:"work", cat:"ontology", url:"https://arts.cern/exhibition/quantum-visions/" },
+  { name:"Reality Lost / Spooky Action (documentary)", maker:"CQT / NUS Singapore", type:"work", cat:"epistemology", url:"https://www.quantumlah.org" },
+  { name:"Adventures in Quantumland", maker:"Omar Costa Hamido", type:"work", cat:"epistemology", url:"https://www.quantumland.art/" },
+  { name:"SMALL VOID", maker:"Alice Bucknell", type:"work", cat:"political", url:"https://arts.cern/commission/small-void/" },
+  { name:"Black Quantum Futurism", maker:"Camae Ayewa + Rasheedah Phillips", type:"work", cat:"political", url:"https://blackquantumfuturism.com" },
+  { name:"Sensing Quantum", maker:"LAS Art Foundation", type:"programme", cat:"epistemology", url:"https://www.las-art.foundation/explore/sensing-quantum" },
+  { name:"Sensing Quantum Symposium", maker:"LAS Art Foundation", type:"programme", cat:"epistemology", url:"https://www.las-art.foundation/programme/sensing-quantum-symposium" },
+  { name:"Arts at CERN Podcast", maker:"Arts at CERN", type:"programme", cat:"epistemology", url:"https://arts.cern/arts-at-cern-podcast/" },
+  { name:"QuantArt Bridge", maker:"NCCR SPIN", type:"programme", cat:"political", url:"https://www.nccr-spin.ch/quantart-bridge" },
+  { name:"Artist in Residence Program", maker:"Yale Quantum Institute", type:"programme", cat:"epistemology", url:"https://art.quantuminstitute.yale.edu/Artists-in-Residence-Program.html" },
+  { name:"Arts at CERN", maker:"CERN", type:"institution", cat:"epistemology", url:"https://arts.cern" },
+  { name:"LAS Art Foundation", maker:"Light Art Space, Berlin", type:"institution", cat:"epistemology", url:"https://www.las-art.foundation" },
+  { name:"ArtScience Museum", maker:"Marina Bay Sands, Singapore", type:"institution", cat:"phenomenology", url:"https://www.marinabaysands.com/museum" },
+  { name:"Quantum Manifesto (2016)", maker:"Tommaso Calarco et al.", type:"text", cat:"political", url:"https://qt.eu/media/pdf/93056_Quantum-Manifesto_WEB.pdf" },
+  { name:"How Art Went Quantum", maker:"Günseli Yalcinkaya, ArtReview", type:"text", cat:"epistemology", url:"https://artreview.com/how-art-went-quantum-laure-prouvost-las-foundation-cern-ai-opinion-gunseli-yalcinkaya/" },
+  { name:"Meeting the Universe Halfway", maker:"Karen Barad", type:"text", cat:"ontology", url:"https://www.dukeupress.edu/meeting-the-universe-halfway" },
+  { name:"How the Hippies Saved Physics", maker:"David Kaiser", type:"text", cat:"political", url:"https://wwnorton.com/books/how-the-hippies-saved-physics/" },
+  { name:"Tao of Physics", maker:"Fritjof Capra", type:"text", cat:"metaphor", url:"https://fritjofcapra.net/the-tao-of-physics/" },
+];
+
+const catLabel = {
+  metaphor:"อุปมา", medium:"สื่อกลาง", phenomenology:"ปรากฏการณ์วิทยา",
+  ontology:"ภววิทยา", epistemology:"ญาณวิทยา", political:"การเมือง"
+};
+const catColors = {
+  metaphor:"#38D4C8", medium:"#C8F547", phenomenology:"#E040A0",
+  ontology:"#F5934A", epistemology:"#A78BFA", political:"#F87171"
+};
+
+function buildRefs(data){
+  const tbody = document.getElementById('refBody');
+  tbody.innerHTML = data.map(r=>`
+    <tr>
+      <td>${r.name}</td>
+      <td style="color:var(--muted)">${r.maker}</td>
+      <td><span class="ref-tag">${r.type}</span></td>
+      <td><span class="ref-tag" style="color:${catColors[r.cat]||'var(--muted)'};border-color:${catColors[r.cat]||'var(--line)'}">${catLabel[r.cat]||r.cat}</span></td>
+      <td><a class="ref-link" href="${r.url}" target="_blank">→ เปิด</a></td>
+    </tr>
+  `).join('');
+}
+buildRefs(refs);
+
+function filterRefs(){
+  const q = document.getElementById('refSearch').value.toLowerCase();
+  const cat = document.getElementById('refCat').value;
+  const filtered = refs.filter(r=>{
+    const matchQ = !q || (r.name+r.maker).toLowerCase().includes(q);
+    const matchCat = cat==='all' || r.type===cat;
+    return matchQ && matchCat;
+  });
+  buildRefs(filtered);
+}
+
+/* ── Taxonomy filter ──────────────────────────────────────────────────────── */
+function filterTax(cat, btn){
+  document.querySelectorAll('.filter-chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#taxGrid .t-card').forEach(card=>{
+    card.style.display = (cat==='all' || card.dataset.cat===cat) ? '' : 'none';
+  });
+}
+
+/* ── Card toggle ──────────────────────────────────────────────────────────── */
+function toggleCard(card){
+  const wasOpen = card.classList.contains('open');
+  document.querySelectorAll('.t-card.open').forEach(c=>c.classList.remove('open'));
+  if(!wasOpen) card.classList.add('open');
+}
+
+/* ── Nav active highlight ─────────────────────────────────────────────────── */
+const sections = document.querySelectorAll('section[id]');
+const navPills = document.querySelectorAll('.nav-pill');
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navPills.forEach(a=>{
+        const active = a.getAttribute('href')==='#'+e.target.id;
+        a.style.borderColor = active ? 'var(--c1)' : '';
+        a.style.color = active ? 'var(--c1)' : '';
+      });
+    }
+  });
+},{threshold:0.35});
+sections.forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
