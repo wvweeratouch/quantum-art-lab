@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ภูมิทัศน์ศิลปะควอนตัม (Quantum Art Landscape)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<style>
+  :root{
+    --bg:#08111f; --panel:#101b33; --panel2:#0e1730; --line:#26365e;
+    --text:#eaf0ff; --muted:#a8b6da; --accent:#7fb0ff; --accent2:#9ce6c7;
+    --warn:#ffd27f; --shadow:0 16px 40px rgba(0,0,0,.28); --radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:"Noto Sans Thai","Sarabun",Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    background:
+      radial-gradient(circle at top left, rgba(127,176,255,.12), transparent 25%),
+      radial-gradient(circle at bottom right, rgba(156,230,199,.10), transparent 30%),
+      var(--bg);
+    color:var(--text); line-height:1.7;
+  }
+  a{color:var(--accent)}
+  .wrap{max-width:1500px;margin:0 auto;padding:24px}
+  header{
+    background:linear-gradient(135deg, rgba(16,27,51,.95), rgba(12,19,38,.95));
+    border:1px solid var(--line); border-radius:24px; padding:28px; box-shadow:var(--shadow);
+  }
+  h1{margin:0 0 8px;font-size:clamp(26px,4vw,42px);line-height:1.25}
+  .sub{color:var(--muted);max-width:1100px;margin:0}
+  .hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:18px}
+  .stat{background:rgba(8,17,31,.45);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+  .stat b{display:block;font-size:26px;margin-bottom:2px}
+  .stat span{color:var(--muted);font-size:13px}
+  .toolbar{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:18px 0 22px}
+  select,input,button{
+    width:100%;border-radius:12px;border:1px solid var(--line);background:var(--panel);
+    color:var(--text);padding:12px 14px;font-size:14px;outline:none;font-family:inherit;
+  }
+  button{cursor:pointer;background:linear-gradient(135deg, rgba(127,176,255,.2), rgba(156,230,199,.15))}
+  button:hover, select:hover, input:hover{border-color:#3b548f}
+  section{
+    margin-top:22px;background:rgba(16,27,51,.72);border:1px solid var(--line);
+    border-radius:24px;padding:20px;box-shadow:var(--shadow);
+  }
+  .section-title{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+  .section-title h2{margin:0;font-size:21px}
+  .section-title p{margin:0;color:var(--muted);max-width:900px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px}
+  .card{
+    background:linear-gradient(180deg, rgba(14,23,48,.95), rgba(12,19,38,.95));
+    border:1px solid var(--line);border-radius:18px;padding:16px;min-height:230px;
+  }
+  .tag{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;margin:0 6px 10px 0;
+    background:rgba(127,176,255,.15);color:#d9e6ff;border:1px solid rgba(127,176,255,.3)}
+  .tag2{background:rgba(156,230,199,.13);border-color:rgba(156,230,199,.28);color:#dffcf1}
+  .tag3{background:rgba(255,210,127,.13);border-color:rgba(255,210,127,.28);color:#fff0cc}
+  .tag4{background:rgba(255,140,140,.13);border-color:rgba(255,140,140,.28);color:#ffd9d9}
+  .card h3{margin:0 0 8px;font-size:18px;line-height:1.35}
+  .card p{margin:7px 0;color:#d5def6;font-size:14px}
+  .meta{color:var(--muted);font-size:13px}
+  .table-wrap{overflow:auto;border-radius:18px;border:1px solid var(--line)}
+  table{border-collapse:collapse;width:100%;min-width:1400px;background:rgba(8,17,31,.45)}
+  th,td{padding:12px 10px;border-bottom:1px solid rgba(38,54,94,.8);vertical-align:top;text-align:left;font-size:13px}
+  th{position:sticky;top:0;background:#13203c;z-index:1;color:#fff;font-size:12px;letter-spacing:.02em}
+  tr:hover td{background:rgba(127,176,255,.05)}
+  .hidden{display:none !important}
+  .notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  .note{background:rgba(8,17,31,.34);border:1px solid var(--line);border-radius:16px;padding:16px}
+  .note h4{margin:0 0 8px;font-size:16px}
+  .note p{margin:0;color:#d5def6;font-size:14px}
+  .pillrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .pill{padding:6px 10px;border-radius:999px;background:rgba(127,176,255,.10);
+    border:1px solid rgba(127,176,255,.22);color:#dfe9ff;font-size:12px}
+  footer{margin:18px 0 6px;color:var(--muted);font-size:12px;text-align:center}
+  .quote{border-left:3px solid var(--accent2);padding-left:12px;color:#eef6ff;margin-top:10px;font-size:13px;font-style:italic}
+  .diagram-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+  .diagram-tab{padding:8px 14px;border-radius:999px;border:1px solid var(--line);
+    background:var(--panel);color:var(--muted);cursor:pointer;font-size:13px}
+  .diagram-tab.active{background:linear-gradient(135deg, rgba(127,176,255,.25), rgba(156,230,199,.18));color:#fff;border-color:var(--accent)}
+  .diagram-panel{background:rgba(8,17,31,.55);border:1px solid var(--line);border-radius:18px;padding:18px;overflow:auto}
+  .diagram-panel.hidden{display:none}
+  .mermaid{display:flex;justify-content:center}
+  .institution-block{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .institution-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .institution-block h3{margin:0 0 6px;font-size:18px;color:var(--accent2)}
+  .institution-block p{margin:4px 0;color:#d5def6;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>ภูมิทัศน์ศิลปะควอนตัม<br><span style="font-size:.55em;color:var(--muted);font-weight:400">Quantum Art Landscape — สังเคราะห์จากเอกสารวิจัยทั้งหมดในแชทนี้</span></h1>
+    <p class="sub">
+      หน้านี้รวบรวมและจัดระบบงานศิลปะ โครงการ สถาบัน และศิลปินที่ใช้แนวคิดควอนตัมฟิสิกส์ — ทั้งในฐานะอุปมา (metaphor) วิธีการผลิตงาน (method) สื่อกลาง (medium) กรอบสถาบัน (institutional framework) และเครื่องมือแปลความรู้สู่สาธารณะ (translation) — โดยจัดกลุ่มตามตรรกะที่แต่ละชิ้นงาน "ใช้ควอนตัมเพื่ออะไร" ไม่ใช่แค่ว่า "หน้าตาเหมือนควอนตัมหรือไม่"
+    </p>
+    <div class="hero-grid">
+      <div class="stat"><b>26+</b><span>ผลงาน/โครงการ/ศิลปินที่รวบรวม</span></div>
+      <div class="stat"><b>12</b><span>กลุ่มแนวทาง (categories)</span></div>
+      <div class="stat"><b>7</b><span>สถาบัน/แพลตฟอร์มหลัก</span></div>
+      <div class="stat"><b>3</b><span>ชั้นการอ่าน documentation</span></div>
+      <div class="stat"><b>1</b><span>คำถามร่วม: ความจริงไม่แน่นอนแล้วเราจะออกแบบโลกอย่างไร</span></div>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <select id="filterCategory"><option value="all">ทุกกลุ่มแนวทาง</option></select>
+    <select id="filterInstitution"><option value="all">ทุกสถาบัน/ศิลปิน</option></select>
+    <input id="searchBox" type="text" placeholder="ค้นหาชื่องาน คำพูด แนวคิด..." />
+    <button id="resetBtn">ล้างตัวกรอง</button>
+  </div>
+
+  <section>
+    <div class="section-title">
+      <div>
+        <h2>แผนภาพ</h2>
+        <p>ต้นไม้อนุกรมวิธาน (taxonomy) ของวิธีที่ศิลปะใช้แนวคิดควอนตัม และผังเปรียบเทียบการไหลจากแนวคิดควอนตัม → กลไก → การรับรู้ใหม่ของผู้ชม</p>
+      </div>
+    </div>
+    <div class="diagram-tabs">
+      <div class="diagram-tab active" data-target="diagram-taxonomy">ต้นไม้อนุกรมวิธาน</div>
+      <div class="diagram-tab" data-target="diagram-flow">ผังเปรียบเทียบ (แนวคิด → กลไก → การรับรู้)</div>
+      <div class="diagram-tab" data-target="diagram-reading">ชั้นการอ่าน documentation</div>
+    </div>
+
+    <div id="diagram-taxonomy" class="diagram-panel">
+      <pre class="mermaid">
+mindmap
+  root((ศิลปะควอนตัม))
+    1 ปรากฏการณ์วิทยา
+      Quantum Phenomenology
+        Julian Voss-Andreae
+        Pradissitto
+    2 การสร้างโลกใหม่
+      Quantum World-building
+        Quantum Visions ⟮Arts at CERN⟯
+        entangled binary network ⟮Heemskerk⟯
+        Future World ⟮ArtScience+teamLab⟯
+    3 ระบบปฏิสัมพันธ์
+      Interactive Systems
+        Sketch Aquarium ⟮teamLab⟯
+        SMALL VOID ⟮Bucknell⟯
+        Lozano-Hemmer participatory works
+    4 ควอนตัมเป็นสื่อกลาง
+      Quantum-computing as medium
+        Ent- ⟮Libby Heaney⟯
+        Quantum Drawings ⟮David Young⟯
+    5 ลูกผสมควอนตัม-AI
+      Quantum-AI hybrid
+        Quantum Skull
+        QC-PAINT
+    6 วิจัยนำศิลปะ
+      Research-led practice
+        Adventures in Quantumland
+    7 การแสดง-ญาณวิทยา
+      Performance epistemology
+        Reality Lost
+        Spooky Action II ⟮Strangeweather⟯
+    8 สถาบันแปลความรู้
+      Translational residency
+        Yale Quantum Institute
+        NCCR SPIN QuantArt Bridge
+        LAS Sensing Quantum
+    9 บทสนทนาสถาบัน
+      Institutional dialogue
+        Arts at CERN Podcast
+    10 ปรากฏการณ์เชิงประติมากรรม
+      Sculptural phenomenology
+        Antony Gormley
+    11 สุนทรียะข้อมูล-ฟิสิกส์
+      Data and physics aesthetics
+        Ryoji Ikeda
+        Refik Anadol
+    12 ภววิทยาเชิงเก็งกำไร-ชีวะดิจิทัล
+      Bio-digital speculative ontology
+        Anicka Yi
+        Lynn Hershman Leeson
+      </pre>
+    </div>
+
+    <div id="diagram-flow" class="diagram-panel hidden">
+      <pre class="mermaid">
+flowchart LR
+  Q[แนวคิดควอนตัม] --> M1[Observer effect /
+ความเป็นคู่]
+  Q --> M2[Entanglement
+ความพัวพัน]
+  Q --> M3[Superposition /
+ความเป็นไปได้หลายแบบ]
+  Q --> M4[Quantum computing
+เป็นเครื่องมือผลิต]
+  Q --> M5[ข้อจำกัดของการวัด /
+ความรู้]
+
+  M1 --> P1[ปรากฏการณ์วิทยา]
+  P1 --> E1[ร่างกาย/วัตถุไม่เสถียร
+รูปทรงเกิดจากความสัมพันธ์]
+
+  M2 --> P2[ระบบปฏิสัมพันธ์ +
+การแสดง-ญาณวิทยา]
+  P2 --> E2[ความสัมพันธ์แบบเรียลไทม์
+ระหว่างผู้แสดง/ผู้ชม/ระบบ]
+
+  M3 --> P3[ควอนตัมเป็นสื่อกลาง]
+  P3 --> E3[ตัวตนที่ไม่เสถียร
+หลุดจากตรรกะ binary]
+
+  M4 --> P4[ลูกผสมควอนตัม-AI /
+วิจัยนำศิลปะ]
+  P4 --> E4[ภาพที่เกิดจากกระบวนการคำนวณ
+ไม่ใช่จากมือเพียงอย่างเดียว]
+
+  M5 --> P5[บทสนทนาสถาบัน /
+สถาบันแปลความรู้]
+  P5 --> E5[ควอนตัมเป็นกรอบตั้งคำถาม
+ไม่ใช่คำตอบสำเร็จรูป]
+
+  P1 & P2 & P3 & P4 & P5 --> T{ผลลัพธ์ร่วม}
+  T --> O1[ความจริงไม่ใช่ของตายตัว]
+  T --> O2[การมองคือการมีส่วนร่วม]
+  T --> O3[ความสัมพันธ์กลายเป็นวัสดุหลัก]
+  T --> O4[โลกสามารถออกแบบใหม่ได้]
+      </pre>
+    </div>
+
+    <div id="diagram-reading" class="diagram-panel hidden">
+      <pre class="mermaid">
+flowchart TD
+  A[ชั้นที่ 1: สถาบัน/โครงการ
+ประกาศเจตนารมณ์อะไร] --> B[ชั้นที่ 2: Artist statement /
+interview / podcast / booklet
+ศิลปินอธิบายวิธีคิดอย่างไร]
+  B --> C[ชั้นที่ 3: คู่มือ/หน้าผลงาน
+งานตอบสนองผู้ชมแบบไหนในเชิงกลไก]
+  C --> D{สิ่งที่ค้นพบร่วมกัน}
+  D --> D1[ความรู้เกิดจากการมีส่วนร่วม
+ไม่ใช่การมองจากภายนอกอย่างเดียว]
+  D --> D2[ผู้ชมเป็นตัวแปรในระบบ
+ไม่ใช่ผู้ดูเฉยๆ]
+  D --> D3[ควอนตัมเป็นวิธีคิดเรื่องเวลา
+พื้นที่ ความสัมพันธ์ ความไม่แน่นอน]
+  D --> D4[งานศิลปะเป็นห้องทดลองญาณวิทยา
+การรับรู้เองก็ออกแบบได้]
+      </pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <div>
+        <h2>ภาพรวมผลงาน/โครงการ</h2>
+        <p>ใช้ตัวกรองด้านบนเพื่อเปรียบเทียบกลุ่มแนวทาง สถาบัน และกลไกควอนตัมที่แต่ละงานใช้</p>
+      </div>
+    </div>
+    <div id="cards" class="cards"></div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <div>
+        <h2>ตารางเปรียบเทียบฉบับเต็ม</h2>
+        <p>คอลัมน์ครบ: งาน / สถาบัน-ศิลปิน / กลุ่มแนวทาง / กลไก / การใช้ควอนตัม / ผลต่อการรับรู้ / quote / แหล่งอ้างอิง</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table id="matrix">
+        <thead>
+          <tr>
+            <th>งาน/โครงการ</th><th>สถาบัน/ศิลปิน</th><th>กลุ่มแนวทาง</th>
+            <th>กลไก</th><th>การใช้ควอนตัม</th><th>ผลต่อการรับรู้</th>
+            <th>Direct quote</th><th>URL/แหล่งที่มา</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <div>
+        <h2>โมเดลสถาบัน 3 แบบ (จากการอ่าน documentation)</h2>
+        <p>สรุปจากการอ่านเอกสารสถาบัน/ศิลปินใน 3 ชั้น: เจตนารมณ์สถาบัน → คำอธิบายศิลปิน → กลไกการตอบสนองของงาน</p>
+      </div>
+    </div>
+    <div class="institution-block">
+      <h3>Arts at CERN — โมเดลบทสนทนาวิจัย (dialogic research model)</h3>
+      <p>ใช้ quantum เป็น <b>research language</b> มากกว่าธีมภาพลักษณ์ เน้นบทสนทนาระหว่างศิลปินกับนักฟิสิกส์ การทำงานร่วมกับแล็บจริง เช่น <i>Quantum Visions</i>, <i>SMALL VOID</i> ของ Alice Bucknell, และ <i>entangled binary network</i> ของ Joan Heemskerk</p>
+      <p class="quote">"brings together artists and physicists ... to shed light on some of the themes that inspire their work"</p>
+    </div>
+    <div class="institution-block">
+      <h3>LAS Art Foundation — โมเดลเก็งกำไรเชิงสถาบัน (institutional speculation model)</h3>
+      <p>ทำให้ quantum computing เป็น <b>platform for inquiry</b> ผ่าน commission, symposium, publication และ learning program เช่น <i>Sensing Quantum</i> และ <i>Ent-</i> ของ Libby Heaney ที่ใช้ Qiskit/IBM quantum hardware จริงเป็นสื่อ</p>
+      <p class="quote">"transform equations into emotions and data into wonder" (NCCR SPIN — แนวเดียวกัน)</p>
+    </div>
+    <div class="institution-block">
+      <h3>ArtScience Museum / teamLab — โมเดลปฏิสัมพันธ์เชิงร่างกาย (embodied interactive model)</h3>
+      <p>ทำให้ผู้ชมเรียนรู้โลกผ่านการเข้าไปมีผลต่อระบบจริง เช่น <i>Future World</i>, <i>Flowers and People, Cannot be Controlled but Live Together</i>, <i>Sketch Aquarium</i> — โลกในงานเปลี่ยนตามการกระทำของผู้ชมแบบ real-time rendering ที่ไม่ซ้ำสถานะเดิม</p>
+      <p class="quote">"The interaction of viewers causes the flowers to shed their petals all at once ... or come to life and blossom again"</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <div>
+        <h2>12 กลุ่มแนวทาง (interpretive clusters)</h2>
+        <p>สังเคราะห์จากเอกสารทั้งหมด — รวมกลุ่มเดิม 3 กลุ่ม (phenomenology / world-building / system-interaction) กับกลุ่มใหม่ที่ค้นพบเพิ่มอีก 9 กลุ่ม</p>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><h4>1) Quantum Phenomenology</h4>
+        <p>แปลงปรากฏการณ์ควอนตัมเป็นประสบการณ์ผัสสะ ผ่านมุมมอง การเคลื่อนที่ และการปรากฏ-จางหายของรูปทรง</p>
+        <div class="pillrow"><span class="pill">Julian Voss-Andreae</span><span class="pill">Pradissitto</span></div>
+      </div>
+      <div class="note"><h4>2) Quantum World-building</h4>
+        <p>ศิลปะก้าวพ้นการจำลองปรากฏการณ์ไปสู่การสร้างระบบ/โลกที่มีกฎเฉพาะตัว ผู้ชมเข้าไปอาศัยอยู่ในนั้น</p>
+        <div class="pillrow"><span class="pill">Quantum Visions / CERN</span><span class="pill">ArtScience + teamLab</span></div>
+      </div>
+      <div class="note"><h4>3) Interactive / Responsive Systems</h4>
+        <p>ผู้ชมเป็นตัวแปรของระบบโดยตรง ผ่านเซนเซอร์ กล้อง การจับความเคลื่อนไหว และ feedback loop</p>
+        <div class="pillrow"><span class="pill">SMALL VOID</span><span class="pill">Rafael Lozano-Hemmer</span><span class="pill">Sketch Aquarium</span></div>
+      </div>
+      <div class="note"><h4>4) Quantum-computing as Medium</h4>
+        <p>ใช้ quantum computer จริงเป็นวัสดุ/เครื่องมือผลิตงาน ไม่ใช่แค่แรงบันดาลใจ</p>
+        <div class="pillrow"><span class="pill">Libby Heaney / Ent-</span></div>
+      </div>
+      <div class="note"><h4>5) Quantum-inspired Generative Art</h4>
+        <p>ใช้ผลลัพธ์จาก quantum computer เป็น generative engine แล้วประมวลผลต่อด้วยโค้ดเฉพาะตัว</p>
+        <div class="pillrow"><span class="pill">David Young / Quantum Drawings</span></div>
+      </div>
+      <div class="note"><h4>6) Quantum-AI Hybrid</h4>
+        <p>ผสาน quantum computing กับ AI ในกระบวนการผลิตภาพ เน้น machine-based aesthetic logic</p>
+        <div class="pillrow"><span class="pill">Quantum Skull</span><span class="pill">QC-PAINT</span></div>
+      </div>
+      <div class="note"><h4>7) Research-led / Artist-Scholar Practice</h4>
+        <p>งานที่มาจาก dissertation, papers, software — quantum เป็นฐานวิจัยเชิงศิลปะ</p>
+        <div class="pillrow"><span class="pill">Adventures in Quantumland</span></div>
+      </div>
+      <div class="note"><h4>8) Performance / Choreographic Epistemology</h4>
+        <p>ใช้การเต้น เสียง และการด้นสดเป็นภาษาสำรวจความสัมพันธ์แบบควอนตัม มากกว่าใช้เทคโนโลยีคำนวณ</p>
+        <div class="pillrow"><span class="pill">Reality Lost</span><span class="pill">Spooky Action II / Strangeweather</span></div>
+      </div>
+      <div class="note"><h4>9) Translational Residency / Mediation</h4>
+        <p>สถาบันแปลงานวิจัยทางวิทยาศาสตร์ให้เป็นประสบการณ์สาธารณะ ผ่าน residency, talks, public scholarship</p>
+        <div class="pillrow"><span class="pill">Yale Quantum Institute</span><span class="pill">NCCR SPIN</span></div>
+      </div>
+      <div class="note"><h4>10) Institutional Dialogue</h4>
+        <p>บทสนทนาเปิดระหว่างศิลปินกับนักฟิสิกส์ ใช้ quantum เป็นกรอบตั้งคำถามมากกว่าให้คำตอบ</p>
+        <div class="pillrow"><span class="pill">Arts at CERN Podcast</span></div>
+      </div>
+      <div class="note"><h4>11) Sculptural Phenomenology</h4>
+        <p>เน้นร่างกาย การรับรู้ และที่ว่างเป็นตัวสร้างความหมาย งานทำงานจริงเมื่อผู้ชมเข้าไปอยู่ในสนามของมัน</p>
+        <div class="pillrow"><span class="pill">Antony Gormley</span></div>
+      </div>
+      <div class="note"><h4>12) Data/Physics Aesthetics &amp; Bio-digital Speculative Ontology</h4>
+        <p>แปลงสมการ ข้อมูล แสง เสียง หรือชีววิทยาเชิงคำนวณให้กลายเป็นประสบการณ์ multisensory และภววิทยาเชิงเก็งกำไร</p>
+        <div class="pillrow"><span class="pill">Ryoji Ikeda</span><span class="pill">Refik Anadol</span><span class="pill">Anicka Yi</span><span class="pill">Lynn Hershman Leeson</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <div>
+        <h2>ความเข้าใจใหม่ที่เกิดขึ้น (epistemic & perceptual shift)</h2>
+        <p>สรุปจากเอกสาร "ขยายความการออกแบบระบบและโลกใหม่"</p>
+      </div>
+    </div>
+    <div class="notes">
+      <div class="note"><h4>1. ความจริงไม่ใช่ของตายตัว</h4>
+        <p>ความจริงเกิดจากบริบท การมีส่วนร่วม และการสังเกต ไม่ใช่สิ่งที่ตั้งอยู่โดดๆ ก่อนการวัด</p></div>
+      <div class="note"><h4>2. การมองคือการมีส่วนร่วม</h4>
+        <p>ผู้ชมไม่เป็นกลาง การมองของตนเปลี่ยนงานจริง เกิดความรับผิดชอบใหม่ต่อการรับรู้</p></div>
+      <div class="note"><h4>3. โลกสามารถออกแบบใหม่ได้</h4>
+        <p>เปลี่ยนจาก "representing reality" ไปเป็น "designing conditions for reality" — เวลาไม่ต้องเป็นเส้นตรง แรงโน้มถ่วงไม่ต้องคงที่</p></div>
+      <div class="note"><h4>4. ความสัมพันธ์กลายเป็นวัสดุหลัก</h4>
+        <p>วัสดุของงานไม่ใช่แค่เหล็ก แสง หรือโค้ด แต่คือความสัมพันธ์ระหว่างองค์ประกอบทั้งหมด — งานเป็นสนามของการเกิดร่วม</p></div>
+    </div>
+  </section>
+
+  <footer>
+    สังเคราะห์จากเอกสารวิจัย 7 ฉบับในแชทนี้ (Arts at CERN, LAS Art Foundation, ArtScience Museum/teamLab, Strangeweather/Spooky Action II, แผนผังศิลปินเพิ่มเติม, การขยายความระบบ-โลกใหม่, ศิลปะดิจิทัลควอนตัมนอกสามสถาบันหลัก) — ไฟล์นี้บันทึกเป็น HTML เดี่ยว เปิดออฟไลน์ได้
+  </footer>
+</div>
+
+<script>
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+
+document.querySelectorAll('.diagram-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.diagram-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.diagram-panel').forEach(p=>p.classList.add('hidden'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.target).classList.remove('hidden');
+    window.dispatchEvent(new Event('resize'));
+  });
+});
+
+const data = [
+  { work:"Quantum Man", institution:"Julian Voss-Andreae (อิสระ)", category:"Quantum Phenomenology",
+    mechanism:"ประติมากรรมแผ่นโลหะ; เปลี่ยนตามมุมมอง",
+    quantum:"Observer effect; ความเป็นคู่ของคลื่น-อนุภาค",
+    effect:"ร่างกายกลายเป็นภาวะที่เปลี่ยนตามมุมผู้ชม รูปทรงไม่อยู่คงที่ในวัตถุ",
+    quote:"'A human being seen as a quantum object.'",
+    source:"https://julianvossandreae.com/works/quantum-sculptures-quantum-man/", label:"Voss-Andreae" },
+
+  { work:"Quantum Art (practice)", institution:"Pradissitto (อิสระ)", category:"Quantum Phenomenology",
+    mechanism:"วัสดุ; แสง; ความขัดแย้งเชิงทัศนะ",
+    quantum:"ความเป็นคู่; การเปลี่ยนแปลงจากผู้สังเกต",
+    effect:"สสารกลายเป็นความสัมพันธ์ที่ไม่เสถียร",
+    quote:"'As a Physicist and Artist my work is about metaphors.'",
+    source:"https://www.pradissitto.com/quantum-art-what-does-it-mean", label:"Pradissitto" },
+
+  { work:"Arts at CERN Podcast", institution:"Arts at CERN", category:"Institutional Dialogue",
+    mechanism:"พอดแคสต์บทสนทนาศิลปิน-นักฟิสิกส์",
+    quantum:"กรอบตั้งคำถามเรื่อง time, space, invisibility, language, limits of knowledge",
+    effect:"ควอนตัมเป็นวิธีตั้งคำถามมากกว่าเนื้อหาสำเร็จรูป",
+    quote:"'brings together artists and physicists ... to shed light on some of the themes that inspire their work.'",
+    source:"https://arts.cern/arts-at-cern-podcast/", label:"Arts at CERN" },
+
+  { work:"Quantum Visions", institution:"Arts at CERN", category:"Quantum World-building",
+    mechanism:"นิทรรศการ 11 ศิลปิน; residency framing",
+    quantum:"ความจริงที่ arbitrary; หลายมุมมองพร้อมกัน",
+    effect:"ความจริงพหุ ไม่ใช่ความจริงเดี่ยว",
+    quote:"'The exhibition brings together eleven artists whose works are based on the idea that reality is, to a large extent, arbitrary.'",
+    source:"https://arts.cern/exhibition/quantum-visions/", label:"Arts at CERN" },
+
+  { work:"SMALL VOID", institution:"Alice Bucknell @ Arts at CERN", category:"Interactive Systems",
+    mechanism:"เกมสองผู้เล่น; call-and-response; haptics",
+    quantum:"Entanglement; หลุมดำ",
+    effect:"อินเทอร์เฟซเชิงอารมณ์; ความร่วมมือแบบไม่ใช้คำพูด",
+    quote:"'the game's mechanics are inspired by the paradoxes of black holes and quantum entanglement.'",
+    source:"https://arts.cern/commission/small-void/", label:"Bucknell / CERN" },
+
+  { work:"entangled binary network / NO MATTER", institution:"Joan Heemskerk @ Arts at CERN", category:"Quantum World-building",
+    mechanism:"ติดตั้ง; วิดีโอ; computer vision",
+    quantum:"เครือข่ายควอนตัม; สนามพัวพัน",
+    effect:"ภาษาข้ามกาแล็กซีและรูปแบบชีวิต",
+    quote:"'two entangled fields ... exchange the phrase within a speculative quantum internet network.'",
+    source:"https://home.cern/news/news/knowledge-sharing/arts-cern-artists-showcased-copenhagen", label:"Heemskerk / CERN" },
+
+  { work:"Future World", institution:"ArtScience Museum + teamLab", category:"Quantum World-building",
+    mechanism:"ติดตั้งแบบ immersive; ภาพ generative แบบเรียลไทม์",
+    quantum:"สถานะไม่คงที่; การมีส่วนร่วมของผู้สังเกต",
+    effect:"ผู้ชมเป็นตัวแปรในสภาพแวดล้อมที่มีชีวิต",
+    quote:"'The interaction of viewers causes the flowers to shed their petals all at once ... or come to life and blossom again.'",
+    source:"https://www.timeout.com/singapore/art/artscience-museums-permanent-exhibition-future-world", label:"ArtScience/teamLab" },
+
+  { work:"Sketch Aquarium", institution:"teamLab @ ArtScience Museum", category:"Interactive Systems",
+    mechanism:"วาดภาพ; สแกน; แอนิเมชันเรียลไทม์",
+    quantum:"การร่วมสร้าง; การเกิดขึ้นใหม่ (emergence)",
+    effect:"ผู้ชมสร้างสิ่งมีชีวิตในระบบที่ตนเป็นส่วนหนึ่ง",
+    quote:"'you sketch your own sea creature and then you scan it into the aquarium.'",
+    source:"https://www.teamlab.art/en/e/artsciencemuseum/", label:"teamLab" },
+
+  { work:"Reality Lost / Spooky Action", institution:"CQT / NUS, Singapore", category:"Performance Epistemology",
+    mechanism:"สารคดี; นักวิทยาศาสตร์บนจอ; การเต้น",
+    quantum:"การวัด; ความจริงเชิงภาวะวิสัย; ความพัวพัน",
+    effect:"ความจริงกลายเป็นปัญหา ไม่ใช่สิ่งที่ให้มาเฉยๆ",
+    quote:"'Objective reality had to go. Was it regained?'",
+    source:"user-provided synopsis", label:"Reality Lost" },
+
+  { work:"Spooky Action (at a Distance) II", institution:"Strangeweather Movement Group + Andy Yang", category:"Performance Epistemology",
+    mechanism:"การเต้นด้นสด; sound installation; site-specific ที่ ArtScience Museum Lobby",
+    quantum:"Entanglement เป็น conceptual scaffold มากกว่าการจำลองฟิสิกส์ตรงๆ",
+    effect:"ความไม่แน่นอนเป็นโครงสร้างของงาน ไม่ใช่ปัญหาที่ต้องแก้; relation as event",
+    quote:"'considers the theory of quantum entanglement, puts it on the backburner ... creates an off-kilter dance performance of impolite improvisation scores and congruent choreography.'",
+    source:"https://www.youtube.com/watch?v=5elDYCc1Aj0", label:"Strangeweather" },
+
+  { work:"Ent-", institution:"Libby Heaney @ LAS Art Foundation", category:"Quantum-computing as Medium",
+    mechanism:"360-องศา immersive; Qiskit, IBM quantum hardware จริง",
+    quantum:"Superposition; ความพหุนอกกรอบ binary",
+    effect:"ตัวตนที่ไม่เสถียร; 'hybrid organisms, breathing landscapes and exploding structures'",
+    quote:"'taking quantum computing as both medium and subject matter.'",
+    source:"https://www.las-art.foundation/programme/ent", label:"Heaney / LAS" },
+
+  { work:"Sensing Quantum (program)", institution:"LAS Art Foundation", category:"Translational Residency",
+    mechanism:"commission, symposium, publication, learning program",
+    quantum:"quantum computing เป็น platform for inquiry ไม่ใช่แค่เทคโนโลยี",
+    effect:"ผู้ชมเห็นควอนตัมเป็นวาระร่วมสมัยเชิงสังคม/จริยธรรม",
+    quote:"'Das Programm Sensing Quantum ... untersucht Auswirkungen und Möglichkeiten des Quantencomputings.'",
+    source:"https://www.las-art.foundation/explore/sensing-quantum", label:"LAS Art Foundation" },
+
+  { work:"Quantum Drawings", institution:"David Young (อิสระ)", category:"Quantum-inspired Generative Art",
+    mechanism:"IBM Quantum outputs; ประมวลผลต่อด้วยโค้ดเฉพาะตัว",
+    quantum:"quantum computing เป็น generative engine",
+    effect:"ภาพเกิดจากกระบวนการคำนวณ ไม่ใช่จากมือเพียงอย่างเดียว",
+    quote:"'using quantum computers from IBM Quantum to produce outputs ... presented as Quantum Drawings.'",
+    source:"https://www.katevassgalerie.com/blog/quantum-art", label:"David Young" },
+
+  { work:"Quantum Skull", institution:"Pindar Van Arman / Russell Huffman (อิสระ)", category:"Quantum-AI Hybrid",
+    mechanism:"qubit-to-pixel mapping; AI-generated art",
+    quantum:"qubits ถูก map เป็น pixel, color values เข้ารหัสผ่าน qubit rotations",
+    effect:"ตรรกะสุนทรียะแบบเครื่องจักร (machine-based aesthetic logic)",
+    quote:"'mapping qubits to pixels, encoding color values via qubit rotations.'",
+    source:"https://www.katevassgalerie.com/blog/quantum-art", label:"Quantum Skull" },
+
+  { work:"Quantum Transformation I, II, III", institution:"QC-PAINT (ศิลปินนานาชาติ 5 คน)", category:"Quantum-AI Hybrid",
+    mechanism:"quantum simulation re-order ภาพคลาสสิกเป็น grid segments ผ่าน particle-interaction model",
+    quantum:"quantum simulation เป็นโครงสร้างจัดองค์ประกอบภาพใหม่",
+    effect:"กึ่งกลางระหว่าง generative art กับ computational reinterpretation ของจิตรกรรมคลาสสิก",
+    quote:"'used quantum computing methods to reinterpret classical art.'",
+    source:"https://www.linkedin.com/posts/shaunaleelange_quantum-artists-quantumcomputing-activity-7393769435645251584-rW0U", label:"QC-PAINT" },
+
+  { work:"Adventures in Quantumland", institution:"Omar Costa Hamido (อิสระ/PhD)", category:"Research-led Practice",
+    mechanism:"งานวิจัย PhD; papers; software",
+    quantum:"implications ของ quantum computing สำหรับโหมดการสร้างสรรค์ใหม่",
+    effect:"โหมดศิลปิน-นักวิจัย (artist-researcher mode)",
+    quote:"'explores the implications of emerging paradigms in Quantum Computing for new modes of artistic creation.'",
+    source:"https://www.quantumland.art/", label:"Quantumland" },
+
+  { work:"QuantArt Bridge", institution:"NCCR SPIN", category:"Translational Residency",
+    mechanism:"artist residency; แปลงานวิจัยเป็นประสบการณ์ทางสายตา/สัมผัส",
+    quantum:"สะพานระหว่าง intuition, precision, creativity, science",
+    effect:"วิทยาศาสตร์ถูกแปลสู่ความหมายสาธารณะตรงไปตรงมา",
+    quote:"'transform equations into emotions and data into wonder.'",
+    source:"https://www.nccr-spin.ch/quantart-bridge", label:"NCCR SPIN" },
+
+  { work:"Artist in Residence Program", institution:"Yale Quantum Institute", category:"Translational Residency",
+    mechanism:"residency ปีละ 1 คน; public talks; visuals",
+    quantum:"ฐานความร่วมมือศิลปะ-วิทยาศาสตร์-มนุษยศาสตร์",
+    effect:"public scholarship ผ่านศิลปะ",
+    quote:"'produce quantum science-based artwork and visuals.'",
+    source:"https://art.quantuminstitute.yale.edu/Artists-in-Residence-Program.html", label:"Yale QI" },
+
+  { work:"Quantum digital art platform", institution:"quantum.art (แพลตฟอร์ม NFT)", category:"Platformized Quantum Branding",
+    mechanism:"แพลตฟอร์มคัดสรร/เผยแพร่ NFT collections",
+    quantum:"ใช้คำว่า quantum เป็นแบรนด์/ecosystem มากกว่าฟิสิกส์โดยตรง",
+    effect:"กลุ่มแยกที่ต้องระวังไม่ให้ปนกับ quantum-physics art",
+    quote:"'Quantum is the first platform focused on curating and dropping NFT collections.'",
+    source:"https://quantum.art/digital-art", label:"quantum.art" },
+
+  { work:"ประติมากรรมเชิงพื้นที่และร่างกาย", institution:"Antony Gormley (อิสระ)", category:"Sculptural Phenomenology",
+    mechanism:"ประติมากรรมที่ทำงานเมื่อผู้ชมเข้าไปอยู่ในสนามของมัน",
+    quantum:"ความสัมพันธ์ระหว่างผู้ชมกับวัตถุ มากกว่าตัววัตถุเดี่ยวๆ",
+    effect:"งานเริ่มทำงานจริงเมื่อผู้ชมเข้าไปอยู่ในสนาม ไม่ใช่ที่รูปทรงสำเร็จรูป",
+    quote:"งานเกิดจากความสัมพันธ์ระหว่างผู้ชมกับวัตถุ",
+    source:"https://www.lozano-hemmer.com/projects.php", label:"Mapping ศิลปินเพิ่มเติม" },
+
+  { work:"Supersymmetry, data-verse, Spectra", institution:"Ryoji Ikeda (อิสระ)", category:"Data/Physics Aesthetics",
+    mechanism:"ข้อมูล เสียง แสง สมการ สเกลมหึมา",
+    quantum:"ความไม่แน่นอนและความซ้อนทับเป็นประสบการณ์ multisensory",
+    effect:"แปลงคณิตศาสตร์/ฟิสิกส์ให้กลายเป็นประสบการณ์ทางผัสสะ ไม่ใช่การอธิบายวิทยาศาสตร์ตรงๆ",
+    quote:"แปลงโครงสร้างของวิทยาศาสตร์ให้กลายเป็นภาษาเชิงสุนทรียะ",
+    source:"http://www.digiart21.org/art/supersymmetry", label:"Mapping ศิลปินเพิ่มเติม" },
+
+  { work:"Kristallstimmen, Pulse Room, Third Person", institution:"Rafael Lozano-Hemmer (อิสระ)", category:"Interactive Systems",
+    mechanism:"เซนเซอร์; การมีส่วนร่วม; เสียง-แสง",
+    quantum:"ผู้ชมเป็นตัวกระตุ้นสภาวะงานแบบเรียลไทม์",
+    effect:"งานเปลี่ยนตามการปรากฏของร่างกายผู้ชม — measurement, feedback loop, co-agency",
+    quote:"ผู้ชมกลายเป็นเงื่อนไขของงานโดยตรง",
+    source:"https://www.lozano-hemmer.com/pulse_room.php", label:"Mapping ศิลปินเพิ่มเติม" },
+
+  { work:"A Shimmer Through the Quantum Foam", institution:"Anicka Yi (อิสระ)", category:"Bio-digital Speculative Ontology",
+    mechanism:"ชีวะ-เทคโนโลยี; สมมติฐานแห่งความเป็นไปได้",
+    quantum:"แนวคิด quantum foam / emptiness ขยายควอนตัมจากฟิสิกส์สู่ภาวะชีวิต",
+    effect:"worlding เชิงวิภาษ; ภาวะของการกลายรูป",
+    quote:"ผสานชีววิทยา การคำนวณ และแนวคิด quantum foam เป็น worlding เชิงวิภาษ",
+    source:"https://www.estherschipper.com/exhibitions/1221-a-shimmer-through-the-quantum-foam-anicka-yi/introduction/", label:"Mapping ศิลปินเพิ่มเติม" },
+
+  { work:"Shadow Stalker, VertiGhost", institution:"Lynn Hershman Leeson (อิสระ)", category:"Bio-digital Speculative Ontology",
+    mechanism:"identity; surveillance; AI; interactive cinema",
+    quantum:"ผู้สังเกตไม่ได้เป็นกลาง แต่เป็นส่วนหนึ่งของโครงสร้างการเกิดความจริง",
+    effect:"ความจริงในงานขึ้นกับการเฝ้าดูและความสัมพันธ์เชิงระบบ",
+    quote:"ความจริงในงานขึ้นกับการเฝ้าดู ความสัมพันธ์ และการสอดส่องเชิงระบบ",
+    source:"https://www.lynnhershman.com/project/", label:"Mapping ศิลปินเพิ่มเติม" },
+
+  { work:"Sense of Healing, Infinito", institution:"Refik Anadol (อิสระ)", category:"Data/Physics Aesthetics",
+    mechanism:"AI data sculpture; machine learning; visualization",
+    quantum:"เปลี่ยนข้อมูลขนาดใหญ่ให้เป็นสภาวะเชิงประสาทสัมผัสแบบก่อรูปโลกใหม่",
+    effect:"ข้อมูลไม่ได้ถูกแสดง แต่กลายเป็นสภาพแวดล้อมที่มีอารมณ์และการดำรงอยู่เฉพาะตัว",
+    quote:"แปลงข้อมูลให้เป็นสภาวะเชิงประสาทสัมผัส",
+    source:"https://refikanadol.com/works/infinito-ai-data-sculpture/", label:"Mapping ศิลปินเพิ่มเติม" },
+];
+
+const categoryColors = {
+  "Quantum Phenomenology":"tag",
+  "Quantum World-building":"tag tag2",
+  "Interactive Systems":"tag tag2",
+  "Quantum-computing as Medium":"tag tag3",
+  "Quantum-inspired Generative Art":"tag tag3",
+  "Quantum-AI Hybrid":"tag tag3",
+  "Research-led Practice":"tag",
+  "Performance Epistemology":"tag tag4",
+  "Translational Residency":"tag tag2",
+  "Institutional Dialogue":"tag",
+  "Sculptural Phenomenology":"tag",
+  "Data/Physics Aesthetics":"tag tag2",
+  "Bio-digital Speculative Ontology":"tag tag4",
+  "Platformized Quantum Branding":"tag tag4",
+};
+
+const cards = document.getElementById('cards');
+const tbody = document.querySelector('#matrix tbody');
+const categoryFilter = document.getElementById('filterCategory');
+const institutionFilter = document.getElementById('filterInstitution');
+const searchBox = document.getElementById('searchBox');
+const resetBtn = document.getElementById('resetBtn');
+
+const categories = [...new Set(data.map(d=>d.category))].sort();
+const institutions = [...new Set(data.map(d=>d.institution))].sort();
+
+categories.forEach(c=>{ const o=document.createElement('option'); o.value=c;o.textContent=c; categoryFilter.appendChild(o); });
+institutions.forEach(i=>{ const o=document.createElement('option'); o.value=i;o.textContent=i; institutionFilter.appendChild(o); });
+
+function renderCards(rows){
+  cards.innerHTML='';
+  rows.forEach(d=>{
+    const div=document.createElement('div');
+    div.className='card';
+    div.dataset.category=d.category;
+    div.dataset.institution=d.institution;
+    div.dataset.search=(d.work+' '+d.institution+' '+d.category+' '+d.mechanism+' '+d.quantum+' '+d.effect+' '+d.quote).toLowerCase();
+    div.innerHTML=`
+      <span class="${categoryColors[d.category] || 'tag'}">${d.category}</span>
+      <h3>${d.work}</h3>
+      <p><b>สถาบัน/ศิลปิน:</b> ${d.institution}</p>
+      <p><b>กลไก:</b> ${d.mechanism}</p>
+      <p><b>การใช้ควอนตัม:</b> ${d.quantum}</p>
+      <p><b>ผลต่อการรับรู้:</b> ${d.effect}</p>
+      <p class="quote">${d.quote}</p>
+      <p class="meta">แหล่งที่มา: <a href="${d.source}" target="_blank" rel="noopener">${d.label}</a></p>
+    `;
+    cards.appendChild(div);
+  });
+}
+
+function renderTable(rows){
+  tbody.innerHTML='';
+  rows.forEach(d=>{
+    const tr=document.createElement('tr');
+    tr.dataset.category=d.category;
+    tr.dataset.institution=d.institution;
+    tr.dataset.search=(d.work+' '+d.institution+' '+d.category+' '+d.mechanism+' '+d.quantum+' '+d.effect+' '+d.quote).toLowerCase();
+    tr.innerHTML=`
+      <td>${d.work}</td><td>${d.institution}</td><td>${d.category}</td>
+      <td>${d.mechanism}</td><td>${d.quantum}</td><td>${d.effect}</td>
+      <td>${d.quote}</td><td><a href="${d.source}" target="_blank" rel="noopener">${d.label}</a></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function applyFilters(){
+  const c = categoryFilter.value, i = institutionFilter.value, q = searchBox.value.trim().toLowerCase();
+  document.querySelectorAll('.card, #matrix tbody tr').forEach(el=>{
+    const matchesCategory = c === 'all' || el.dataset.category === c;
+    const matchesInstitution = i === 'all' || el.dataset.institution === i;
+    const matchesSearch = !q || el.dataset.search.includes(q);
+    el.classList.toggle('hidden', !(matchesCategory && matchesInstitution && matchesSearch));
+  });
+}
+
+resetBtn.addEventListener('click', ()=>{
+  categoryFilter.value='all'; institutionFilter.value='all'; searchBox.value=''; applyFilters();
+});
+categoryFilter.addEventListener('change', applyFilters);
+institutionFilter.addEventListener('change', applyFilters);
+searchBox.addEventListener('input', applyFilters);
+
+renderCards(data);
+renderTable(data);
+</script>
+</body>
+</html>

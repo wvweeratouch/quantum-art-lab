@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantum Art: A Living Diagram — Events, Texts, Art</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+Thai:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+  :root{
+    --bg:#0b1826; --paper:#101f30; --line:#2b4a68;
+    --grid:rgba(150,190,220,0.10); --grid-strong:rgba(150,190,220,0.22);
+    --ink:#dce8f2; --ink-dim:#8ea3b8; --ink-faint:#5d7691;
+    --gold:#d9a441;
+    --c-physics:#6fa8dc; --c-institutions:#d9a441; --c-policy:#c9738f; --c-art:#8fae5d;
+    --c-event:#c96a55; --c-text:#9b7fc4; --c-artnode:#4fa8a0;
+    --c-barad:#6fa8dc; --c-bohm:#d9a441; --c-deleuze:#c9738f; --c-buddhist:#8fae5d;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:radial-gradient(ellipse at 15% -10%, rgba(217,164,65,0.06), transparent 45%),radial-gradient(ellipse at 92% 6%, rgba(111,168,220,0.05), transparent 40%),var(--bg);color:var(--ink);font-family:'Noto Sans Thai','IBM Plex Mono',sans-serif;line-height:1.7;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;letter-spacing:.2em;text-transform:uppercase;font-size:.7rem;color:var(--gold);}
+  header.hero{max-width:1260px;margin:0 auto;padding:5.5rem 2rem 3rem;border-bottom:1px solid var(--line);}
+  h1.title{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:500;font-size:clamp(1.9rem,4.6vw,3.1rem);line-height:1.22;margin:1rem 0 1rem;max-width:26ch;color:#f2f6fa;}
+  h1.title em{font-style:italic;color:var(--gold);}
+  .lede{font-family:'Noto Serif Thai',serif;font-size:1.02rem;color:var(--ink-dim);max-width:72ch;margin:0;}
+  .toc{display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;margin-top:2rem;font-family:'IBM Plex Mono',monospace;font-size:.76rem;}
+  .toc a{color:var(--ink-dim);text-decoration:none;border-bottom:1px dotted var(--ink-faint);padding-bottom:2px;}
+  .toc a:hover{color:var(--gold);border-color:var(--gold);}
+  .toc span.n{color:var(--ink-faint);margin-right:.35rem;}
+  main{max-width:1260px;margin:0 auto;padding:0 2rem;}
+  section.block{padding:4rem 0;border-bottom:1px solid var(--line);}
+  section.block:last-of-type{border-bottom:none;}
+  .section-head{margin-bottom:1.8rem;max-width:82ch;}
+  h2.section-title{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:500;font-size:clamp(1.35rem,2.6vw,1.9rem);margin:.5rem 0 .6rem;color:#f2f6fa;}
+  .section-sub{color:var(--ink-dim);font-size:.95rem;font-family:'Noto Serif Thai',serif;}
+
+  .diagram-frame{background:var(--paper);border:1px solid var(--line);border-radius:6px;position:relative;overflow:hidden;}
+  .diagram-frame::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px;pointer-events:none;}
+  .frame-tag{position:absolute;top:14px;left:18px;font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);z-index:3;}
+  .frame-tag b{color:var(--gold);font-weight:600;}
+  svg.diagram{width:100%;height:auto;display:block;position:relative;z-index:2;}
+  .diagram-body{padding:2.2rem 1rem 1rem;overflow-x:auto;}
+
+  .lane-label{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.05em;}
+  .yr-label{font-family:'IBM Plex Mono',monospace;font-size:9.5px;fill:var(--ink-faint);}
+  .node-label{font-family:'Noto Sans Thai',sans-serif;font-size:9.5px;fill:var(--ink-dim);}
+  .net-label{font-family:'IBM Plex Mono',monospace;font-size:9.5px;fill:var(--ink);font-weight:600;}
+  .edge-label{font-family:'Noto Sans Thai',sans-serif;font-size:7.6px;fill:var(--ink-faint);}
+  .bip-label{font-family:'IBM Plex Mono',monospace;font-size:11px;fill:var(--ink);font-weight:600;}
+
+  .node{cursor:pointer;transition:opacity .15s;}
+  .node.dim{opacity:.25;}
+  .legend{display:flex;flex-wrap:wrap;gap:.9rem;padding:1rem 1.4rem 1.4rem;border-top:1px solid var(--line);font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--ink-dim);}
+  .legend .dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:.4rem;vertical-align:middle;}
+  .hint{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-faint);padding:0 1.4rem 1.2rem;}
+
+  /* ---------- detail panel ---------- */
+  .detail-panel{
+    margin:0 1.4rem 1.6rem; padding:1.1rem 1.3rem; background:rgba(255,255,255,0.02);
+    border-left:2px solid var(--gold); border-radius:4px; min-height:70px;
+    font-family:'Noto Sans Thai',sans-serif; font-size:.87rem; color:var(--ink-dim); position:relative; z-index:2;
+  }
+  .detail-panel .dp-empty{ color:var(--ink-faint); font-family:'IBM Plex Mono',monospace; font-size:.76rem; }
+  .detail-panel .dp-title{ font-family:'Newsreader','Noto Serif Thai',serif; font-weight:600; font-size:1.1rem; color:#f2f6fa; display:block; margin-bottom:.15rem; }
+  .detail-panel .dp-sub{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; color:var(--gold); text-transform:uppercase; letter-spacing:.05em; display:block; margin-bottom:.6rem; }
+  .detail-panel .dp-desc{ color:#cfdce8; margin-bottom:.5rem; }
+  .detail-panel .dp-quote{ border-left:2px solid var(--ink-faint); padding-left:.7rem; font-family:'IBM Plex Mono',monospace; font-size:.76rem; color:var(--ink-dim); margin:.5rem 0; line-height:1.6; }
+  .detail-panel .dp-links{ margin-top:.5rem; display:flex; flex-wrap:wrap; gap:.5rem; }
+  .dp-chip{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; padding:.2rem .6rem; border-radius:12px; border:1px solid currentColor; }
+  .dp-link{ font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--gold); text-decoration:none; border-bottom:1px dotted var(--gold); }
+  .dp-link:hover{ color:#fff; border-color:#fff; }
+
+  /* ---------- concern cards ---------- */
+  .concern-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;padding:1.6rem;}
+  @media(max-width:800px){.concern-grid{grid-template-columns:1fr;}}
+  .concern-card{background:rgba(255,255,255,.02);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:6px;padding:1.1rem 1.25rem;}
+  .concern-name{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:600;font-size:1.08rem;color:var(--accent);display:block;margin-bottom:.7rem;}
+  .concern-row{margin-bottom:.6rem;}
+  .concern-row .rk{font-family:'IBM Plex Mono',monospace;font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:.2rem;}
+  .concern-row .rv{font-family:'Noto Sans Thai',sans-serif;font-size:.84rem;color:#cfdce8;}
+  .concern-row .rv em{color:var(--accent);font-style:normal;}
+
+  article.essay{font-family:'Noto Serif Thai',serif;font-size:.99rem;color:#cfdce8;max-width:82ch;}
+  article.essay h3{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:600;font-size:1.2rem;color:var(--gold);margin:1.8rem 0 .6rem;}
+  article.essay h3:first-child{margin-top:0;}
+  article.essay p{margin:0 0 1rem;}
+  article.essay strong{color:#f2f6fa;}
+  .callout{border-left:2px solid var(--gold);background:rgba(217,164,65,.06);padding:1rem 1.3rem;font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--ink-dim);margin:1.4rem 0;line-height:1.65;}
+
+  footer{max-width:1260px;margin:0 auto;padding:3rem 2rem 6rem;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-faint);}
+
+  @media(max-width:720px){header.hero{padding:3.5rem 1.2rem 2rem;}main{padding:0 1.2rem;}section.block{padding:2.6rem 0;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="eyebrow">A Living Diagram — Quantum Art in Context</span>
+  <h1 class="title">ประวัติศาสตร์ นโยบาย และวรรณกรรมที่หล่อหลอม<em>ศิลปะควอนตัม</em></h1>
+  <p class="lede">
+    ระบบไดอะแกรมเชื่อมโยงกัน 4 ชุด: เส้นเวลามหภาค (ฟิสิกส์ → สถาบัน → นโยบาย → ศิลปะ), เครือข่ายเชิงเหตุ (เหตุการณ์ → วรรณกรรม → งานศิลปะ),
+    เมทริกซ์บริบทสังคม-การเมือง, และกราฟทวิภาค (ทฤษฎี ↔ งานศิลปะ) — คลิก/hover ที่โหนดเพื่อดูรายละเอียดในแผงข้อมูลด้านล่างของแต่ละไดอะแกรม
+  </p>
+  <nav class="toc">
+    <a href="#timeline"><span class="n">01</span>Macro Timeline</a>
+    <a href="#network"><span class="n">02</span>Event→Text→Art Network</a>
+    <a href="#concerns"><span class="n">03</span>Social-Political Frames</a>
+    <a href="#bipartite"><span class="n">04</span>Theories ↔ Artworks</a>
+    <a href="#essay"><span class="n">05</span>Synthesis</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ================= 01 TIMELINE ================= -->
+  <section class="block" id="timeline">
+    <div class="section-head">
+      <span class="eyebrow">01 — Layered timeline</span>
+      <h2 class="section-title">Macro Timeline: จากฟิสิกส์ควอนตัมสู่โครงสร้างพื้นฐานศิลปะควอนตัม</h2>
+      <p class="section-sub">4 เลน: Physics (ทฤษฎี) · Institutions (สถาบัน/โปรแกรม) · Policy (นโยบายระดับโลก) · Art (ผลงาน/นิทรรศการ) — คลิกโหนดเพื่อดูรายละเอียด</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.01 — <b>4-lane timeline</b> · 1900–2026 · 19 nodes</span>
+      <div class="diagram-body">
+        <svg class="diagram" id="svg-timeline" viewBox="0 0 1400 480" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="detail-panel" id="detail-timeline"><span class="dp-empty">คลิกโหนดด้านบนเพื่อดูรายละเอียด...</span></div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--c-physics)"></span>Physics</span>
+        <span><span class="dot" style="background:var(--c-institutions)"></span>Institutions</span>
+        <span><span class="dot" style="background:var(--c-policy)"></span>Policy</span>
+        <span><span class="dot" style="background:var(--c-art)"></span>Art</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 02 CAUSAL NETWORK ================= -->
+  <section class="block" id="network">
+    <div class="section-head">
+      <span class="eyebrow">02 — Force-directed graph</span>
+      <h2 class="section-title">Event → Text → Art: เครือข่ายเชิงเหตุ</h2>
+      <p class="section-sub">เหตุการณ์ทางประวัติศาสตร์/การเมืองก่อให้เกิดวรรณกรรม/ทฤษฎี ซึ่งหล่อหลอมวิธีที่ศิลปินตีความควอนตัม — ลากโหนดเพื่อจัดเรียงใหม่ คลิกเพื่อดูรายละเอียด</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.02 — <b>D3 force graph</b> · 3 node types · ~20 nodes</span>
+      <div class="diagram-body">
+        <svg class="diagram" id="svg-network" viewBox="0 0 1200 720" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="detail-panel" id="detail-network"><span class="dp-empty">คลิกโหนดด้านบนเพื่อดูรายละเอียด...</span></div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--c-event)"></span>Event / Context</span>
+        <span><span class="dot" style="background:var(--c-text)"></span>Text / Theory</span>
+        <span><span class="dot" style="background:var(--c-artnode)"></span>Artwork / Exhibition</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 03 CONCERN CARDS ================= -->
+  <section class="block" id="concerns">
+    <div class="section-head">
+      <span class="eyebrow">03 — Context clusters</span>
+      <h2 class="section-title">บริบทสังคม–การเมือง → กรอบการตีความศิลปะ</h2>
+      <p class="section-sub">ความกังวลทางสังคม/การเมือง 5 กลุ่มที่กำหนดวิธีที่ศิลปินหยิบแนวคิดควอนตัมมาใช้ แต่ละการ์ดแสดง Policy/Text ที่เกี่ยวข้อง และตัวอย่างงานศิลปะที่ตอบสนอง</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.03 — <b>concern clusters</b> · 5 groups</span>
+      <div class="concern-grid" id="concern-grid"></div>
+    </div>
+  </section>
+
+  <!-- ================= 04 BIPARTITE ================= -->
+  <section class="block" id="bipartite">
+    <div class="section-head">
+      <span class="eyebrow">04 — Bipartite graph</span>
+      <h2 class="section-title">Writings &amp; Research → Art Interpretations</h2>
+      <p class="section-sub">ทฤษฎี/กรอบคิด (ซ้าย) เชื่อมกับงานศิลปะที่ทฤษฎีนั้นช่วยตีความ (ขวา) — hover ที่เส้นหรือโหนดเพื่อดูป้ายกำกับความสัมพันธ์</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.04 — <b>bipartite graph</b> · 4 theories × 9 works</span>
+      <div class="diagram-body">
+        <svg class="diagram" id="svg-bipartite" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="detail-panel" id="detail-bipartite"><span class="dp-empty">hover เส้นหรือโหนดเพื่อดูรายละเอียด...</span></div>
+    </div>
+  </section>
+
+  <!-- ================= 05 SYNTHESIS ================= -->
+  <section class="block" id="essay">
+    <div class="section-head">
+      <span class="eyebrow">05 — Reading the whole system</span>
+      <h2 class="section-title">Synthesis: อ่านทั้งระบบเข้าด้วยกัน</h2>
+    </div>
+    <article class="essay">
+      <h3>ทำไมต้องมี 4 ไดอะแกรมแทนที่จะมีอันเดียว</h3>
+      <p>แต่ละไดอะแกรมตอบคำถามคนละแบบ: <strong>Timeline</strong> ตอบว่า "อะไรเกิดก่อนหลัง" <strong>Causal Network</strong> ตอบว่า "อะไรเป็นเหตุให้เกิดอะไร" <strong>Concern Cards</strong> ตอบว่า "ความกังวลทางสังคมแบบไหนกำลังขับเคลื่อนงานประเภทไหน" และ <strong>Bipartite Graph</strong> ตอบว่า "ทฤษฎีไหนช่วยอ่านงานไหนได้ดีที่สุด" — เมื่อนำทั้งสี่มาต่อกัน จะเห็นภาพว่าศิลปะควอนตัมไม่ได้เกิดขึ้นลอยๆ จากแรงบันดาลใจส่วนตัวของศิลปิน แต่ถูกกำหนดรูปร่างโดยเงื่อนไขทางประวัติศาสตร์ นโยบาย และวรรณกรรมเชิงทฤษฎีที่มาก่อนเสมอ</p>
+
+      <h3>เส้นด้ายที่ร้อยทุกไดอะแกรมเข้าด้วยกัน</h3>
+      <p>สังเกตว่าเหตุการณ์เดียวกันสามารถปรากฏในหลายไดอะแกรมพร้อมกัน — การก่อตั้ง CERN/LAS ปรากฏทั้งใน Timeline (เลน Institutions), Causal Network (เป็น event ที่นำไปสู่ Barad/Bohm/Deleuze), และ Bipartite Graph (เป็นบริบทที่ทำให้ Cascade/Ent- เกิดขึ้น) นี่คือเหตุผลที่เรียกระบบนี้ว่า "living diagram" — โหนดเดียวกันมีชีวิตอยู่ในหลายบริบทพร้อมกัน ไม่ใช่ถูกจัดหมวดตายตัวเพียงที่เดียว</p>
+
+      <div class="callout">
+        หมายเหตุระเบียบวิธี: เส้นเชื่อมโยงเชิงเหตุ (causal edges) ในไดอะแกรมนี้เป็นการตีความเชิงโครงสร้างเพื่อสาธิตต้นแบบเครื่องมือวิจัย ไม่ใช่การอ้างว่ามีหลักฐานเชิงประจักษ์ยืนยันความสัมพันธ์เชิงเหตุ-ผลโดยตรงทุกเส้น (เช่น "Cold War นำไปสู่ Quantum Cloud" เป็นเส้นทางเชิงบริบทกว้างๆ ไม่ใช่สายพานการผลิตที่ตรวจสอบได้เชิงประจักษ์) เหมาะสำหรับใช้เป็นกรอบตั้งคำถามในงานวิจัย มากกว่าข้อสรุปสำเร็จรูป
+      </div>
+    </article>
+  </section>
+
+</main>
+
+<footer>FIG.01 timeline (hand-scaled SVG) · FIG.02 D3.js v7 force-directed graph · FIG.03 CSS card grid · FIG.04 bipartite SVG · single-file HTML</footer>
+
+<script>
+/* ================= SHARED HELPERS ================= */
+function resolveVar(v){ if(v.startsWith('var(')){ return getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1)).trim(); } return v; }
+function ns(tag){ return document.createElementNS('http://www.w3.org/2000/svg', tag); }
+function txt(x,y,content,cls,anchor){ const t=ns('text'); t.setAttribute('x',x); t.setAttribute('y',y); if(cls) t.setAttribute('class',cls); if(anchor) t.setAttribute('text-anchor',anchor); t.textContent=content; return t; }
+
+function renderDetail(panelId, data){
+  const el = document.getElementById(panelId);
+  let html = `<span class="dp-title">${data.title}</span>`;
+  if(data.sub) html += `<span class="dp-sub">${data.sub}</span>`;
+  if(data.desc) html += `<div class="dp-desc">${data.desc}</div>`;
+  if(data.quote) html += `<div class="dp-quote">"${data.quote}"<br><em>— ${data.quoteSource}</em></div>`;
+  if(data.links && data.links.length){
+    html += `<div class="dp-links">` + data.links.map(l=>`<a class="dp-link" href="${l.url}" target="_blank" rel="noopener">${l.label} →</a>`).join('') + `</div>`;
+  }
+  el.innerHTML = html;
+}
+
+/* ================= 01 TIMELINE DATA ================= */
+const TIMELINE = [
+  // PHYSICS
+  {id:'ph1', lane:'physics', start:1900, end:1930, label:'กำเนิดกลศาสตร์ควอนตัม', desc:'Planck, Einstein, Bohr, Schrödinger, Heisenberg วางภาษาเชิงทฤษฎีสำหรับความไม่แน่นอน การซ้อนทับสถานะ และการพัวพัน ซึ่งกลายเป็นคลังคำศัพท์ที่ศิลปินยืมไปใช้ในอีกหนึ่งศตวรรษต่อมา'},
+  {id:'ph2', lane:'physics', start:1940, end:1965, label:'Quantum Electrodynamics / Standard Model', desc:'การพัฒนาทฤษฎีสนามควอนตัมอย่างเข้มข้นในบริบทสงครามเย็นและ Big Science'},
+  {id:'ph3', lane:'physics', start:1980, end:1995, label:'แนวคิด Quantum Computing', desc:'Paul Benioff, Richard Feynman และ David Deutsch วางรากฐานทฤษฎีการคำนวณเชิงควอนตัม ซึ่งภายหลังกลายเป็นสื่อสร้างสรรค์โดยตรงของศิลปินอย่าง Libby Heaney'},
+  // INSTITUTIONS
+  {id:'in1', lane:'institutions', start:1954, end:1954, label:'ก่อตั้ง CERN', desc:'European Organization for Nuclear Research ก่อตั้งที่เจนีวา ภายหลังกลายเป็นศูนย์กลางของ Arts at CERN'},
+  {id:'in2', lane:'institutions', start:1960, end:1975, label:'การทดลองศิลปะ-วิทยาศาสตร์ยุคแรก', desc:'ภาพยนตร์ทดลองและ cybernetic art วางรากฐานแนวคิดการผสานศิลปะกับวิทยาศาสตร์ ก่อนยุคดิจิทัล'},
+  {id:'in3', lane:'institutions', start:2010, end:2019, label:'เปิดโครงการ Arts at CERN Collide', desc:'โปรแกรม residency ที่เชิญศิลปินเข้าไปทำงานร่วมกับนักฟิสิกส์ CERN โดยตรง'},
+  {id:'in4', lane:'institutions', start:2016, end:2016, label:'Collide International Award → Cascade', desc:'Yunchul Kim ได้รับรางวัลนี้ นำไปสู่การสร้าง Cascade (2018)', links:[{label:'arts.cern', url:'https://arts.cern/'}]},
+  {id:'in5', lane:'institutions', start:2019, end:2022, label:'LAS Art Foundation program → Ent-', desc:'Libby Heaney พัฒนา Ent- ผ่านโปรแกรมของ LAS Art Foundation เบอร์ลิน', links:[{label:'las-art.foundation', url:'https://www.las-art.foundation/'}]},
+  {id:'in6', lane:'institutions', start:2025, end:2025, label:'Studio Quantum / In the Ether / Quantum Perspective', desc:'เทศกาลและโชว์เคสสามแห่งในปีเดียวกัน: HKW เบอร์ลิน, ArtScience Museum สิงคโปร์, The Arts House สิงคโปร์', links:[{label:'marinabaysands.com', url:'https://www.marinabaysands.com/museum/events/in-the-ether.html'}]},
+  // POLICY
+  {id:'po1', lane:'policy', start:1945, end:1965, label:'สงครามเย็น &amp; Big Science', desc:'การแข่งขันด้านอาวุธนิวเคลียร์และวิทยาศาสตร์ขนาดใหญ่สร้างเงื่อนไขทางการเมืองให้ฟิสิกส์ทฤษฎีเติบโตอย่างรวดเร็ว'},
+  {id:'po2', lane:'policy', start:1985, end:1998, label:'การปฏิวัติดิจิทัล', desc:'คลื่นลูกที่สามของคอมพิวเตอร์ วางเงื่อนไขให้แนวคิด quantum computing กลายเป็นที่สนใจกว้างขึ้น'},
+  {id:'po3', lane:'policy', start:2024, end:2025, label:'UN ประกาศ IYQ 2025 / UNESCO Global Quantum Initiative', desc:'International Year of Quantum Science and Technology ผลักดันให้ศิลปะควอนตัมกลายเป็นวาระวัฒนธรรมระดับโลก รวมถึงการประกวดภาพ "Quantum light: A visual odyssey" ที่มีผู้ส่งผลงานกว่า 3,000 ชิ้นจาก 48 ประเทศ'},
+  // ART
+  {id:'ar1', lane:'art', start:1999, end:1999, label:'Quantum Cloud — Antony Gormley', desc:'ประติมากรรมที่สนทนากับ Bohmian physics ผ่าน Basil Hiley โดยตรง', links:[{label:'las-art.foundation', url:'https://www.las-art.foundation/'}]},
+  {id:'ar2', lane:'art', start:2018, end:2018, label:'Cascade, entangled binary network, Ekphrastic Motion', desc:'ผลงานชุด Collide ปีเดียวกันสามชิ้นจาก CERN residency', links:[{label:'arts.cern', url:'https://arts.cern/'}]},
+  {id:'ar3', lane:'art', start:2022, end:2022, label:'Ent- — Libby Heaney', desc:'งานติดตั้งที่ใช้โค้ดควอนตัมจริงผ่าน IBM Qiskit วิพากษ์ Big Tech และกรอบไบนารี', links:[{label:'las-art.foundation', url:'https://www.las-art.foundation/las-projects-overview'}]},
+  {id:'ar4', lane:'art', start:2023, end:2024, label:'Entangled Horizons — Amy Karle', desc:'ส่วนหนึ่งของ Studio Quantum residency ที่สิงคโปร์/เบอร์ลิน', links:[{label:'amykarle.com', url:'https://www.amykarle.com/fertilevoid_entangledhorizions/'}]},
+  {id:'ar5', lane:'art', start:2025, end:2026, label:'Small Void, We Felt a Star Dying, Epilogue', desc:'สามผลงานปี 2025-26 ที่กระจายจาก CERN (Bucknell) LAS (Prouvost) และเชียงใหม่ (Chitti)', links:[{label:'chittik.net', url:'https://www.chittik.net/epilogue.html'}]},
+];
+
+function renderTimeline(){
+  const svg = document.getElementById('svg-timeline');
+  svg.innerHTML = '';
+  const yearMin=1895, yearMax=2028;
+  const X0=90, X1=1370;
+  const scaleX = y => X0 + (X1-X0) * (y-yearMin)/(yearMax-yearMin);
+  const lanes = [
+    {key:'physics', y:70, color:'var(--c-physics)', label:'PHYSICS'},
+    {key:'institutions', y:180, color:'var(--c-institutions)', label:'INSTITUTIONS'},
+    {key:'policy', y:290, color:'var(--c-policy)', label:'POLICY'},
+    {key:'art', y:400, color:'var(--c-art)', label:'ART'},
+  ];
+  // axis line + year ticks
+  const axis = ns('line'); axis.setAttribute('x1',X0); axis.setAttribute('x2',X1); axis.setAttribute('y1',450); axis.setAttribute('y2',450);
+  axis.setAttribute('stroke','var(--grid-strong)'.startsWith('var')?resolveVar('var(--grid-strong)'):'#2b4a68');
+  svg.appendChild(axis);
+  for(let yr=1900; yr<=2025; yr+=25){
+    const x = scaleX(yr);
+    const tick = ns('line'); tick.setAttribute('x1',x); tick.setAttribute('x2',x); tick.setAttribute('y1',446); tick.setAttribute('y2',454);
+    tick.setAttribute('stroke', resolveVar('var(--grid-strong)')); svg.appendChild(tick);
+    svg.appendChild(txt(x,470,yr,'yr-label','middle'));
+  }
+  lanes.forEach(l=>{
+    const lane = ns('line'); lane.setAttribute('x1',X0); lane.setAttribute('x2',X1); lane.setAttribute('y1',l.y); lane.setAttribute('y2',l.y);
+    lane.setAttribute('stroke', resolveVar(l.color)); lane.setAttribute('stroke-width',1); lane.setAttribute('opacity',0.25);
+    svg.appendChild(lane);
+    svg.appendChild(txt(X0, l.y-16, l.label, 'lane-label', 'start')).style.fill = resolveVar(l.color);
+  });
+
+  TIMELINE.forEach((ev,i)=>{
+    const lane = lanes.find(l=>l.key===ev.lane);
+    const x1 = scaleX(ev.start), x2 = scaleX(ev.end);
+    const y = lane.y;
+    const g = ns('g'); g.setAttribute('class','node');
+    if(x2>x1+4){
+      const bar = ns('line'); bar.setAttribute('x1',x1); bar.setAttribute('x2',x2); bar.setAttribute('y1',y); bar.setAttribute('y2',y);
+      bar.setAttribute('stroke', resolveVar(lane.color)); bar.setAttribute('stroke-width',4); bar.setAttribute('stroke-linecap','round'); bar.setAttribute('opacity',0.85);
+      g.appendChild(bar);
+    }
+    const dot = ns('circle'); dot.setAttribute('cx', (x1+x2)/2); dot.setAttribute('cy', y); dot.setAttribute('r',7);
+    dot.setAttribute('fill', resolveVar(lane.color)); dot.setAttribute('stroke','#0b1826'); dot.setAttribute('stroke-width',1.5);
+    g.appendChild(dot);
+    const labelY = y + (i%2===0 ? -16 : 26);
+    const lbl = txt((x1+x2)/2, labelY, ev.label.length>34 ? ev.label.slice(0,32)+'…' : ev.label, 'node-label', 'middle');
+    g.appendChild(lbl);
+    g.addEventListener('click', ()=>{
+      renderDetail('detail-timeline', {title:ev.label, sub:`${ev.lane.toUpperCase()} · ${ev.start}${ev.end!==ev.start?'–'+ev.end:''}`, desc:ev.desc, links:ev.links});
+    });
+    svg.appendChild(g);
+  });
+}
+renderTimeline();
+
+/* ================= 02 CAUSAL NETWORK DATA ================= */
+const NET_NODES = [
+  {id:'e_coldwar', type:'event', label:'Cold War & Big Science', desc:'การแข่งขันด้านอาวุธนิวเคลียร์และวิทยาศาสตร์ขนาดใหญ่ช่วง 1940s–60s สร้างเงื่อนไขทางการเมืองให้รัฐลงทุนมหาศาลในฟิสิกส์พื้นฐาน'},
+  {id:'e_digital', type:'event', label:'Digital Revolution', desc:'การปฏิวัติดิจิทัลช่วง 1980s–90s ทำให้แนวคิด quantum computing ของ Feynman/Deutsch เริ่มมีความเป็นไปได้ทางวิศวกรรม'},
+  {id:'e_cernlas', type:'event', label:'CERN / LAS / Quantum Labs Established', desc:'การก่อตั้งและเติบโตของสถาบันวิจัยควอนตัมและ art-science foundation ช่วง 2000s–2010s'},
+  {id:'e_iyq', type:'event', label:'UN/UNESCO IYQ 2025', desc:'International Year of Quantum Science and Technology และ Global Quantum Initiative ผลักดันวาระวัฒนธรรมระดับโลก'},
+  {id:'t_qtheory', type:'text', label:'Quantum Theory as Foundational Science', desc:'การพัฒนากลศาสตร์ควอนตัมให้เป็นวิทยาศาสตร์รากฐานที่ได้รับความชอบธรรมทางสถาบัน'},
+  {id:'t_feynman', type:'text', label:'Feynman & Deutsch: Quantum Computing Model', desc:'แบบจำลองทฤษฎีการคำนวณเชิงควอนตัมที่ภายหลังศิลปินนำไปใช้เป็นสื่อสร้างสรรค์โดยตรง'},
+  {id:'t_barad', type:'text', label:'Karen Barad — Agential Realism', desc:'matter คือความพัวพันของความสัมพันธ์ การวัดคือ "ethical cut"', quote:'a dynamic and shifting entanglement of relations, rather than as a property of things', quoteSource:'Karen Barad, via goodreads.com'},
+  {id:'t_bohm', type:'text', label:'David Bohm — Implicate Order', desc:'ความทั้งหมดที่แฝงอยู่ในทุกจุด คลี่ตัวออกมาเป็นปรากฏการณ์', quote:'thought with totality as its content has to be considered as an art form', quoteSource:'David Bohm, via goodreads.com'},
+  {id:'t_deleuze', type:'text', label:'Gilles Deleuze — Difference & Multiplicity', desc:'ความต่างในตัวเองเป็นพลังสร้างสรรค์ ไม่ใช่การปฏิเสธ', quote:'Difference in the strong sense, as that which cannot be reduced to the negative', quoteSource:'Gilles Deleuze, via salmonlilies.com'},
+  {id:'t_unesco', type:'text', label:'UNESCO Policy Docs', desc:'เอกสารนโยบายว่าด้วยการลด "quantum divide" จริยธรรม และการเข้าถึงอย่างเท่าเทียม'},
+  {id:'ar_early', type:'art', label:'Early Art-Science Experiments', desc:'ภาพยนตร์ทดลองและ cybernetic art ช่วง 1960s–70s'},
+  {id:'ar_cloud', type:'art', label:'Quantum Cloud (Gormley, 1999)', desc:'อุปมาทางภาพของสนามควอนตัม', link:'https://www.las-art.foundation/'},
+  {id:'ar_cascade', type:'art', label:'Cascade (Kim, 2018)', desc:'มิวออนจริงคลี่คลายเป็นการไหลของของเหลว', link:'https://arts.cern/'},
+  {id:'ar_ekphrastic', type:'art', label:'Ekphrastic Motion (Bruckner, 2024)', desc:'ร่างกายที่พัวพันกับข้อมูลควอนตัมจริงจาก CERN', link:'https://arts.cern/'},
+  {id:'ar_ent', type:'art', label:'Ent- (Heaney, 2022)', desc:'วิพากษ์ Big Tech ผ่านโค้ดควอนตัมจริง', link:'https://www.las-art.foundation/las-projects-overview'},
+  {id:'ar_star', type:'art', label:'We Felt a Star Dying (Prouvost, 2025-26)', desc:'ความไม่เที่ยงในสเกลจักรวาลผ่าน Google Quantum AI', link:'https://www.las-art.foundation/'},
+  {id:'ar_unesco', type:'art', label:'UNESCO Visual Odyssey Contest', desc:'ผลงานกว่า 3,000 ชิ้นจาก 48 ประเทศ ผู้ส่ง 75% อายุต่ำกว่า 18 ปี'},
+  {id:'ar_ether', type:'art', label:'In the Ether (Singapore)', desc:'เทศกาลที่ ArtScience Museum ร่วมกับ CQT', link:'https://www.marinabaysands.com/museum/events/in-the-ether.html'},
+  {id:'ar_qp', type:'art', label:'Quantum Perspective (Singapore)', desc:'นิทรรศการที่ The Arts House เชื่อมเครือข่าย DZeAsia', link:'https://www.mediaartnexus.com/?p=7044'},
+  {id:'ar_national', type:'art', label:'National Projects (Thailand, China)', desc:'โครงการระดับชาติที่กำลังเริ่มสำรวจศิลปะเชิงอุปมาควอนตัม'},
+];
+const NET_EDGES = [
+  {s:'e_coldwar', t:'t_qtheory', label:'shapes discourse'},
+  {s:'t_qtheory', t:'ar_early', label:'informs'},
+  {s:'e_digital', t:'t_feynman', label:'shapes discourse'},
+  {s:'t_feynman', t:'ar_cloud', label:'inspires (conceptually)'},
+  {s:'e_cernlas', t:'t_barad', label:'institutional context'},
+  {s:'e_cernlas', t:'t_bohm', label:'institutional context'},
+  {s:'e_cernlas', t:'t_deleuze', label:'institutional context'},
+  {s:'e_cernlas', t:'ar_cascade', label:'institutional framing'},
+  {s:'e_cernlas', t:'ar_ekphrastic', label:'institutional framing'},
+  {s:'t_barad', t:'ar_ent', label:'informs interpretation of'},
+  {s:'t_bohm', t:'ar_cascade', label:'resonates with'},
+  {s:'t_bohm', t:'ar_cloud', label:'resonates with'},
+  {s:'t_deleuze', t:'ar_ent', label:'resonates with'},
+  {s:'e_iyq', t:'t_unesco', label:'generates policy discourse'},
+  {s:'t_unesco', t:'ar_unesco', label:'institutional framing'},
+  {s:'t_unesco', t:'ar_ether', label:'provides framework for'},
+  {s:'t_unesco', t:'ar_qp', label:'provides framework for'},
+  {s:'t_unesco', t:'ar_national', label:'provides framework for'},
+  {s:'e_iyq', t:'ar_unesco', label:'institutional framing'},
+  {s:'e_iyq', t:'ar_star', label:'temporal coincidence'},
+];
+
+function renderNetwork(){
+  const svg = d3.select('#svg-network');
+  svg.selectAll('*').remove();
+  const W=1200,H=720;
+  const typeColor = {event:'var(--c-event)', text:'var(--c-text)', art:'var(--c-artnode)'};
+
+  const nodes = NET_NODES.map(n=>Object.assign({},n));
+  const links = NET_EDGES.map(e=>({source:e.s, target:e.t, label:e.label}));
+
+  const sim = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(links).id(d=>d.id).distance(d=> d.source.type!==d.target.type ? 130 : 90).strength(0.5))
+    .force('charge', d3.forceManyBody().strength(-260))
+    .force('center', d3.forceCenter(W/2, H/2))
+    .force('collide', d3.forceCollide(34))
+    .force('x', d3.forceX().x(d=> d.type==='event'?W*0.18 : d.type==='text'?W*0.5 : W*0.82).strength(0.25))
+    .stop();
+  for(let i=0;i<250;i++) sim.tick();
+
+  const g = svg.append('g');
+
+  const edgeSel = g.selectAll('line.edge')
+    .data(links).enter().append('line').attr('class','edge')
+    .attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y)
+    .attr('stroke', resolveVar('var(--grid-strong)')).attr('stroke-width',1).attr('opacity',0.5);
+
+  edgeSel.on('mouseenter', function(evt,d){
+      d3.select(this).attr('stroke', resolveVar('var(--gold)')).attr('opacity',1).attr('stroke-width',1.8);
+    }).on('mouseleave', function(evt,d){
+      d3.select(this).attr('stroke', resolveVar('var(--grid-strong)')).attr('opacity',0.5).attr('stroke-width',1);
+    }).on('click', (evt,d)=>{
+      renderDetail('detail-network', {title:`${d.source.label} → ${d.target.label}`, sub:d.label, desc:`ความสัมพันธ์เชิงเหตุ: "${d.label}"`});
+    });
+
+  const nodeSel = g.selectAll('g.node')
+    .data(nodes).enter().append('g').attr('class','node')
+    .attr('transform', d=>`translate(${d.x},${d.y})`);
+
+  nodeSel.append('circle')
+    .attr('r', d=> d.type==='event'?14: d.type==='text'?12:10)
+    .attr('fill', d=>resolveVar(typeColor[d.type]))
+    .attr('stroke','#0b1826').attr('stroke-width',1.5);
+
+  nodeSel.append('text')
+    .attr('class','net-label')
+    .attr('x', d=> d.type==='event' ? -18 : d.type==='art' ? 16 : 0)
+    .attr('y', d=> d.type==='text' ? -18 : 4)
+    .attr('text-anchor', d=> d.type==='event' ? 'end' : d.type==='art' ? 'start' : 'middle')
+    .text(d=> d.label.length>30 ? d.label.slice(0,28)+'…' : d.label);
+
+  nodeSel.on('click', (evt,d)=>{
+    renderDetail('detail-network', {
+      title:d.label, sub:d.type.toUpperCase(), desc:d.desc, quote:d.quote, quoteSource:d.quoteSource,
+      links: d.link ? [{label:'เปิดลิงก์', url:d.link}] : null
+    });
+  });
+
+  // simple drag
+  nodeSel.call(d3.drag()
+    .on('drag', function(evt,d){
+      d.x = evt.x; d.y = evt.y;
+      d3.select(this).attr('transform', `translate(${d.x},${d.y})`);
+      edgeSel.filter(e=>e.source.id===d.id).attr('x1',d.x).attr('y1',d.y);
+      edgeSel.filter(e=>e.target.id===d.id).attr('x2',d.x).attr('y2',d.y);
+    }));
+}
+renderNetwork();
+
+/* ================= 03 CONCERN CARDS DATA ================= */
+const CONCERNS = [
+  {name:'Inequality & Access', accent:'var(--c-event)',
+    policy:'IYQ 2025 เน้น capacity building สำหรับ Global South',
+    text:'UNESCO "Global Quantum Agenda" ว่าด้วยการเข้าถึงอย่างเท่าเทียมและการศึกษา',
+    art:'UNESCO Visual Odyssey Contest เปิดรับจาก 48 ประเทศ ผู้ส่ง 75% อายุต่ำกว่า 18 · โปรแกรมการศึกษาเยาวชนใน In the Ether (สิงคโปร์)'},
+  {name:'Ethics & Governance', accent:'var(--c-text)',
+    policy:'นโยบายด้านความมั่นคง AI และการเฝ้าระวัง',
+    text:'Barad: จริยธรรมฝังอยู่ในการวัด "เนื้อเยื่อแห่งจริยธรรม"',
+    art:'Ent- (Heaney) วิพากษ์ Big Tech และกรอบไบนารีโดยตรง · We Felt a Star Dying (Prouvost) สะท้อนจริยธรรมของ noise/error ในสเกลจักรวาล'},
+  {name:'Colonial / Decolonial & Indigenous Knowledge', accent:'var(--c-artnode)',
+    policy:'ยังไม่มีกรอบนโยบายระดับโลกที่ชัดเจนในประเด็นนี้',
+    text:'งานวิจัยด้านจักรวาลวิทยาและญาณวิทยาพื้นเมือง (indigenous cosmologies)',
+    art:'Hu Jihong (จีน) ใช้ "quantum entanglement" อธิบายความสัมพันธ์กับวัฒนธรรม Tunpu · โครงการในอนาคตที่อาจเชื่อมศิลปะควอนตัมกับกรอบพื้นเมืองไทย'},
+  {name:'Climate & Ecology', accent:'var(--c-institutions)',
+    policy:'งานวิจัยด้าน quantum climate modeling และ quantum sensing สิ่งแวดล้อม',
+    text:'สิ่งพิมพ์วิทยาศาสตร์เชื่อม decoherence/noise กับความเปราะบางเชิงนิเวศ',
+    art:'Atmospheric Omens (Buhl) เชื่อมการทดลอง CLOUD ของ CERN กับ Frankenstein และภาวะภูมิอากาศ'},
+  {name:'Gender & Diversity in STEM', accent:'var(--c-policy)',
+    policy:'ยังเป็นประเด็นที่มีข้อมูลเชิงนโยบายเฉพาะน้อยในชุดข้อมูลนี้',
+    text:'งานวิจัยเรื่องความเหลื่อมล้ำทางเพศในสาขาฟิสิกส์และ STEM',
+    art:'พื้นที่ที่ยังเบาบาง — เป็นช่องว่างเชิงวิจัยที่รอการสำรวจเพิ่มเติมในศิลปะควอนตัม'},
+];
+function buildConcernCards(){
+  const el = document.getElementById('concern-grid');
+  el.innerHTML = '';
+  CONCERNS.forEach(c=>{
+    const card = document.createElement('div');
+    card.className = 'concern-card';
+    card.style.setProperty('--accent', resolveVar(c.accent));
+    card.innerHTML = `
+      <span class="concern-name">${c.name}</span>
+      <div class="concern-row"><span class="rk">Policy</span><span class="rv">${c.policy}</span></div>
+      <div class="concern-row"><span class="rk">Text / Theory</span><span class="rv">${c.text}</span></div>
+      <div class="concern-row"><span class="rk">Art</span><span class="rv">${c.art}</span></div>
+    `;
+    el.appendChild(card);
+  });
+}
+buildConcernCards();
+
+/* ================= 04 BIPARTITE DATA ================= */
+const THEORIES = [
+  {id:'barad', name:'Barad', color:'var(--c-barad)', quote:'a dynamic and shifting entanglement of relations, rather than as a property of things', quoteSource:'Karen Barad, via goodreads.com'},
+  {id:'bohm', name:'Bohm', color:'var(--c-bohm)', quote:'thought with totality as its content has to be considered as an art form', quoteSource:'David Bohm, via goodreads.com'},
+  {id:'deleuze', name:'Deleuze', color:'var(--c-deleuze)', quote:'Difference in the strong sense, as that which cannot be reduced to the negative', quoteSource:'Gilles Deleuze, via salmonlilies.com'},
+  {id:'buddhist', name:'Buddhist/Asian', color:'var(--c-buddhist)', quote:'Whatever is dependently co-arisen, that is explained to be emptiness', quoteSource:'Nāgārjuna, via zenquotes.eu'},
+];
+const BIP_ARTWORKS = [
+  {id:'ent', name:'Ent- (Heaney, 2022)', link:'https://www.las-art.foundation/las-projects-overview'},
+  {id:'horizons', name:'Entangled Horizons (Karle)', link:'https://www.amykarle.com/fertilevoid_entangledhorizions/'},
+  {id:'cloud', name:'Quantum Cloud (Gormley)', link:'https://www.las-art.foundation/'},
+  {id:'cascade', name:'Cascade (Kim)', link:'https://arts.cern/'},
+  {id:'epilogue', name:'Epilogue (Chitti)', link:'https://www.chittik.net/epilogue.html'},
+  {id:'tunpu', name:'My Quantum Entanglement with Tunpu (Hu Jihong)', link:'https://www.eguizhou.gov.cn/2026-06/29/c_1193614.htm'},
+  {id:'smallvoid', name:'Small Void (Bucknell)', link:'https://arts.cern/'},
+  {id:'entbinary', name:'entangled binary network (Heemskerk)', link:'https://arts.cern/'},
+  {id:'star', name:'We Felt a Star Dying (Prouvost)', link:'https://www.las-art.foundation/'},
+];
+const BIP_EDGES = [
+  {th:'barad', aw:'ent', label:'informs interpretation of', w:0.9},
+  {th:'barad', aw:'horizons', label:'informs interpretation of', w:0.9},
+  {th:'barad', aw:'entbinary', label:'informs interpretation of', w:0.7},
+  {th:'barad', aw:'tunpu', label:'resonates with', w:0.5},
+  {th:'bohm', aw:'cloud', label:'resonates with', w:0.9},
+  {th:'bohm', aw:'cascade', label:'resonates with', w:0.8},
+  {th:'bohm', aw:'epilogue', label:'resonates with', w:0.5},
+  {th:'deleuze', aw:'ent', label:'resonates with', w:0.6},
+  {th:'deleuze', aw:'smallvoid', label:'resonates with', w:0.6},
+  {th:'buddhist', aw:'epilogue', label:'resonates with', w:0.9},
+  {th:'buddhist', aw:'tunpu', label:'resonates with', w:0.4},
+  {th:'buddhist', aw:'star', label:'resonates with', w:0.5},
+];
+function renderBipartite(){
+  const svg = document.getElementById('svg-bipartite');
+  svg.innerHTML = '';
+  const leftX = 150, rightX = 750;
+  const topY = 70, botY = 560;
+  THEORIES.forEach((t,i)=>{ t._y = topY + (botY-topY)*(i+0.5)/THEORIES.length; t._x = leftX; });
+  BIP_ARTWORKS.forEach((a,i)=>{ a._y = topY + (botY-topY)*(i+0.5)/BIP_ARTWORKS.length; a._x = rightX; });
+
+  const thById = Object.fromEntries(THEORIES.map(t=>[t.id,t]));
+  const awById = Object.fromEntries(BIP_ARTWORKS.map(a=>[a.id,a]));
+
+  BIP_EDGES.forEach(e=>{
+    const t = thById[e.th], a = awById[e.aw];
+    const path = ns('path');
+    const midX = (t._x+a._x)/2;
+    path.setAttribute('d', `M${t._x},${t._y} C${midX},${t._y} ${midX},${a._y} ${a._x},${a._y}`);
+    path.setAttribute('fill','none'); path.setAttribute('stroke', resolveVar(t.color));
+    path.setAttribute('stroke-width', 0.8 + e.w*2.2); path.setAttribute('opacity', 0.25+e.w*0.4);
+    path.style.cursor='pointer';
+    path.addEventListener('mouseenter', ()=>{
+      path.setAttribute('opacity',1);
+      renderDetail('detail-bipartite', {title:`${t.name} ${e.label} ${a.name}`, sub:`ความสัมพันธ์: ${e.label}`, desc:`น้ำหนักความสอดคล้อง: ${e.w>=0.75?'สูง':e.w>=0.45?'กลาง':'ต่ำ'}`, quote:t.quote, quoteSource:t.quoteSource, links:[{label:'เปิดผลงาน',url:a.link}]});
+    });
+    path.addEventListener('mouseleave', ()=>{ path.setAttribute('opacity', 0.25+e.w*0.4); });
+    svg.appendChild(path);
+  });
+
+  THEORIES.forEach(t=>{
+    const g = ns('g'); g.setAttribute('class','node');
+    const dot = ns('circle'); dot.setAttribute('cx',t._x); dot.setAttribute('cy',t._y); dot.setAttribute('r',20);
+    dot.setAttribute('fill','#0d1c2b'); dot.setAttribute('stroke', resolveVar(t.color)); dot.setAttribute('stroke-width',2.5);
+    g.appendChild(dot);
+    g.appendChild(txt(t._x-30, t._y+5, t.name, 'bip-label', 'end')).style.fill = resolveVar(t.color);
+    g.addEventListener('mouseenter', ()=> renderDetail('detail-bipartite', {title:t.name, sub:'Theoretical framework', quote:t.quote, quoteSource:t.quoteSource}));
+    svg.appendChild(g);
+  });
+  BIP_ARTWORKS.forEach(a=>{
+    const g = ns('g'); g.setAttribute('class','node');
+    const dot = ns('circle'); dot.setAttribute('cx',a._x); dot.setAttribute('cy',a._y); dot.setAttribute('r',7);
+    dot.setAttribute('fill', resolveVar('var(--gold)')); dot.setAttribute('stroke','#0b1826'); dot.setAttribute('stroke-width',1.3);
+    g.appendChild(dot);
+    g.appendChild(txt(a._x+13, a._y+4, a.name.length>34?a.name.slice(0,32)+'…':a.name, 'bip-label', 'start'));
+    g.addEventListener('mouseenter', ()=> renderDetail('detail-bipartite', {title:a.name, sub:'Artwork / Exhibition', links:[{label:'เปิดผลงาน',url:a.link}]}));
+    g.addEventListener('click', ()=> window.open(a.link,'_blank','noopener'));
+    svg.appendChild(g);
+  });
+}
+renderBipartite();
+</script>
+</body>
+</html>

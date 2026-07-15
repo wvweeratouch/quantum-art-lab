@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantum Art: Concepts, Debates, and the Question of Reality</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+Thai:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b1826; --paper:#101f30; --line:#2b4a68;
+    --grid:rgba(150,190,220,0.10); --grid-strong:rgba(150,190,220,0.22);
+    --ink:#dce8f2; --ink-dim:#8ea3b8; --ink-faint:#5d7691;
+    --gold:#d9a441;
+    --c-found:#d9a441; --c-epist:#4fa8a0; --c-onto:#9b7fc4;
+    --c-method:#c9738f; --c-socio:#c96a55; --c-aesthetic:#8fae5d;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:radial-gradient(ellipse at 15% -10%, rgba(217,164,65,0.06), transparent 45%),radial-gradient(ellipse at 92% 6%, rgba(79,168,160,0.05), transparent 40%),var(--bg);color:var(--ink);font-family:'Noto Sans Thai','IBM Plex Mono',sans-serif;line-height:1.7;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;letter-spacing:.2em;text-transform:uppercase;font-size:.7rem;color:var(--gold);}
+  header.hero{max-width:1220px;margin:0 auto;padding:5.5rem 2rem 3rem;border-bottom:1px solid var(--line);}
+  h1.title{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:500;font-size:clamp(1.9rem,4.6vw,3.2rem);line-height:1.2;margin:1rem 0 1rem;max-width:24ch;color:#f2f6fa;}
+  h1.title em{font-style:italic;color:var(--gold);}
+  .lede{font-family:'Noto Serif Thai',serif;font-size:1.02rem;color:var(--ink-dim);max-width:70ch;margin:0;}
+  .toc{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;margin-top:2rem;font-family:'IBM Plex Mono',monospace;font-size:.74rem;}
+  .toc a{color:var(--ink-dim);text-decoration:none;border-bottom:1px dotted var(--ink-faint);padding-bottom:2px;}
+  .toc a:hover{color:var(--gold);border-color:var(--gold);}
+  .toc span.n{color:var(--ink-faint);margin-right:.35rem;}
+  main{max-width:1220px;margin:0 auto;padding:0 2rem;}
+  section.block{padding:4rem 0;border-bottom:1px solid var(--line);}
+  section.block:last-of-type{border-bottom:none;}
+  .section-head{margin-bottom:1.8rem;max-width:80ch;}
+  h2.section-title{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:500;font-size:clamp(1.35rem,2.6vw,1.9rem);margin:.5rem 0 .6rem;color:#f2f6fa;}
+  .section-sub{color:var(--ink-dim);font-size:.95rem;font-family:'Noto Serif Thai',serif;}
+
+  .diagram-frame{background:var(--paper);border:1px solid var(--line);border-radius:6px;position:relative;overflow:hidden;}
+  .diagram-frame::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px;pointer-events:none;}
+  .frame-tag{position:absolute;top:14px;left:18px;font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);z-index:3;}
+  .frame-tag b{color:var(--gold);font-weight:600;}
+  svg.diagram{width:100%;height:auto;display:block;position:relative;z-index:2;}
+  .diagram-body{padding:2.2rem 1rem 1rem;}
+  .svg-label{font-family:'IBM Plex Mono',monospace;}
+
+  /* ---------- concept cards ---------- */
+  .concept-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:1.6rem;}
+  @media(max-width:900px){.concept-grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:560px){.concept-grid{grid-template-columns:1fr;}}
+  .concept-card{background:rgba(255,255,255,.02);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:6px;padding:1.1rem;cursor:pointer;transition:.2s;}
+  .concept-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.35);}
+  .concept-icon{width:52px;height:52px;margin-bottom:.6rem;}
+  .concept-name{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:600;font-size:1.02rem;color:var(--accent);display:block;margin-bottom:.4rem;}
+  .concept-def{font-family:'Noto Sans Thai',sans-serif;font-size:.83rem;color:#cfdce8;margin-bottom:.5rem;}
+  .concept-more{font-family:'Noto Sans Thai',sans-serif;font-size:.8rem;color:var(--ink-dim);display:none;border-top:1px dashed var(--line);padding-top:.55rem;margin-top:.4rem;}
+  .concept-more.open{display:block;}
+  .concept-more .cq{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--ink-faint);display:block;margin-top:.4rem;}
+  .concept-toggle{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--accent);margin-top:.3rem;display:inline-block;}
+
+  /* ---------- timeline ---------- */
+  .tl-wrap{display:flex;flex-wrap:wrap;gap:0;padding:2rem 1.4rem 1rem;position:relative;}
+  .tl-node{flex:1 1 200px;min-width:200px;position:relative;padding:1.6rem 1rem 0;cursor:pointer;}
+  .tl-node::before{content:"";position:absolute;top:0;left:1rem;right:1rem;height:3px;background:var(--gold);border-radius:2px;}
+  .tl-node::after{content:"";position:absolute;top:-6px;left:1rem;width:14px;height:14px;border-radius:50%;background:var(--gold);border:2px solid var(--bg);}
+  .tl-year{font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;}
+  .tl-title{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:600;font-size:1rem;color:#f2f6fa;margin:.3rem 0 .5rem;}
+  .tl-detail{font-family:'Noto Sans Thai',sans-serif;font-size:.83rem;color:var(--ink-dim);display:none;}
+  .tl-detail.open{display:block;}
+  .tl-toggle{font-family:'IBM Plex Mono',monospace;font-size:.66rem;color:var(--gold);}
+
+  /* ---------- debate spectrum ---------- */
+  .debate{padding:1.3rem 1.6rem;border-bottom:1px solid var(--line);}
+  .debate:last-child{border-bottom:none;}
+  .debate-title{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:600;font-size:1.02rem;color:#f2f6fa;margin-bottom:.7rem;}
+  .debate-track{position:relative;height:8px;background:linear-gradient(90deg,var(--c-onto),var(--c-found));border-radius:4px;margin-bottom:.5rem;}
+  .debate-marker{position:absolute;top:-6px;width:20px;height:20px;border-radius:50%;background:#0d1c2b;border:3px solid var(--gold);transform:translateX(-50%);cursor:pointer;}
+  .debate-poles{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.03em;}
+  .debate-detail{font-family:'Noto Sans Thai',sans-serif;font-size:.84rem;color:#cfdce8;margin-top:.8rem;padding:.8rem 1rem;background:rgba(255,255,255,.02);border-left:2px solid var(--gold);border-radius:4px;display:none;}
+  .debate-detail.open{display:block;}
+  .debate-detail .counter{color:var(--ink-dim);display:block;margin-top:.4rem;font-style:italic;}
+
+  /* ---------- question radial ---------- */
+  .qcat-node{cursor:pointer;}
+  .qcat-label{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;}
+  .q-detail-panel{margin:0 1.4rem 1.6rem;padding:1.2rem 1.4rem;background:rgba(255,255,255,.02);border-left:2px solid var(--gold);border-radius:4px;min-height:60px;}
+  .q-detail-panel .qd-empty{font-family:'IBM Plex Mono',monospace;font-size:.76rem;color:var(--ink-faint);}
+  .q-detail-panel .qd-title{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:600;font-size:1.08rem;color:#f2f6fa;display:block;margin-bottom:.7rem;}
+  .qd-item{margin-bottom:.9rem;padding-left:1rem;border-left:2px solid var(--line);}
+  .qd-item .qq{font-family:'Noto Serif Thai',serif;font-weight:600;font-size:.92rem;color:#f2f6fa;display:block;margin-bottom:.25rem;}
+  .qd-item .qa{font-family:'Noto Sans Thai',sans-serif;font-size:.83rem;color:var(--ink-dim);}
+
+  /* ---------- takeaway cards ---------- */
+  .take-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;padding:1.6rem;}
+  @media(max-width:760px){.take-grid{grid-template-columns:1fr;}}
+  .take-card{background:rgba(255,255,255,.02);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:5px;padding:1.05rem 1.2rem;}
+  .take-name{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:600;font-size:1rem;color:var(--gold);display:block;margin-bottom:.4rem;}
+  .take-desc{font-family:'Noto Sans Thai',sans-serif;font-size:.85rem;color:#cfdce8;}
+
+  article.essay{font-family:'Noto Serif Thai',serif;font-size:.99rem;color:#cfdce8;max-width:80ch;}
+  .callout{border-left:2px solid var(--gold);background:rgba(217,164,65,.06);padding:1rem 1.3rem;font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--ink-dim);margin:1.4rem 0;line-height:1.65;}
+
+  footer{max-width:1220px;margin:0 auto;padding:3rem 2rem 6rem;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-faint);}
+
+  /* ---------- tooltip ---------- */
+  #tooltip{position:fixed;z-index:9999;max-width:320px;background:#0d1c2b;border:1px solid var(--gold);border-radius:6px;padding:.85rem 1rem;font-family:'Noto Sans Thai',sans-serif;font-size:.8rem;color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .12s;line-height:1.55;}
+  #tooltip.show{opacity:1;pointer-events:auto;}
+  #tooltip .tt-quote{font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--ink);margin-bottom:.4rem;display:block;}
+  #tooltip .tt-source{font-family:'Noto Sans Thai',sans-serif;font-size:.7rem;color:var(--ink-faint);display:block;margin-bottom:.5rem;}
+  #tooltip .tt-link{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--gold);text-decoration:none;border-bottom:1px dotted var(--gold);}
+  #tooltip .tt-link:hover{color:#fff;border-color:#fff;}
+  .quote-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:rgba(217,164,65,.15);border:1px solid var(--gold);color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:.68rem;cursor:pointer;margin-left:.5rem;vertical-align:middle;}
+  .quote-icon:hover{background:var(--gold);color:#0d1c2b;}
+
+  @media(max-width:720px){header.hero{padding:3.5rem 1.2rem 2rem;}main{padding:0 1.2rem;}section.block{padding:2.6rem 0;}}
+</style>
+</head>
+<body>
+
+<div id="tooltip"></div>
+
+
+<header class="hero">
+  <span class="eyebrow">Concepts · History · Philosophy · Debates · Questions</span>
+  <h1 class="title">ศิลปะควอนตัม: จาก<em>อุปมา</em>สู่คำถามว่าอะไรคือความจริง</h1>
+  <p class="lede">
+    ศิลปะควอนตัมไม่ใช่สไตล์เดียว แต่เป็นสนามการปฏิบัติที่ศิลปินใช้แนวคิด วิธีการ และบางครั้งฮาร์ดแวร์ควอนตัมจริง
+    เพื่อสำรวจความไม่แน่นอน การพัวพัน การซ้อนทับสถานะ และความเป็นจริงเชิงสัมพันธ์ — หน้านี้แผนที่แนวคิด ประวัติศาสตร์
+    ปรัชญา ข้อถกเถียง และคำถามวิพากษ์ที่รายล้อมสนามนี้อยู่ในปัจจุบัน
+  </p>
+  <nav class="toc">
+    <a href="#worldview"><span class="n">00</span>Classical vs Quantum</a>
+    <a href="#concepts"><span class="n">01</span>Core Concepts</a>
+    <a href="#history"><span class="n">02</span>Historical Arc</a>
+    <a href="#philosophy"><span class="n">03</span>Philosophy</a>
+    <a href="#debates"><span class="n">04</span>Debates</a>
+    <a href="#questions"><span class="n">05</span>Critical Questions</a>
+    <a href="#takeaways"><span class="n">06</span>Takeaways</a>
+    <a href="#references"><span class="n">07</span>Sources</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ================= 00 WORLDVIEW DIAGRAM ================= -->
+  <section class="block" id="worldview">
+    <div class="section-head">
+      <span class="eyebrow">00 — The shift in mental model</span>
+      <h2 class="section-title">Classical (Newtonian) ↔ Quantum (Relational) Worldview</h2>
+      <p class="section-sub">ซ้าย: วัตถุแยกชิ้น ตำแหน่งแน่นอน ไม่ขึ้นกับผู้สังเกต · ขวา: สนามความน่าจะเป็นที่ซ้อนทับและพัวพันกัน ผู้สังเกตคือส่วนหนึ่งของระบบ — "การวัด" คือประตูที่เชื่อมสองโลกนี้เข้าด้วยกัน</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.00 — <b>worldview split</b></span>
+      <div class="diagram-body">
+        <svg class="diagram" viewBox="0 0 1000 380" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="qgrad" cx="50%" cy="50%" r="60%">
+              <stop offset="0%" stop-color="#9b7fc4" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#4fa8a0" stop-opacity="0.05"/>
+            </radialGradient>
+          </defs>
+
+          <text x="60" y="45" fill="#d9a441" font-size="14" font-weight="700" class="svg-label">NEWTONIAN</text>
+          <text x="820" y="45" fill="#9b7fc4" font-size="14" font-weight="700" class="svg-label" text-anchor="end">QUANTUM / RELATIONAL</text>
+
+          <!-- classical grid of solid boxes -->
+          <g>
+            <rect x="70" y="90" width="70" height="70" fill="#1a3450" stroke="#2b4a68"/>
+            <rect x="160" y="90" width="70" height="70" fill="#1a3450" stroke="#2b4a68"/>
+            <rect x="250" y="90" width="70" height="70" fill="#1a3450" stroke="#2b4a68"/>
+            <rect x="70" y="180" width="70" height="70" fill="#1a3450" stroke="#2b4a68"/>
+            <rect x="160" y="180" width="70" height="70" fill="#1a3450" stroke="#2b4a68"/>
+            <rect x="250" y="180" width="70" height="70" fill="#1a3450" stroke="#2b4a68"/>
+            <text x="105" y="129" fill="#8ea3b8" font-size="9" text-anchor="middle">object</text>
+            <text x="195" y="129" fill="#8ea3b8" font-size="9" text-anchor="middle">object</text>
+            <text x="285" y="129" fill="#8ea3b8" font-size="9" text-anchor="middle">object</text>
+            <text x="105" y="219" fill="#8ea3b8" font-size="9" text-anchor="middle">object</text>
+            <text x="195" y="219" fill="#8ea3b8" font-size="9" text-anchor="middle">object</text>
+            <text x="285" y="219" fill="#8ea3b8" font-size="9" text-anchor="middle">object</text>
+          </g>
+          <text x="190" y="300" fill="#8ea3b8" font-size="10.5" text-anchor="middle" class="svg-label">fixed position · independent of observer</text>
+
+          <!-- measurement gate in middle -->
+          <g>
+            <line x1="400" y1="60" x2="400" y2="300" stroke="#2b4a68" stroke-dasharray="4 5"/>
+            <rect x="365" y="150" width="70" height="40" rx="6" fill="#0d1c2b" stroke="#d9a441" stroke-width="1.5"/>
+            <text x="400" y="174" fill="#d9a441" font-size="10" text-anchor="middle" class="svg-label">MEASUREMENT</text>
+          </g>
+          <text x="400" y="215" fill="#5d7691" font-size="9" text-anchor="middle" class="svg-label">collapses possibility → outcome</text>
+
+          <!-- quantum overlapping probability field -->
+          <g>
+            <circle cx="640" cy="150" r="70" fill="url(#qgrad)"/>
+            <circle cx="720" cy="180" r="70" fill="url(#qgrad)"/>
+            <circle cx="680" cy="230" r="70" fill="url(#qgrad)"/>
+            <line x1="640" y1="150" x2="720" y2="180" stroke="#4fa8a0" stroke-width="1.4" opacity="0.8"/>
+            <line x1="720" y1="180" x2="680" y2="230" stroke="#9b7fc4" stroke-width="1.4" opacity="0.8"/>
+            <line x1="640" y1="150" x2="680" y2="230" stroke="#4fa8a0" stroke-width="1.4" opacity="0.8"/>
+            <text x="680" y="125" fill="#dce8f2" font-size="10" text-anchor="middle" class="svg-label">superposition</text>
+          </g>
+          <text x="680" y="300" fill="#8ea3b8" font-size="10.5" text-anchor="middle" class="svg-label">entangled · contextual · co-constituted with observer</text>
+        </svg>
+      </div>
+      <div class="hint" style="padding:0 1.4rem 1.4rem;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-faint);">แนวคิดเรื่อง "การวัด" ในฟิสิกส์ควอนตัม—ที่การสังเกตทำให้ความเป็นไปได้หลายอย่างยุบตัวลงเหลือผลลัพธ์เดียว—มักถูกศิลปินเปรียบเทียบกับกระบวนการสร้างงาน Paul Thomas ศาสตราจารย์ด้านทัศนศิลป์ UNSW ผู้ทำงานกับข้อมูลสปินอิเล็กตรอนจริง อธิบายว่า "<span style="color:var(--gold)">Quantum was a brand-new phenomenon that no one could imagine</span>" — <a href="https://qns.science/quantum-phenomena-expressed-in-art/" target="_blank" rel="noopener" style="color:var(--gold);">Paul Thomas, via qns.science ↗</a></div>
+    </div>
+  </section>
+
+  <!-- ================= 01 CORE CONCEPTS ================= -->
+  <section class="block" id="concepts">
+    <div class="section-head">
+      <span class="eyebrow">01 — Four organizing ideas</span>
+      <h2 class="section-title">Core Concepts</h2>
+      <p class="section-sub">คลิกการ์ดเพื่อดูคำอธิบายเต็มและตัวอย่างจากงานจริง</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.01 — <b>concept cards</b> · 4 ideas</span>
+      <div class="concept-grid" id="concept-grid"></div>
+    </div>
+  </section>
+
+  <!-- ================= 02 HISTORICAL ARC ================= -->
+  <section class="block" id="history">
+    <div class="section-head">
+      <span class="eyebrow">02 — From metaphor to material</span>
+      <h2 class="section-title">Historical Arc</h2>
+      <p class="section-sub">metaphor → cultural buzzword → literal engagement with quantum hardware — คลิกแต่ละช่วงเพื่อดูรายละเอียด</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.02 — <b>4-stage timeline</b></span>
+      <div class="tl-wrap" id="timeline-wrap"></div>
+    </div>
+  </section>
+
+  <!-- ================= 03 PHILOSOPHY TREE ================= -->
+  <section class="block" id="philosophy">
+    <div class="section-head">
+      <span class="eyebrow">03 — Mental model</span>
+      <h2 class="section-title">Art and Science as Branches of the Same Tree</h2>
+      <p class="section-sub">แนวคิดที่ผู้บรรยายในวงเสวนาศิลปะควอนตัมหยิบยกจาก Einstein — ทั้งศิลปะและวิทยาศาสตร์หยั่งรากจากความลึกลับและสัญชาตญาณเดียวกัน</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.03 — <b>root-branch diagram</b></span>
+      <div class="diagram-body">
+        <svg class="diagram" viewBox="0 0 800 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="trunkgrad" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0%" stop-color="#4fa8a0"/>
+              <stop offset="100%" stop-color="#9b7fc4"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="400" cy="220" rx="150" ry="26" fill="#16283d" stroke="#2b4a68"/>
+          <text x="400" y="226" fill="#dce8f2" font-size="13" text-anchor="middle" class="svg-label">mystery &amp; intuition</text>
+          <line x1="400" y1="220" x2="400" y2="130" stroke="url(#trunkgrad)" stroke-width="6"/>
+          <line x1="400" y1="150" x2="230" y2="75" stroke="url(#trunkgrad)" stroke-width="4"/>
+          <ellipse cx="230" cy="75" rx="85" ry="24" fill="#101f30" stroke="#4fa8a0" stroke-width="2"/>
+          <text x="230" y="80" fill="#dce8f2" font-size="13" text-anchor="middle" class="svg-label">science</text>
+          <text x="230" y="50" fill="#8ea3b8" font-size="10" text-anchor="middle" class="svg-label">probability</text>
+          <line x1="400" y1="150" x2="570" y2="75" stroke="url(#trunkgrad)" stroke-width="4"/>
+          <ellipse cx="570" cy="75" rx="85" ry="24" fill="#101f30" stroke="#9b7fc4" stroke-width="2"/>
+          <text x="570" y="80" fill="#dce8f2" font-size="13" text-anchor="middle" class="svg-label">art</text>
+          <text x="570" y="50" fill="#8ea3b8" font-size="10" text-anchor="middle" class="svg-label">uncertainty</text>
+        </svg>
+      </div>
+      <div class="hint" style="padding:0 1.4rem 1.4rem;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-faint);">โมเดลนี้เสนอให้มอง "ศิลปะควอนตัม" เป็นการ "quantifying uncertainty" — การจับ/แสดง/ทำให้ความไม่แน่นอนที่ทฤษฎีควอนตัมอธิบายไว้กลายเป็นรูปธรรม แทนที่จะพยายามแทนภาพความจริงที่ตายตัว</div>
+      <article class="essay" style="padding:0 1.4rem 1.8rem;max-width:none;">
+        <p>ในวงเสวนาศิลปะควอนตัม ผู้บรรยายมักหยิบยกแนวคิดของ Albert Einstein ที่มองว่าศิลปะกับวิทยาศาสตร์ไม่ใช่สองสาขาที่แยกขาดจากกัน แต่แตกกิ่งมาจากรากเดียวกัน Einstein เขียนไว้ในหนังสือ <em>Out of My Later Years</em> ว่า</p>
+        <blockquote class="quad-quote" style="margin:0 0 1rem;">"All religions, arts and sciences are branches of the same tree"
+          <cite style="display:block;margin-top:.4rem;font-family:'Noto Sans Thai',sans-serif;font-size:.72rem;color:var(--ink-faint);">— Albert Einstein, <a href="https://www.goodreads.com/quotes/33738-all-religions-arts-and-sciences-are-branches-of-the-same" target="_blank" rel="noopener" style="color:var(--ink-faint);">via goodreads.com ↗</a></cite>
+        </blockquote>
+        <p>รากที่ทั้งสองกิ่งแตกออกมาคือสิ่งที่ Einstein เรียกว่า "ความลึกลับ" (the mysterious) — เขาเขียนไว้อีกแห่งหนึ่งว่าความรู้สึกนี้คือ "แหล่งกำเนิดของศิลปะแท้และวิทยาศาสตร์แท้ทั้งหมด":</p>
+        <blockquote class="quad-quote" style="margin:0 0 1rem;">"The most beautiful thing we can experience is the mysterious"
+          <cite style="display:block;margin-top:.4rem;font-family:'Noto Sans Thai',sans-serif;font-size:.72rem;color:var(--ink-faint);">— Albert Einstein, <a href="https://todayinsci.com/E/Einstein_Albert/EinsteinAlbert-ScienceAndArt-Quotations.htm" target="_blank" rel="noopener" style="color:var(--ink-faint);">via todayinsci.com ↗</a></cite>
+        </blockquote>
+        <p>ไดอะแกรมด้านบนแปลแนวคิดนี้เป็นภาพ: ลำต้นเดียวกัน (mystery &amp; intuition) แตกเป็นสองกิ่ง — กิ่งวิทยาศาสตร์ที่ปลายยอดคือ "probability" (ภาษาที่นักฟิสิกส์ใช้พูดถึงความไม่แน่นอน) และกิ่งศิลปะที่ปลายยอดคือ "uncertainty" (ภาษาที่ศิลปินใช้พูดถึงสิ่งเดียวกันในเชิงประสบการณ์) ทั้งสองกิ่งจึงไม่ได้แข่งขันกันอธิบายความจริงเดียวกันคนละแบบ แต่เป็นสองวิธีพูดถึงรากเดียวกัน — นี่คือเหตุผลที่ผู้เสนอกรอบนี้เชื่อว่าศิลปะควอนตัมไม่ใช่ "ของเล่นทางความคิด" (gimmick) แต่เป็นส่วนขยายตามธรรมชาติของการเล่าเรื่องทางวิทยาศาสตร์</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= 04 DEBATES SPECTRUM ================= -->
+  <section class="block" id="debates">
+    <div class="section-head">
+      <span class="eyebrow">04 — Four unresolved tensions</span>
+      <h2 class="section-title">Debates: สเปกตรัมที่ยังไม่ปิดฉาก</h2>
+      <p class="section-sub">แต่ละแถบคือสเปกตรัมระหว่างสองขั้ว จุดวงกลมแสดงตำแหน่งที่วงการส่วนใหญ่อยู่ ณ ตอนนี้ (ไม่ใช่จุดที่ "ควรอยู่") — คลิกจุดเพื่อดูรายละเอียด hover ที่ไอคอนคำพูดเพื่อดูคำพูดตรงพร้อมชื่อผู้พูด</p>
+    </div>
+    <div class="diagram-frame" id="debates-frame">
+      <span class="frame-tag">FIG.04 — <b>debate spectrums</b> · 4 axes</span>
+    </div>
+  </section>
+
+  <!-- ================= 05 CRITICAL QUESTIONS RADIAL ================= -->
+  <section class="block" id="questions">
+    <div class="section-head">
+      <span class="eyebrow">05 — Six registers of inquiry</span>
+      <h2 class="section-title">Critical Questions</h2>
+      <p class="section-sub">คำถามเหล่านี้เป็นปัญหาเปิด ไม่ใช่ประเด็นที่มีคำตอบสำเร็จรูป — คลิกหมวดเพื่อดูคำถามทั้งหมดในกลุ่มนั้น</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.05 — <b>radial category map</b> · 6 categories × 18 questions</span>
+      <div class="diagram-body">
+        <svg class="diagram" id="svg-qradial" viewBox="0 0 800 560" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="q-detail-panel" id="q-detail"><span class="qd-empty">คลิกหมวดด้านบนเพื่อดูคำถามทั้งหมด...</span></div>
+    </div>
+  </section>
+
+  <!-- ================= 06 TAKEAWAYS ================= -->
+  <section class="block" id="takeaways">
+    <div class="section-head">
+      <span class="eyebrow">06 — For interdisciplinary practice</span>
+      <h2 class="section-title">Takeaways: โมเดลความคิดที่นำไปใช้ได้</h2>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.06 — <b>practice checklist</b></span>
+      <div class="take-grid" id="take-grid"></div>
+    </div>
+    <article class="essay" style="margin-top:1.6rem;">
+      <div class="callout">
+        หมายเหตุการอ้างอิง: คำพูดทุกจุดในหน้านี้ตรวจสอบกับเว็บจริงแล้ว (กรกฎาคม 2026) สั้นกว่า 15 คำ และมาจากคนละแหล่งกัน — ดูลิงก์เต็มทั้งหมดได้ในส่วน "Sources &amp; References" ด้านล่าง
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= SOURCES & REFERENCES ================= -->
+  <section class="block" id="references">
+    <div class="section-head">
+      <span class="eyebrow">Sources &amp; References</span>
+      <h2 class="section-title">แหล่งอ้างอิงทั้งหมด</h2>
+      <p class="section-sub">ลิงก์เต็มของทุกคำพูดและบทความที่อ้างถึงในหน้านี้ เรียงตามลำดับที่ปรากฏ</p>
+    </div>
+    <div class="diagram-frame">
+      <div class="diagram-body" style="padding:1.6rem 1.8rem;">
+        <ol style="font-family:'Noto Sans Thai',sans-serif;font-size:.86rem;color:#cfdce8;line-height:2;padding-left:1.3rem;margin:0;">
+          <li>Paul Thomas, "Quantum was a brand-new phenomenon that no one could imagine" — <a href="https://qns.science/quantum-phenomena-expressed-in-art/" target="_blank" rel="noopener" style="color:var(--gold);">qns.science/quantum-phenomena-expressed-in-art ↗</a></li>
+          <li>Kate Brown, "Will Quantum Computing Lead to a Renaissance in Art?" — <a href="https://news.artnet.com/art-world/quantum-computing-laure-prouvost-2628788" target="_blank" rel="noopener" style="color:var(--gold);">news.artnet.com ↗</a></li>
+          <li>Laure Prouvost, "We Felt a Star Dying" Digital Booklet — <a href="https://www.las-art.foundation/explore/digital-booklet-we-felt-a-star-dying" target="_blank" rel="noopener" style="color:var(--gold);">las-art.foundation ↗</a></li>
+          <li>"We Felt a Star Dying" exhibition page — <a href="https://www.grandpalais.fr/en/program/laure-prouvost-we-felt-star-dying" target="_blank" rel="noopener" style="color:var(--gold);">grandpalais.fr ↗</a></li>
+          <li>Albert Einstein, "All religions, arts and sciences are branches of the same tree" (Out of My Later Years) — <a href="https://www.goodreads.com/quotes/33738-all-religions-arts-and-sciences-are-branches-of-the-same" target="_blank" rel="noopener" style="color:var(--gold);">goodreads.com ↗</a></li>
+          <li>Albert Einstein, "The most beautiful thing we can experience is the mysterious" — <a href="https://todayinsci.com/E/Einstein_Albert/EinsteinAlbert-ScienceAndArt-Quotations.htm" target="_blank" rel="noopener" style="color:var(--gold);">todayinsci.com ↗</a></li>
+          <li>Gunseli Yalcinkaya, "How Art Went Quantum" — <a href="https://artreview.com/how-art-went-quantum-laure-prouvost-las-foundation-cern-ai-opinion-gunseli-yalcinkaya/" target="_blank" rel="noopener" style="color:var(--gold);">artreview.com ↗</a></li>
+          <li>Laure Prouvost interview, "the inherent madness of quantum physics" — <a href="https://www.the-berliner.com/art/we-felt-a-star-dying-laure-prouvost-interview-kraftwerk-berlin-madness-quantum-physics/" target="_blank" rel="noopener" style="color:var(--gold);">the-berliner.com ↗</a></li>
+          <li>Laure Prouvost interview — <a href="https://www.dazeddigital.com/art-photography/article/66284/1/laure-prouvost-felt-star-dying-uncertain-future-quantum-cosmos-kraftwerk-las-art" target="_blank" rel="noopener" style="color:var(--gold);">dazeddigital.com ↗</a></li>
+        </ol>
+      </div>
+      <div class="hint" style="padding:0 1.4rem 1.4rem;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-faint);">แหล่งอ้างอิงสำหรับหมวด Historical Arc (Kandinsky, Matta, Tanning), Critical Questions และ Debates อื่นๆ ที่ไม่มีคำพูดตรงมาจากการสังเคราะห์เอกสารวิจัยข้ามแหล่งที่ผู้ใช้ให้มา ยังไม่ได้ตรวจสอบเป็นรายบทความในรอบนี้ — ควรตรวจสอบเพิ่มก่อนอ้างอิงทางวิชาการ</div>
+    </div>
+  </section>
+
+</main>
+
+<footer>Concepts, timeline, debates, and questions synthesized from cross-referenced sources on quantum art discourse (2024–2026) · single-file interactive HTML</footer>
+
+<script>
+/* ============ HELPERS ============ */
+function ns(tag){ return document.createElementNS('http://www.w3.org/2000/svg', tag); }
+function txt(x,y,content,cls,anchor){ const t=ns('text'); t.setAttribute('x',x); t.setAttribute('y',y); if(cls) t.setAttribute('class',cls); if(anchor) t.setAttribute('text-anchor',anchor); t.textContent=content; return t; }
+function resolveVar(v){ if(v.startsWith('var(')){ return getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1)).trim(); } return v; }
+
+/* ============ TOOLTIP ============ */
+const tooltipEl = document.getElementById('tooltip');
+let ttHideTimer=null;
+function showQuoteTooltip(evt, quote, source, link){
+  clearTimeout(ttHideTimer);
+  tooltipEl.innerHTML = `<span class="tt-quote">"${quote}"</span><span class="tt-source">— ${source}</span>` + (link ? `<a class="tt-link" href="${link}" target="_blank" rel="noopener">เปิดแหล่งที่มา →</a>` : '');
+  tooltipEl.classList.add('show');
+  positionTooltip(evt);
+}
+function positionTooltip(evt){
+  const pad=16; let x=evt.clientX+pad, y=evt.clientY+pad;
+  const r = tooltipEl.getBoundingClientRect();
+  if(x+r.width>window.innerWidth-10) x=evt.clientX-r.width-pad;
+  if(y+r.height>window.innerHeight-10) y=evt.clientY-r.height-pad;
+  tooltipEl.style.left=x+'px'; tooltipEl.style.top=y+'px';
+}
+function scheduleHideTooltip(){ ttHideTimer=setTimeout(()=>tooltipEl.classList.remove('show'),220); }
+tooltipEl.addEventListener('mouseenter', ()=>clearTimeout(ttHideTimer));
+tooltipEl.addEventListener('mouseleave', scheduleHideTooltip);
+
+/* ============ 01 CONCEPT CARDS ============ */
+const CONCEPTS = [
+  {name:'Uncertainty &amp; Probability', color:'var(--c-found)',
+    def:'ระบบควอนตัมมีธรรมชาติเป็นความน่าจะเป็น ศิลปะทำให้เรา "รู้สึก" สิ่งนี้ได้แทนที่จะแค่อธิบาย',
+    more:'งานหลายชิ้นเข้ารหัสความไม่แน่นอนไว้ในพฤติกรรมของตัวงานเอง (ผลลัพธ์เชิงโต้ตอบ, quantum noise ในวิดีโอ) ทำให้ผู้ชมสัมผัสความไม่แน่นอนในฐานะเงื่อนไขของงาน ไม่ใช่แค่แนวคิด',
+    quote:'Quantum was a brand-new phenomenon that no one could imagine', quoteSource:'Paul Thomas, Professor UNSW Art &amp; Design',
+    link:'https://qns.science/quantum-phenomena-expressed-in-art/',
+    icon:'<circle cx="26" cy="26" r="20" fill="#d9a441" opacity="0.2"/><circle cx="26" cy="26" r="12" fill="#d9a441" opacity="0.35"/><circle cx="26" cy="26" r="5" fill="#dce8f2"/>'},
+  {name:'Superposition', color:'var(--c-epist)',
+    def:'หลายสถานะดำรงอยู่พร้อมกัน แสดงผ่านภาพซ้อน การเคลื่อนไหว หรือโหมดโต้ตอบ',
+    more:'งานบางชิ้นแสดงเวอร์ชัน "คลาสสิก" กับ "ควอนตัม" ที่แกว่งสลับกัน หรือให้ผู้ชมสลับมุมมองเองได้ ทำให้ superposition กลายเป็นโครงสร้างที่สัมผัสได้จริง ไม่ใช่แค่คำอธิบาย — นักวิจารณ์ Kate Brown บรรยายวิดีโอใน We Felt a Star Dying ว่า',
+    quote:'fluid, shifting, resistant to a singular interpretation', quoteSource:'Kate Brown, Artnet News',
+    link:'https://news.artnet.com/art-world/quantum-computing-laure-prouvost-2628788',
+    icon:'<rect x="10" y="10" width="32" height="32" fill="#2b4a68" opacity="0.6"/><rect x="14" y="14" width="32" height="32" fill="#4fa8a0" opacity="0.35"/><rect x="18" y="18" width="32" height="32" fill="#9b7fc4" opacity="0.35"/>'},
+  {name:'Entanglement', color:'var(--c-onto)',
+    def:'สถานะที่เชื่อมโยงกันข้ามระยะทาง แสดงผ่านการเคลื่อนไหวสะท้อนกัน เซนเซอร์ที่จับคู่กัน หรือวิดีโอที่ประสานกัน',
+    more:'ตัวอย่างเช่นประติมากรรมลอย "Cute Bits" (เล่นคำจาก qubits) ในผลงาน We Felt a Star Dying ของ Laure Prouvost ที่แขวนจากเพดานกระจกและสื่อถึงปรากฏการณ์ entanglement ซึ่งเชื่อมอนุภาคสองตัวในทันทีไม่ว่าระยะห่างจะเป็นเท่าใด',
+    quote:'Cute Bits', quoteSource:'Laure Prouvost, ชื่อผลงานประติมากรรมใน We Felt a Star Dying',
+    link:'https://www.grandpalais.fr/en/program/laure-prouvost-we-felt-star-dying',
+    icon:'<circle cx="18" cy="26" r="9" fill="#9b7fc4" opacity="0.4"/><circle cx="34" cy="26" r="9" fill="#4fa8a0" opacity="0.4"/><line x1="18" y1="26" x2="34" y2="26" stroke="#dce8f2" stroke-width="2"/>'},
+  {name:'Relational Reality', color:'var(--c-method)',
+    def:'โลกคือตาข่ายความสัมพันธ์ ไม่ใช่วัตถุที่ตายตัว ศิลปะกลายเป็นโหนดหนึ่งในเครือข่ายนั้น',
+    more:'งานเชิงโต้ตอบที่เปลี่ยนไปตามบริบท ผู้สังเกต และสิ่งแวดล้อม เน้นย้ำว่า "การมีอยู่" เป็นเรื่องเชิงบริบทและก่อร่างร่วมกัน มากกว่าจะถูกกำหนดไว้ล่วงหน้า — LAS Art Foundation อธิบายเป้าหมายของ We Felt a Star Dying ว่าต้องการ',
+    quote:'to trigger the switch all together from our Newtonian habits of translating the world to a quantum reality', quoteSource:'Laure Prouvost, ผ่าน LAS Art Foundation Digital Booklet',
+    link:'https://www.las-art.foundation/explore/digital-booklet-we-felt-a-star-dying',
+    icon:'<circle cx="16" cy="16" r="5" fill="#c9738f"/><circle cx="36" cy="16" r="5" fill="#4fa8a0"/><circle cx="26" cy="36" r="5" fill="#9b7fc4"/><line x1="16" y1="16" x2="36" y2="16" stroke="#dce8f2" stroke-width="1.4"/><line x1="16" y1="16" x2="26" y2="36" stroke="#dce8f2" stroke-width="1.4"/><line x1="36" y1="16" x2="26" y2="36" stroke="#dce8f2" stroke-width="1.4"/>'},
+];
+function buildConcepts(){
+  const el = document.getElementById('concept-grid');
+  el.innerHTML='';
+  CONCEPTS.forEach((c,i)=>{
+    const card = document.createElement('div');
+    card.className = 'concept-card';
+    card.style.setProperty('--accent', resolveVar(c.color));
+    let quoteHtml = c.quote ? `<span class="cq">"${c.quote}" — ${c.quoteSource}</span>` : '';
+    let linkHtml = c.link ? `<a href="${c.link}" target="_blank" rel="noopener" style="display:inline-block;margin-top:.4rem;font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:${resolveVar(c.color)};text-decoration:none;border-bottom:1px dotted currentColor;" onclick="event.stopPropagation()">เปิดแหล่งที่มา →</a>` : '';
+    card.innerHTML = `
+      <svg class="concept-icon" viewBox="0 0 52 52">${c.icon}</svg>
+      <span class="concept-name">${c.name}</span>
+      <div class="concept-def">${c.def}</div>
+      <span class="concept-toggle">อ่านเพิ่ม ▾</span>
+      <div class="concept-more" id="cmore-${i}">${c.more}${quoteHtml}${linkHtml}</div>
+    `;
+    card.addEventListener('click', ()=>{
+      const m = card.querySelector('.concept-more');
+      const t = card.querySelector('.concept-toggle');
+      m.classList.toggle('open');
+      t.textContent = m.classList.contains('open') ? 'ย่อ ▴' : 'อ่านเพิ่ม ▾';
+    });
+    el.appendChild(card);
+  });
+}
+buildConcepts();
+
+/* ============ 02 TIMELINE ============ */
+const HISTORY = [
+  {year:'1900s–1910s', title:'Early Abstraction &amp; Quantum Theory', desc:'กำเนิดทฤษฎีควอนตัม (Planck, Bohr, Schrödinger) เกิดขึ้นพร้อมกับการเติบโตของศิลปะแบบ abstraction — ภาพสีน้ำแบบ abstract ชิ้นแรกของ Kandinsky (1910) เกิดขึ้นในช่วงเวลาเดียวกัน'},
+  {year:'1920s–1940s', title:'Surrealism &amp; Uncertainty', desc:'ศิลปินอย่าง Roberto Matta และ Dorothea Tanning สำรวจจิตสำนึก ความกำกวม และรูปทรงคล้ายก้อนเมฆที่สั่นพ้องกับหลักความไม่แน่นอนของ Heisenberg และการตีความแบบโคเปนเฮเกน'},
+  {year:'ปลายศตวรรษที่ 20', title:'"Quantum" as Cultural Buzzword', desc:'ควอนตัมกลายเป็นศัพท์การตลาดและวัฒนธรรมป๊อป (quantum washing, quantum martial arts, Doctor Strange, Ant-Man) มักถูกใช้แบบตัดขาดจากฟิสิกส์จริง'},
+  {year:'2020s', title:'Real Quantum Hardware &amp; AI (Second Quantum Revolution)', desc:'การเข้าถึงควอนตัมคอมพิวเตอร์และแล็บ AI ควอนตัมจริง (Google Quantum AI, CERN, LAS Foundation) เปิดทางให้เกิดงานที่ไม่ใช่แค่อุปมา แต่มีฐานเชิงคำนวณจริง เช่น We Felt a Star Dying ของ Laure Prouvost และ Quantum Memories ของ Refik Anadol'},
+];
+function buildTimeline(){
+  const el = document.getElementById('timeline-wrap');
+  el.innerHTML = '';
+  HISTORY.forEach((h,i)=>{
+    const node = document.createElement('div');
+    node.className = 'tl-node';
+    node.innerHTML = `
+      <span class="tl-year">${h.year}</span>
+      <div class="tl-title">${h.title}</div>
+      <span class="tl-toggle">ดูรายละเอียด ▾</span>
+      <div class="tl-detail" id="tldetail-${i}">${h.desc}</div>
+    `;
+    node.addEventListener('click', ()=>{
+      const d = node.querySelector('.tl-detail');
+      const t = node.querySelector('.tl-toggle');
+      d.classList.toggle('open');
+      t.textContent = d.classList.contains('open') ? 'ย่อ ▴' : 'ดูรายละเอียด ▾';
+    });
+    el.appendChild(node);
+  });
+}
+buildTimeline();
+
+/* ============ 04 DEBATES ============ */
+const DEBATES = [
+  {title:'Speculation ↔ Real Quantum Computation', pos:28,
+    detail:'งานศิลปะ "ควอนตัม" ส่วนใหญ่ยังเป็นการจำลองหรือการคาดเดาเชิงแนวคิด มีเพียงส่วนน้อยที่ใช้ควอนตัมคอมพิวเตอร์จริง ทำให้สนามนี้ยังเป็นเชิงสมมติฐานเป็นหลัก ต่างจากศิลปะ AI ที่เครื่องมือและวาทกรรมพัฒนาแบบเรียลไทม์ แม้แต่ Laure Prouvost เองที่ได้เข้าถึงควอนตัมคอมพิวเตอร์จริงผ่าน Google Quantum AI ก็ยอมรับตรงไปตรงมาว่า',
+    counter:'ควรให้ความสำคัญกับการคาดเดาเชิงแนวคิด หรือควรมุ่งสู่การมีส่วนร่วมกับฮาร์ดแวร์ควอนตัมที่แม่นยำทางเทคนิค? ยังเป็นคำถามเปิด',
+    quote:'for now, quantum machines aren\'t really useful', quoteSource:'Laure Prouvost, The Berliner', link:'https://www.the-berliner.com/art/we-felt-a-star-dying-laure-prouvost-interview-kraftwerk-berlin-madness-quantum-physics/'},
+  {title:'Metaphor ↔ Material/Technical Engagement', pos:35,
+    detail:'มีความเสี่ยงที่ควอนตัมจะ "จมอยู่ในอุปมา" ถูกนำไปใช้กับวาทกรรมศิลปะเดิมโดยไม่ได้เกี่ยวข้องกับฟิสิกส์หรือเทคโนโลยีจริง — นักวิจารณ์ Gunseli Yalcinkaya เตือนไว้ใน ArtReview ว่าวงการศิลปะควอนตัมเสี่ยงที่จะ',
+    counter:'บางฝ่ายโต้แย้งว่าอุปมาและประสบการณ์ทางประสาทสัมผัสจำเป็นต่อการทำให้แนวคิดควอนตัมเข้าถึงได้และสั่นสะเทือนทางอารมณ์',
+    quote:'steeped and even lost in metaphor', quoteSource:'Gunseli Yalcinkaya, ArtReview', link:'https://artreview.com/how-art-went-quantum-laure-prouvost-las-foundation-cern-ai-opinion-gunseli-yalcinkaya/'},
+  {title:'Illustration ↔ Questioning Reality', pos:45,
+    detail:'งานบางชิ้นถูกวิจารณ์ว่าเพียงแค่ "แสดงภาพประกอบ" แนวคิดควอนตัม (entanglement, superposition) มากกว่าจะใช้มันตั้งคำถามต่อธรรมชาติของความจริง การรับรู้ และอำนาจกระทำ (ดูคำวิจารณ์ของ Kate Brown ใน FIG.01 การ์ด "Superposition" ที่ยกย่องงานที่ "ต้านทานการตีความแบบเดียว" ว่าอยู่ฝั่งที่ทะเยอทะยานกว่า)',
+    counter:'จุดยืนที่ทะเยอทะยานกว่าคือปล่อยให้ความไม่แน่นอนเชิงควอนตัมปรับโครงสร้างกระบวนการสร้างสรรค์เอง นำความแปลกประหลาดและความไม่แน่นอนกลับเข้าสู่ความคิดสร้างสรรค์'},
+  {title:'Accessibility ↔ Conceptual Depth', pos:50,
+    detail:'สถาบันต้องการให้ศิลปะทำให้แนวคิดควอนตัมเข้าถึงง่าย แต่ศิลปินต่อต้านการ "แปล" วิทยาศาสตร์แบบตรงไปตรงมา — เมื่อถูกถามเรื่องการสูญเสียการควบคุมในกระบวนการทำงานกับควอนตัมคอมพิวเตอร์ Laure Prouvost ตอบอย่างเปิดเผยว่า',
+    counter:'ต้องลดทอนมากแค่ไหนจึงจะยอมรับได้ ก่อนที่งานจะสูญเสียความซับซ้อนที่ตัวมันเองพยายามจะสื่อ?',
+    quote:'It\'s magical... I love this moment where you lose control', quoteSource:'Laure Prouvost, Dazed', link:'https://www.dazeddigital.com/art-photography/article/66284/1/laure-prouvost-felt-star-dying-uncertain-future-quantum-cosmos-kraftwerk-las-art'},
+];
+function buildDebates(){
+  const frame = document.getElementById('debates-frame');
+  DEBATES.forEach((d,i)=>{
+    const wrap = document.createElement('div');
+    wrap.className = 'debate';
+    const quoteIcon = d.quote ? `<span class="quote-icon" id="qicon-${i}" title="hover เพื่อดูคำพูดตรง">"</span>` : '';
+    wrap.innerHTML = `
+      <div class="debate-title">${d.title}${quoteIcon}</div>
+      <div class="debate-track" id="track-${i}">
+        <div class="debate-marker" id="marker-${i}" style="left:${d.pos}%"></div>
+      </div>
+      <div class="debate-poles"><span>ฝั่งซ้าย</span><span>ฝั่งขวา</span></div>
+      <div class="debate-detail" id="ddetail-${i}">${d.detail}<span class="counter">${d.counter}</span></div>
+    `;
+    frame.appendChild(wrap);
+    wrap.querySelector('.debate-marker').addEventListener('click', ()=>{
+      document.getElementById(`ddetail-${i}`).classList.toggle('open');
+    });
+    if(d.quote){
+      const icon = wrap.querySelector(`#qicon-${i}`);
+      icon.addEventListener('mouseenter', (e)=> showQuoteTooltip(e, d.quote, d.quoteSource, d.link));
+      icon.addEventListener('mousemove', positionTooltip);
+      icon.addEventListener('mouseleave', scheduleHideTooltip);
+      icon.addEventListener('click', (e)=>{ e.stopPropagation(); if(d.link) window.open(d.link,'_blank','noopener'); });
+    }
+  });
+}
+buildDebates();
+
+/* ============ 05 QUESTIONS RADIAL ============ */
+const QCATS = [
+  {id:'found', name:'Foundational', color:'var(--c-found)', questions:[
+    {q:'What is quantum art?', a:'ศิลปะที่ใช้แนวคิดควอนตัมเป็นอุปมา ศิลปะที่ใช้ข้อมูล/ฮาร์ดแวร์ควอนตัมจริง หรือศิลปะที่รับเอาโลกทัศน์ควอนตัม (ความไม่แน่นอน ความสัมพันธ์ ความไม่เฉพาะที่) มาเป็นโครงสร้างและกระบวนการ?'},
+    {q:'How do you make your art "quantum"?', a:'ปฏิบัติการ วัสดุ หรือกระบวนการแบบใดที่เปลี่ยนงานจาก "เกี่ยวกับควอนตัม" ให้กลายเป็น "ควอนตัม" จริง — แค่ใช้คำว่า superposition หรือ entanglement พอไหม หรืองานต้องพัวพันเชิงคำนวณ/วัตถุกับระบบควอนตัมจริง?'},
+    {q:'What is a "quantum mark"?', a:'รอยขีด ท่าทาง หรือพิกเซล สามารถเป็น "ควอนตัม" ในตัวมันเองได้หรือไม่ หรือความเป็นควอนตัมเป็นเพียงคุณสมบัติของระบบที่มันปรากฏอยู่?'},
+  ]},
+  {id:'epist', name:'Epistemological', color:'var(--c-epist)', questions:[
+    {q:'What are the "observables" in quantum art?', a:'มิติที่ "สังเกตได้" ของงานศิลปะคือรูปทรงภาพ พฤติกรรมเชิงโต้ตอบ กระบวนการ หรือประสบการณ์ของผู้ชม? งานยุบตัวความเป็นไปได้หลายอย่างให้เหลือรูปแบบเดียว หรือปฏิเสธการยุบตัวนั้นโดยตั้งใจ?'},
+    {q:'How can art make the invisible visible without reducing it to a classical image?', a:'ถ้าความจริงเชิงควอนตัมโดยพื้นฐานไม่ใช่ภาพ (เป็นความน่าจะเป็น เชิงสัมพันธ์ ขึ้นกับบริบท) ศิลปะจะหลีกเลี่ยงการทำให้มันกลายเป็นภาพแบบคลาสสิกที่เข้าใจผิดได้อย่างไร ในขณะที่ยังทำให้รับรู้ได้?'},
+    {q:'How does uncertainty function as a creative force rather than a problem?', a:'แทนที่จะมองความไม่แน่นอนเป็นสิ่งที่ต้องอธิบายหรือแก้ไข ศิลปะสามารถมองมันเป็นพลังสร้างสรรค์ได้หรือไม่ — ออกแบบงานให้ผลลัพธ์ มุมมอง หรือสถานะหลายอย่างอยู่ร่วมกันได้พร้อมกัน?'},
+  ]},
+  {id:'onto', name:'Ontological', color:'var(--c-onto)', questions:[
+    {q:'Does quantum art assume a relational ontology, and how does it enact it?', a:'ถ้าโลกคือเครือข่ายความสัมพันธ์ที่พัวพันกันมากกว่าวัตถุตายตัว งานศิลปะเองทำหน้าที่เป็นโหนดหนึ่งในเครือข่ายนั้นอย่างไร — เปลี่ยนไปตามบริบท ผู้สังเกต และสิ่งแวดล้อมหรือไม่?'},
+    {q:'Can art shift from a Newtonian to a quantum paradigm of being?', a:'ศิลปะสามารถพาเราจากโลกทัศน์แบบกำหนดตายตัว (deterministic) ไปสู่ "กระบวนทัศน์ควอนตัม" ที่การมีอยู่ลื่นไหล ขึ้นกับบริบท และหลายช่วงเวลาพร้อมกันได้หรือไม่?'},
+    {q:'What happens to the "self" as observer in a quantum-art context?', a:'ถ้าการวัดทำให้ความเป็นไปได้ยุบตัว ใครคือ "ผู้สังเกต" ในงานศิลปะ — ผู้ชม เครื่องจักร ข้อมูล หรือศิลปิน? งานทำลายความเป็นตัวตนเดี่ยวที่มั่นคงหรือไม่?'},
+  ]},
+  {id:'method', name:'Methodological', color:'var(--c-method)', questions:[
+    {q:'Is metaphor sufficient, or must there be material/technical engagement?', a:'เมื่อไหร่ที่ "ศิลปะควอนตัม" กลายเป็นเพียงศัพท์แฟชั่น และเมื่อไหร่ที่มันกลายเป็นการปฏิบัติที่พัวพันกับฟิสิกส์ ข้อมูล หรือการคำนวณควอนตัมอย่างแท้จริง?'},
+    {q:'How should artists collaborate with physicists and institutions like CERN, MIT, or quantum labs?', a:'จริยธรรมและญาณวิทยาของความร่วมมือแบบนี้คืออะไร — การแปล การร่วมสร้าง หรือการใช้เป็นเครื่องมือ? ใครเป็นผู้ควบคุมโครงสร้างพื้นฐานควอนตัมและการเล่าเรื่อง?'},
+    {q:'What is the role of AI and quantum computing together?', a:'ภาพที่สร้างโดย AI ที่อ้างว่า "ควอนตัม" ต่างจากงานที่ใช้ quantum noise หรือผลลัพธ์จากควอนตัมคอมพิวเตอร์จริงอย่างไร — อะไรสูญเสียหรือได้มาจากการแทนที่กัน?'},
+  ]},
+  {id:'socio', name:'Socio-political', color:'var(--c-socio)', questions:[
+    {q:'What is the political stakes of presenting a "quantum reality" in art?', a:'ถ้าศิลปะควอนตัมส่งเสริมโลกทัศน์แบบความไม่แน่นอน ความเชื่อมโยง และความเปราะบาง มันท้าทายวาทกรรมเรื่องการควบคุมและการกำหนดตายตัวหรือไม่?'},
+    {q:'Does quantum art democratize quantum science or further mystify it?', a:'ศิลปะสามารถทำให้แนวคิดควอนตัมเข้าถึงง่ายและสั่นสะเทือนทางอารมณ์ได้ หรือมันเสี่ยงที่จะกลายเป็นสเปกตาเคิลที่ลอกความซับซ้อนออกภายใต้หน้ากากของความเรียบง่าย?'},
+    {q:'How does quantum art relate to sustainability and ecological thinking?', a:'ถ้าภววิทยาเป็นแบบเชิงสัมพันธ์และพัวพันกัน สิ่งนี้สนับสนุนจริยธรรมแห่งการดูแล ความเชื่อมโยง และความรับผิดชอบต่อสิ่งไม่ใช่มนุษย์หรือไม่?'},
+  ]},
+  {id:'aesthetic', name:'Aesthetic &amp; Critical', color:'var(--c-aesthetic)', questions:[
+    {q:'Is quantum art a new chapter in art history, or a rebranding of existing practices?', a:'มันต่างจากแนวปฏิบัติแบบ abstraction, surrealism หรือ conceptual art ที่เคยจัดการกับความไม่แน่นอน ความหลากหลาย และความไม่เป็นเส้นตรงมาก่อนแล้วมากน้อยเพียงใด?'},
+    {q:'What is creativity in an age of AI and quantum computing?', a:'ถ้าทั้ง AI และระบบควอนตัมสร้างผลลัพธ์ที่ไม่มีมนุษย์คนใดควบคุมได้ทั้งหมด เราจะเข้าใจอำนาจกระทำ การประพันธ์ และเจตนาทางศิลปะอย่างไร?'},
+    {q:'Can art reintroduce strangeness into a world that seeks total predictability?', a:'ศิลปะควอนตัมทำหน้าที่เป็นรูปแบบหนึ่งของการต่อต้านโลกทัศน์แบบวิศวกรรมเกินจริงและกำหนดตายตัวได้หรือไม่ ด้วยการทำให้ความไม่แน่นอน ความกำกวม และความสัมพันธ์กลายเป็นสิ่งที่สัมผัสได้?'},
+  ]},
+];
+function renderQRadial(){
+  const svg = document.getElementById('svg-qradial');
+  svg.innerHTML = '';
+  const cx=400, cy=270, R=180;
+  const n = QCATS.length;
+  svg.appendChild((()=>{ const c=ns('circle'); c.setAttribute('cx',cx);c.setAttribute('cy',cy);c.setAttribute('r',60); c.setAttribute('fill','#0d1c2b'); c.setAttribute('stroke',resolveVar('var(--gold)')); c.setAttribute('stroke-width',2); return c; })());
+  const hub = txt(cx,cy-2,'QUANTUM ART','qcat-label','middle'); hub.style.fill=resolveVar('var(--gold)'); svg.appendChild(hub);
+  const hub2 = txt(cx,cy+16,'open questions','qcat-label','middle'); hub2.style.fill=resolveVar('var(--ink-dim)'); hub2.style.fontWeight='400'; hub2.style.fontSize='9px'; svg.appendChild(hub2);
+
+  QCATS.forEach((cat,i)=>{
+    const angle = (i/n)*2*Math.PI - Math.PI/2;
+    const x = cx + R*Math.cos(angle), y = cy + R*Math.sin(angle);
+    const line = ns('line'); line.setAttribute('x1',cx); line.setAttribute('y1',cy); line.setAttribute('x2',x); line.setAttribute('y2',y);
+    line.setAttribute('stroke', resolveVar(cat.color)); line.setAttribute('stroke-width',1.2); line.setAttribute('opacity',0.4);
+    svg.appendChild(line);
+    const g = ns('g'); g.setAttribute('class','qcat-node');
+    const dot = ns('circle'); dot.setAttribute('cx',x); dot.setAttribute('cy',y); dot.setAttribute('r',42);
+    dot.setAttribute('fill', resolveVar(cat.color)); dot.setAttribute('opacity',0.16); dot.setAttribute('stroke',resolveVar(cat.color)); dot.setAttribute('stroke-width',1.6);
+    g.appendChild(dot);
+    const label = txt(x, y+4, cat.name, 'qcat-label', 'middle');
+    label.style.fill = resolveVar(cat.color);
+    g.appendChild(label);
+    const sub = txt(x, y+18, `${cat.questions.length} questions`, 'qcat-label','middle');
+    sub.style.fill = resolveVar('var(--ink-faint)'); sub.style.fontWeight='400'; sub.style.fontSize='8px';
+    g.appendChild(sub);
+    g.addEventListener('click', ()=>{
+      const panel = document.getElementById('q-detail');
+      let html = `<span class="qd-title" style="color:${resolveVar(cat.color)}">${cat.name}</span>`;
+      cat.questions.forEach(item=>{
+        html += `<div class="qd-item" style="border-color:${resolveVar(cat.color)}"><span class="qq">${item.q}</span><span class="qa">${item.a}</span></div>`;
+      });
+      panel.innerHTML = html;
+    });
+    svg.appendChild(g);
+  });
+}
+renderQRadial();
+
+/* ============ 06 TAKEAWAYS ============ */
+const TAKEAWAYS = [
+  {name:'Relational Ontology', desc:'มองสสาร ร่างกาย และเทคโนโลยีเป็นเครือข่ายที่พัวพันกัน มากกว่าจะเป็นสิ่งที่แยกขาดจากกัน — เข้ากันได้ดีกับความสนใจเรื่องภววิทยา "ma" และ embodiment'},
+  {name:'Probabilistic Creative Model', desc:'แทนที่จะมุ่งหา "การนำเสนอที่ถูกต้อง" เพียงหนึ่งเดียว ออกแบบงานที่หลายสถานะ มุมมอง หรือผลลัพธ์อยู่ร่วมกันได้ สะท้อน superposition'},
+  {name:'Sensorial Epistemology', desc:'ใช้กลิ่น เสียง ความร้อน และการเคลื่อนไหว ให้ผู้ชม "รู้สึก" ความไม่แน่นอนเชิงควอนตัม ไม่ใช่แค่เข้าใจเชิงสติปัญญาอย่างเดียว'},
+  {name:'Critical Stance on Control', desc:'วางตำแหน่งศิลปะควอนตัมเป็นวิธีตั้งคำถามต่อวิทยาศาสตร์-เทคโนโลยีแบบกำหนดตายตัวและมุ่งควบคุม โดยเชิดชูความเปราะบาง การรบกวน และความคาดเดาไม่ได้ว่ามีคุณค่า ไม่ใช่ข้อบกพร่อง'},
+];
+function buildTakeaways(){
+  const el = document.getElementById('take-grid');
+  el.innerHTML = '';
+  TAKEAWAYS.forEach(t=>{
+    const card = document.createElement('div');
+    card.className = 'take-card';
+    card.innerHTML = `<span class="take-name">${t.name}</span><div class="take-desc">${t.desc}</div>`;
+    el.appendChild(card);
+  });
+}
+buildTakeaways();
+</script>
+</body>
+</html>

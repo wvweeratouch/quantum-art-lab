@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArtScience Asia — แผนที่การปฏิบัติรายประเทศ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+Thai:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b1826; --paper:#101f30; --line:#2b4a68;
+    --grid:rgba(150,190,220,0.10); --grid-strong:rgba(150,190,220,0.22);
+    --ink:#dce8f2; --ink-dim:#8ea3b8; --ink-faint:#5d7691;
+    --gold:#d9a441;
+    --c-sg:#9b7fc4; --c-cn:#c96a55; --c-in:#8fae5d; --c-th:#d9a441;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:radial-gradient(ellipse at 15% -10%, rgba(217,164,65,0.06), transparent 45%),radial-gradient(ellipse at 92% 6%, rgba(155,127,196,0.05), transparent 40%),var(--bg);color:var(--ink);font-family:'Noto Sans Thai','IBM Plex Mono',sans-serif;line-height:1.7;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;letter-spacing:.2em;text-transform:uppercase;font-size:.7rem;color:var(--gold);}
+  header.hero{max-width:1220px;margin:0 auto;padding:5.5rem 2rem 3rem;border-bottom:1px solid var(--line);}
+  h1.title{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:500;font-size:clamp(1.9rem,4.6vw,3.1rem);line-height:1.22;margin:1rem 0 1rem;max-width:22ch;color:#f2f6fa;}
+  h1.title em{font-style:italic;color:var(--gold);}
+  .lede{font-family:'Noto Serif Thai',serif;font-size:1.02rem;color:var(--ink-dim);max-width:68ch;margin:0;}
+  .toc{display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;margin-top:2rem;font-family:'IBM Plex Mono',monospace;font-size:.76rem;}
+  .toc a{color:var(--ink-dim);text-decoration:none;border-bottom:1px dotted var(--ink-faint);padding-bottom:2px;}
+  .toc a:hover{color:var(--gold);border-color:var(--gold);}
+  .toc span.n{color:var(--ink-faint);margin-right:.35rem;}
+  main{max-width:1220px;margin:0 auto;padding:0 2rem;}
+  section.block{padding:4rem 0;border-bottom:1px solid var(--line);}
+  section.block:last-of-type{border-bottom:none;}
+  .section-head{margin-bottom:1.8rem;max-width:80ch;}
+  h2.section-title{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:500;font-size:clamp(1.35rem,2.6vw,1.9rem);margin:.5rem 0 .6rem;color:#f2f6fa;}
+  .section-sub{color:var(--ink-dim);font-size:.95rem;font-family:'Noto Serif Thai',serif;}
+
+  /* ---------- country flow cards ---------- */
+  .country-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem;}
+  @media(max-width:820px){.country-grid{grid-template-columns:1fr;}}
+  .country-card{background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden;position:relative;}
+  .country-card::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px;pointer-events:none;}
+  .country-head{position:relative;z-index:2;padding:1.3rem 1.5rem 1.1rem;border-bottom:2px solid var(--accent);}
+  .country-flag{font-size:1.5rem;margin-right:.5rem;}
+  .country-name{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:600;font-size:1.25rem;color:#f2f6fa;}
+  .country-tag{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-top:.3rem;}
+  .flow{position:relative;z-index:2;padding:1.2rem 1.5rem 1.5rem;}
+  .fnode{padding:.7rem 0 .9rem;border-left:2px solid var(--accent);padding-left:1rem;margin-left:.3rem;position:relative;}
+  .fnode:not(:last-child){margin-bottom:.15rem;}
+  .fnode::before{content:"";position:absolute;left:-6px;top:.85rem;width:9px;height:9px;border-radius:50%;background:var(--accent);}
+  .fnode .flabel{font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:.25rem;}
+  .fnode .fcontent{font-family:'Noto Sans Thai',sans-serif;font-size:.88rem;color:#cfdce8;}
+
+  /* ---------- thailand deep dive (org-chart style) ---------- */
+  .orgchart{position:relative;z-index:2;padding:2.4rem 1.4rem 1.6rem;}
+  .oc-row{display:flex;justify-content:center;}
+  .oc-box{background:rgba(217,164,65,.06);border:1px solid var(--gold);border-radius:5px;padding:.9rem 1.1rem;text-align:center;font-family:'Noto Sans Thai',sans-serif;font-size:.82rem;color:var(--ink);}
+  .oc-box .oc-label{display:block;font-family:'IBM Plex Mono',monospace;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.35rem;}
+  .oc-single{max-width:640px;margin:0 auto;}
+  .oc-connector{width:2px;height:26px;background:var(--line);margin:0 auto;}
+  .oc-branch-wrap{display:flex;flex-direction:column;align-items:center;}
+  .oc-hbar{height:2px;background:var(--line);width:82%;position:relative;margin-bottom:0;}
+  .oc-children{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;width:100%;margin-top:0;}
+  @media(max-width:720px){.oc-children{grid-template-columns:1fr;}}
+  .oc-child{display:flex;flex-direction:column;align-items:center;}
+  .oc-stem{width:2px;height:20px;background:var(--line);}
+
+  .diagram-frame{background:var(--paper);border:1px solid var(--line);border-radius:6px;position:relative;overflow:hidden;}
+  .diagram-frame::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px;pointer-events:none;}
+  .frame-tag{position:absolute;top:14px;left:18px;font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);z-index:3;}
+  .frame-tag b{color:var(--gold);font-weight:600;}
+  svg.diagram{width:100%;height:auto;display:block;position:relative;z-index:2;}
+  .diagram-body{padding:2.2rem 1rem 1rem;}
+
+  .axis-label{font-family:'IBM Plex Mono',monospace;font-size:11px;fill:var(--gold);font-weight:600;letter-spacing:.03em;}
+  .quad-label{font-family:'Noto Sans Thai',sans-serif;font-size:10px;fill:var(--ink-faint);}
+  .pt-label{font-family:'IBM Plex Mono',monospace;font-size:12px;fill:#f2f6fa;font-weight:600;}
+  .pt-sub{font-family:'Noto Sans Thai',sans-serif;font-size:9px;fill:var(--ink-dim);}
+
+  /* compact comparison table */
+  .cmp-table{width:100%;border-collapse:collapse;font-size:.85rem;margin-top:1.6rem;}
+  .cmp-table th,.cmp-table td{border:1px solid var(--line);padding:.6rem .8rem;text-align:left;vertical-align:top;}
+  .cmp-table th{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);background:rgba(255,255,255,.02);}
+  .cmp-table td{font-family:'Noto Sans Thai',sans-serif;color:#cfdce8;}
+  .cmp-table td.country-cell{font-family:'IBM Plex Mono',monospace;font-weight:600;}
+
+  /* essay */
+  article.essay{font-family:'Noto Serif Thai',serif;font-size:.99rem;color:#cfdce8;max-width:80ch;}
+  article.essay h3{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:600;font-size:1.25rem;color:var(--gold);margin:2.2rem 0 .7rem;}
+  article.essay h3:first-child{margin-top:0;}
+  article.essay p{margin:0 0 1rem;}
+  article.essay strong{color:#f2f6fa;}
+  blockquote.evi{border-left:2px solid var(--ink-faint);margin:1rem 0 1.2rem;padding:.4rem 0 .4rem 1.2rem;font-family:'IBM Plex Mono',monospace;font-size:.82rem;color:var(--ink-dim);line-height:1.7;}
+  blockquote.evi cite{display:block;margin-top:.4rem;font-family:'Noto Sans Thai',sans-serif;font-size:.72rem;color:var(--ink-faint);font-style:normal;}
+  .callout{border-left:2px solid var(--gold);background:rgba(217,164,65,.06);padding:1rem 1.3rem;font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--ink-dim);margin:1.6rem 0;line-height:1.65;}
+
+  footer{max-width:1220px;margin:0 auto;padding:3rem 2rem 6rem;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-faint);}
+
+  @media(max-width:720px){header.hero{padding:3.5rem 1.2rem 2rem;}main{padding:0 1.2rem;}section.block{padding:2.6rem 0;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="eyebrow">Field notes — ArtScience Practices, Asia</span>
+  <h1 class="title">ArtScience Asia: <em>รายประเทศ</em> สู่การเปรียบเทียบระดับภูมิภาค</h1>
+  <p class="lede">
+    สังเคราะห์จากเอกสารวิจัย 3 ชิ้น เปรียบเทียบ "ดีเอ็นเอ" ของ ArtScience ใน สิงคโปร์ จีน อินเดีย และไทย
+    ผ่านโครงสร้างเดียวกัน (driver → manifestation → hubs → challenge) ก่อนวางตำแหน่งทั้งสี่ประเทศบนแผนที่เปรียบเทียบเชิงภูมิภาค
+  </p>
+  <nav class="toc">
+    <a href="#countries"><span class="n">01</span>รายประเทศ</a>
+    <a href="#thailand-deep"><span class="n">02</span>ไทย — ระบบนิเวศเต็มรูป</a>
+    <a href="#regional"><span class="n">03</span>เปรียบเทียบระดับภูมิภาค</a>
+    <a href="#essay"><span class="n">04</span>บทความ + หลักฐานอ้างอิง</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ================= 01 COUNTRY CARDS ================= -->
+  <section class="block" id="countries">
+    <div class="section-head">
+      <span class="eyebrow">01 — One country, one diagram</span>
+      <h2 class="section-title">ArtScience Practices รายประเทศ</h2>
+      <p class="section-sub">แต่ละประเทศอ่านผ่านโครงสร้างเดียวกัน 4 ชั้น เพื่อให้เทียบกันตรงๆ ได้</p>
+    </div>
+
+    <div class="country-grid">
+
+      <!-- SINGAPORE -->
+      <div class="country-card" style="--accent:var(--c-sg)">
+        <div class="country-head">
+          <span class="country-flag">🇸🇬</span><span class="country-name">สิงคโปร์</span>
+          <div class="country-tag">Institutional Blueprint</div>
+        </div>
+        <div class="flow">
+          <div class="fnode"><span class="flabel">Driver</span><span class="fcontent">รัฐวางแผนจากส่วนกลาง (top-down) เพื่อการท่องเที่ยว การศึกษา และนโยบายเมืองอัจฉริยะ</span></div>
+          <div class="fnode"><span class="flabel">Manifestation</span><span class="fcontent">พิพิธภัณฑ์ศิลปะเชิงสถาบันและพื้นที่สาธารณะที่ผ่านการคัดกรอง (sanitized civic space)</span></div>
+          <div class="fnode"><span class="flabel">Key hubs</span><span class="fcontent">ArtScience Museum (Marina Bay Sands), NUS, NTU</span></div>
+          <div class="fnode"><span class="flabel">Challenge</span><span class="fcontent">ผลงานต้องตอบโจทย์นโยบายรัฐ พื้นที่สำหรับงานทดลองนอกกรอบ (underground) มีจำกัด</span></div>
+        </div>
+      </div>
+
+      <!-- CHINA -->
+      <div class="country-card" style="--accent:var(--c-cn)">
+        <div class="country-head">
+          <span class="country-flag">🇨🇳</span><span class="country-name">จีน</span>
+          <div class="country-tag">Hyper-Scale &amp; Speculative</div>
+        </div>
+        <div class="flow">
+          <div class="fnode"><span class="flabel">Driver</span><span class="fcontent">มูลค่าพาณิชย์มหาศาลผสานโครงสร้างพื้นฐานเทคโนโลยีของรัฐ/บริษัทยักษ์ใหญ่</span></div>
+          <div class="fnode"><span class="flabel">Manifestation</span><span class="fcontent">VR/simulation แบบดื่มด่ำ สื่อไซไฟ และ speculative futures ที่แทรกเข้าห้างและพื้นที่สาธารณะ</span></div>
+          <div class="fnode"><span class="flabel">Key hubs</span><span class="fcontent">เขตเทคโนโลยีเซินเจิ้น, เซี่ยงไฮ้, 798 Art Zone ปักกิ่ง</span></div>
+          <div class="fnode"><span class="flabel">Challenge</span><span class="fcontent">พึ่งพาเส้นทางของรัฐและบริษัทเทคโนโลยีอย่างหนัก</span></div>
+        </div>
+      </div>
+
+      <!-- INDIA -->
+      <div class="country-card" style="--accent:var(--c-in)">
+        <div class="country-head">
+          <span class="country-flag">🇮🇳</span><span class="country-name">อินเดีย</span>
+          <div class="country-tag">Frugal &amp; Ethno-Science</div>
+        </div>
+        <div class="flow">
+          <div class="fnode"><span class="flabel">Driver</span><span class="fcontent">ความยืดหยุ่นแบบรากหญ้า (Jugaad), มูลนิธิเพื่อสังคม, องค์กรไม่แสวงหากำไร</span></div>
+          <div class="fnode"><span class="flabel">Manifestation</span><span class="fcontent">งานอนุรักษ์เชิงชาติพันธุ์วรรณา, เทคโนโลยีบูรณะโบราณสถานและศิลปะการแสดงที่กำลังสูญหาย</span></div>
+          <div class="fnode"><span class="flabel">Key hubs</span><span class="fcontent">ศูนย์บ่มเพาะ IIT, MAP Bengaluru, Kochi-Muziris Biennale</span></div>
+          <div class="fnode"><span class="flabel">Challenge</span><span class="fcontent">ขาดแคลนทุนวิจัยและพัฒนา (R&amp;D) อย่างรุนแรง การดำเนินงานกระจัดกระจาย</span></div>
+        </div>
+      </div>
+
+      <!-- THAILAND -->
+      <div class="country-card" style="--accent:var(--c-th)">
+        <div class="country-head">
+          <span class="country-flag">🇹🇭</span><span class="country-name">ไทย</span>
+          <div class="country-tag">Experiential &amp; Creative</div>
+        </div>
+        <div class="flow">
+          <div class="fnode"><span class="flabel">Driver</span><span class="fcontent">ไลฟ์สไตล์และซอฟต์พาวเวอร์เชิงสร้างสรรค์ ขับเคลื่อนโดยเอเจนซี สตูดิโอเอกชน สปอนเซอร์</span></div>
+          <div class="fnode"><span class="flabel">Manifestation</span><span class="fcontent">งานติดตั้งเชิงโต้ตอบ เทศกาล projection-mapping และประสบการณ์เชิงเมือง</span></div>
+          <div class="fnode"><span class="flabel">Key hubs</span><span class="fcontent">bit.studio, Eyedropper Fill, 27 June Studio, CEA, Bangkok Design Week</span></div>
+          <div class="fnode"><span class="flabel">Challenge</span><span class="fcontent">ระบบงานแยกส่วน (siloed) ขาดทุนวิจัยเชิงวิชาการส่วนกลางสำหรับ ArtScience บริสุทธิ์</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= 02 THAILAND DEEP DIVE ================= -->
+  <section class="block" id="thailand-deep">
+    <div class="section-head">
+      <span class="eyebrow">02 — Zoom in</span>
+      <h2 class="section-title">ไทย: ระบบนิเวศเต็มรูป (Policy → Practice → Bottleneck)</h2>
+      <p class="section-sub">เอกสารต้นฉบับมีรายละเอียดของไทยลึกกว่าประเทศอื่น จึงขยายเป็นแผนภาพ org-chart แยกต่างหาก</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.02 — <b>ecosystem tree</b> · policy → partners → 3 branches → domains → bottlenecks</span>
+      <div class="orgchart">
+
+        <div class="oc-row"><div class="oc-box oc-single">
+          <span class="oc-label">National policy drivers</span>
+          Thailand 4.0 · BCG Economic Model · Creative Soft Power · MHESI Sandboxes
+        </div></div>
+        <div class="oc-connector"></div>
+
+        <div class="oc-row"><div class="oc-box oc-single">
+          <span class="oc-label">Primary executing partners</span>
+          CEA (Creative Economy Agency) · IPST &amp; Ministry of Education · TIMCA
+        </div></div>
+        <div class="oc-connector"></div>
+
+        <div class="oc-branch-wrap">
+          <div class="oc-hbar"></div>
+          <div class="oc-children">
+            <div class="oc-child">
+              <div class="oc-stem"></div>
+              <div class="oc-box">
+                <span class="oc-label">Creative tech</span>
+                bit.studio (AI/Robotics) · Eyedropper Fill · 27 June Studio
+              </div>
+            </div>
+            <div class="oc-child">
+              <div class="oc-stem"></div>
+              <div class="oc-box">
+                <span class="oc-label">Academic cohorts</span>
+                UTCC Harbour.Space · Bangkok Uni (Virtual Production) · Satit Prasarnmit
+              </div>
+            </div>
+            <div class="oc-child">
+              <div class="oc-stem"></div>
+              <div class="oc-box">
+                <span class="oc-label">Regional landscapes</span>
+                Bangkok Design Week · Awakening Bangkok · Isan / Chiang Mai Fest
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="oc-connector"></div>
+
+        <div class="oc-row"><div class="oc-box oc-single">
+          <span class="oc-label">Local application domains</span>
+          Digital Heritage Mapping (Ayutthaya VR) · Immersive Mental Health Spaces · Agrarian Smart Farming &amp; Eco-Textiles
+        </div></div>
+        <div class="oc-connector"></div>
+
+        <div class="oc-row"><div class="oc-box oc-single" style="border-color:var(--ink-faint);background:rgba(255,255,255,.02);">
+          <span class="oc-label" style="color:var(--ink-faint)">Systemic bottlenecks</span>
+          Fragmented rural-urban translation · Siloed, non-transdisciplinary teacher bias · Rote-based testing vs. project-based labs
+        </div></div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 03 REGIONAL COMPARISON ================= -->
+  <section class="block" id="regional">
+    <div class="section-head">
+      <span class="eyebrow">03 — Cross-country synthesis</span>
+      <h2 class="section-title">เปรียบเทียบระดับภูมิภาค</h2>
+      <p class="section-sub">แกน X: Grassroots/Independent ↔ State/Institutional · แกน Y: Heritage/Social purpose ↔ Commercial/Spectacle</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.03 — <b>positioning matrix</b> · 4 countries</span>
+      <div class="diagram-body">
+        <svg class="diagram" viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg">
+          <rect x="90" y="70" width="720" height="420" fill="none" stroke="var(--grid-strong)"/>
+          <line x1="450" y1="70" x2="450" y2="490" stroke="var(--grid-strong)" stroke-dasharray="3 4"/>
+          <line x1="90" y1="280" x2="810" y2="280" stroke="var(--grid-strong)" stroke-dasharray="3 4"/>
+
+          <text x="90" y="510" class="axis-label" text-anchor="start">GRASSROOTS / INDEPENDENT</text>
+          <text x="810" y="510" class="axis-label" text-anchor="end">STATE / INSTITUTIONAL</text>
+          <text x="80" y="490" class="axis-label" text-anchor="end">HERITAGE / SOCIAL</text>
+          <text x="80" y="76"  class="axis-label" text-anchor="end">COMMERCIAL / SPECTACLE</text>
+
+          <text x="270" y="440" class="quad-label" text-anchor="middle">community-rooted, conservation</text>
+          <text x="630" y="440" class="quad-label" text-anchor="middle">civic, curated, safety-first</text>
+          <text x="270" y="120" class="quad-label" text-anchor="middle">independent studios, lifestyle</text>
+          <text x="630" y="120" class="quad-label" text-anchor="middle">state+corporate spectacle</text>
+
+          <!-- India -->
+          <circle cx="176" cy="418" r="9" fill="var(--c-in)"/>
+          <text x="192" y="414" class="pt-label" fill="var(--c-in)">India</text>
+          <text x="192" y="430" class="pt-sub">frugal, NGO-led, heritage tech</text>
+
+          <!-- Thailand -->
+          <circle cx="292" cy="266" r="9" fill="var(--c-th)"/>
+          <text x="308" y="262" class="pt-label" fill="var(--c-th)">Thailand</text>
+          <text x="308" y="278" class="pt-sub">private studios, creative economy</text>
+
+          <!-- China -->
+          <circle cx="486" cy="98" r="9" fill="var(--c-cn)"/>
+          <text x="502" y="94" class="pt-label" fill="var(--c-cn)">China</text>
+          <text x="502" y="110" class="pt-sub">state+corporate, sci-fi spectacle</text>
+
+          <!-- Singapore -->
+          <circle cx="702" cy="150" r="9" fill="var(--c-sg)"/>
+          <text x="718" y="146" class="pt-label" fill="var(--c-sg)">Singapore</text>
+          <text x="718" y="162" class="pt-sub">top-down, tourism-safe institution</text>
+        </svg>
+      </div>
+    </div>
+
+    <table class="cmp-table">
+      <thead><tr><th>ประเทศ</th><th>ปรัชญาหลัก</th><th>แหล่งทุนหลัก</th><th>ศูนย์กลาง/แพลตฟอร์ม</th></tr></thead>
+      <tbody>
+        <tr><td class="country-cell" style="color:var(--c-sg)">สิงคโปร์</td><td>วางแผนจากส่วนกลาง มุ่งอนาคต ปลอดภัยไว้ก่อน</td><td>นโยบายวัฒนธรรมรัฐ, ทุนระดับชาติ, การท่องเที่ยว</td><td>ArtScience Museum (MBS), NUS, NTU</td></tr>
+        <tr><td class="country-cell" style="color:var(--c-cn)">จีน</td><td>สเกลใหญ่ยักษ์ เชิงพาณิชย์ ผสานเทคของรัฐ</td><td>บริษัทยักษ์ใหญ่ (Tencent, JD), รัฐบาลท้องถิ่น</td><td>เซินเจิ้น, เซี่ยงไฮ้, 798 Art Zone ปักกิ่ง</td></tr>
+        <tr><td class="country-cell" style="color:var(--c-in)">อินเดีย</td><td>รากหญ้า ยืดหยุ่นสูง (Jugaad), มรดกวัฒนธรรม</td><td>มูลนิธิสังคม, สถาบันบ่มเพาะอิสระ, เครือข่ายชุมชน</td><td>IIT incubators, MAP Bengaluru, Kochi-Muziris</td></tr>
+        <tr><td class="country-cell" style="color:var(--c-th)">ไทย</td><td>ความบันเทิงเชิงสร้างสรรค์ เทศกาลระดับเมือง</td><td>เอเจนซีโฆษณา, สตูดิโอเอกชน, สปอนเซอร์</td><td>bit.studio, CEA, Bangkok Design Week</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ================= 04 ESSAY ================= -->
+  <section class="block" id="essay">
+    <div class="section-head">
+      <span class="eyebrow">04 — Annotated with source evidence</span>
+      <h2 class="section-title">บทความสรุป พร้อมหลักฐานอ้างอิง</h2>
+    </div>
+    <article class="essay">
+
+      <p class="section-sub" style="margin-bottom:1.6rem;">ฉบับปรับปรุง: แทนที่การอ้างอิงจากเอกสารสรุปที่อัปโหลด ด้วยการสืบค้นเว็บจริงเพื่อยืนยันแต่ละกรณีจากแหล่งปฐมภูมิ/สื่อข่าว — คำพูดที่ยกมาทุกจุดสั้นกว่า 15 คำและมาจากคนละแหล่งกัน ส่วนที่เหลือเรียบเรียงเป็นร้อยแก้วของผู้เขียนเอง</p>
+
+      <h3>สิงคโปร์: ArtScience Museum และพันธกิจที่ประกาศไว้ตั้งแต่การออกแบบอาคาร</h3>
+      <p>ArtScience Museum เปิดทำการปี 2011 ในกลุ่ม Marina Bay Sands เป็นพิพิธภัณฑ์เอกชนที่ใหญ่ที่สุดในสิงคโปร์ นิทรรศการถาวรหลักเกิดจากความร่วมมือกับกลุ่มศิลปินดิจิทัลญี่ปุ่น teamLab ภายใต้ชื่อ "Future World: Where Art Meets Science" ซึ่งประกาศพันธกิจของพิพิธภัณฑ์ไว้ในชื่อโดยตรง Honor Harger ผู้อำนวยการบริหารของพิพิธภัณฑ์ อธิบายว่าตัวอาคาร (ออกแบบให้มีรูปทรงคล้ายดอกบัวโดยสถาปนิก Moshe Safdie) นั้น</p>
+      <blockquote class="evi">"was always intended to be a place where art and science came together"<cite>— Honor Harger, Executive Director, สัมภาษณ์กับ blooloop.com</cite></blockquote>
+      <p>สะท้อนแนวทาง top-down ที่วางศิลปะ-วิทยาศาสตร์ไว้เป็นส่วนหนึ่งของสถาปัตยกรรมและนโยบายรัฐตั้งแต่ต้น มากกว่าจะเป็นโปรแกรมที่เพิ่มเข้ามาภายหลัง</p>
+
+      <h3>จีน: เมื่อผู้ก่อตั้ง Tencent ลงทุนสร้างพิพิธภัณฑ์ศิลปะเอง</h3>
+      <p>ภาพที่ชัดที่สุดของโมเดลจีนไม่ใช่แค่การสนับสนุนเทคโนโลยีให้พิพิธภัณฑ์ที่มีอยู่แล้ว แต่คือการที่บริษัทเทคโนโลยีลงทุนสร้างสถาบันศิลปะขึ้นใหม่ทั้งหมด Pony Ma ผู้ก่อตั้ง Tencent กำลังสร้าง Róng Museum of Art มูลค่า 4,500 ตารางเมตรในเขตหนานซาน เซินเจิ้น ออกแบบโดยสถาปนิก Ole Scheeren มีกำหนดเปิดปี 2027 ขณะที่ JD.com คู่แข่งก็ประกาศสร้าง JD Museum ในย่านเดียวกัน Ole Scheeren อธิบายนัยของโครงการนี้ว่าผู้ก่อตั้ง Tencent กำลังใช้ตำแหน่งของบริษัทเพื่อ</p>
+      <blockquote class="evi">"to open new ground for culture and urban development"<cite>— Ole Scheeren, สถาปนิก, ให้สัมภาษณ์กับ blooloop.com</cite></blockquote>
+      <p>ก่อนหน้านั้น Tencent ก็ร่วมมือกับพิพิธภัณฑ์พระราชวังต้องห้ามมาแล้วตั้งแต่ปี 2016 โดยรองประธาน Tencent อธิบายจุดเริ่มต้นของความร่วมมือว่าเป็นการจับมือกัน</p>
+      <blockquote class="evi">"in 2016 to apply digital technologies to museums for cultural heritage conservation"<cite>— Cheng Wu, Vice President, Tencent, ผ่าน PRNewswire</cite></blockquote>
+      <p>สื่อศิลปะอย่าง Artnet ตั้งข้อสังเกตว่าเซินเจิ้นเองก็รู้ตัวว่ายังมีภาพลักษณ์เป็น</p>
+      <blockquote class="evi">"cultural desert"<cite>— Artnet News</cite></blockquote>
+      <p>และกำลังใช้เงินทุนจากบริษัทเทคโนโลยีเป็นเครื่องมือหลักในการเปลี่ยนภาพลักษณ์นั้น</p>
+
+      <h3>อินเดีย: Vizara Technologies กับมรดกที่แปลงเป็นข้อมูลดิจิทัล</h3>
+      <p>Vizara Technologies ก่อตั้งโดยผู้ถือปริญญาเอกจาก IIT Delhi, IIT Kharagpur และ MIT ทำงานร่วมกับ Archaeological Survey of India และกระทรวงวัฒนธรรมอินเดีย สร้างผลิตภัณฑ์ "Vizara ViRaasat" — ตู้คีออสก์แบบผสานความจริง (mixed-reality) ที่มีแบบจำลอง 3 มิติพิมพ์ขนาดย่อของโบราณสถาน 5 แห่งทั่วประเทศ ซึ่ง 4 ใน 5 แห่งเป็นมรดกโลกของยูเนสโก รวมถึงวัด Vittala ที่ Hampi บริษัทอธิบายแนวทางการทำงานของตนเองว่าเป็นการ</p>
+      <blockquote class="evi">"combining art with science, and creativity with technology"<cite>— Vizara Technologies, หน้า About อย่างเป็นทางการ</cite></blockquote>
+      <p>ตัวอย่างนี้ยืนยันภาพโมเดลอินเดียแบบ "frugal &amp; ethno-science" ได้ตรงมาก — ขับเคลื่อนด้วยการอนุรักษ์มรดกและเครือข่ายสถาบันรัฐ มากกว่าการสร้างสเปกตาเคิลเพื่อความบันเทิง</p>
+
+      <h3>ไทย: CEA, Bangkok Design Week และ bit.studio</h3>
+      <p>Bangkok Design Week 2026 ซึ่งจัดโดย Creative Economy Agency (CEA) และดึงผู้เข้าชมกว่า 400,000 คน สร้างมูลค่าทางเศรษฐกิจกว่า 1,000 ล้านบาทในเวลา 11 วัน ประธาน CEA อธิบายพันธกิจของหน่วยงานไว้ตรงไปตรงมาว่าคือการ</p>
+      <blockquote class="evi">"drive the country's creative economy by developing people, businesses, and cities"<cite>— Chaiyong Ratana-Angkura, Chairman, CEA, ผ่าน Bangkok Post</cite></blockquote>
+      <p>โดยใช้กลยุทธ์ที่เรียกว่า "Festivalisation" — ใช้เทศกาลเป็นกลไกสร้างพื้นที่ทดลองและเชื่อมเครือข่ายสร้างสรรค์ในเมือง ยืนยันภาพโมเดลไทยที่ขับเคลื่อนด้วยเทศกาลมากกว่าสถาบันวิจัยถาวร ในด้านสตูดิโอสร้างสรรค์ bit.studio (ก่อตั้งปี 2012) คือกรณีที่ตรวจสอบได้จริง ผลงาน FLOCK OF — ฝูงปลาหุ่นยนต์อ่อน (soft robotics) ที่ลอยในอากาศ — จัดแสดงมาแล้วกว่า 25 ประเทศ และเคยได้รับเชิญไปแสดงที่ Ars Electronica Festival ออสเตรีย ผู้ก่อตั้งสตูดิโอ Kiattiyot Panichprecha อธิบายเจตนาของงานว่าต้องการให้ผู้ชม</p>
+      <blockquote class="evi">"step inside the piece and embark on a novel experience"<cite>— Kiattiyot Panichprecha, ผู้ก่อตั้ง bit.studio, ให้สัมภาษณ์กับ art4d.com</cite></blockquote>
+      <p>ส่วน TIMCA (Thai Immersive Media Creator Association) ที่เอกสารต้นฉบับกล่าวถึง ก็เป็นองค์กรที่มีอยู่จริง เคยนำทีมศิลปิน projection-mapping ขึ้นแสดงบนอาคารศาลาว่าการกรุงเทพมหานครในงาน Bangkok Design Week ร่วมกับผู้สนับสนุนอย่าง Epson Thailand — ยืนยันภาพโมเดลไทยที่ขับเคลื่อนด้วยสตูดิโอเอกชนและเทศกาลระดับเมืองได้ตรงกับที่เอกสารสรุปไว้</p>
+
+      <h3>สังเคราะห์ข้ามประเทศ</h3>
+      <p>เมื่อวางทั้งสี่ประเทศบนแกน <strong>Grassroots–State</strong> และ <strong>Heritage–Spectacle</strong> (FIG.03) จะเห็นว่าไม่มีประเทศใดอยู่ตรงกลางพอดี — แต่ละประเทศเอียงไปทางขั้วใดขั้วหนึ่งชัดเจน อินเดียอยู่มุม grassroots-heritage ขับเคลื่อนด้วยสถาบันรัฐและ NGO เพื่อการอนุรักษ์ จีนอยู่มุม state/corporate-spectacle แบบสุดขั้ว ถึงขนาดที่บริษัทเทคโนโลยีลงทุนสร้างพิพิธภัณฑ์เอง สิงคโปร์อยู่มุม state-institutional ที่ประกาศพันธกิจศิลปะ-วิทยาศาสตร์ไว้ในสถาปัตยกรรมตั้งแต่ต้น ขณะที่ไทยอยู่กึ่งกลางค่อนไปทาง independent studio และ festival-driven spectacle ระดับกลาง ไม่มีทั้งงบรัฐกลางแบบสิงคโปร์และเงินทุนบริษัทเทคระดับจีน</p>
+
+      <div class="callout">
+        หมายเหตุระเบียบวิธี: คำพูดและข้อเท็จจริงข้างต้นทุกจุดตรวจสอบกับแหล่งเว็บจริงแล้ว (สื่อข่าว เว็บไซต์ทางการของสถาบัน/บริษัท และบทสัมภาษณ์) ไม่ได้อ้างอิงจากเอกสารสรุปที่อัปโหลดอีกต่อไป อย่างไรก็ตาม ยังมีบางจุดในเอกสารต้นฉบับที่ไม่ได้ตรวจสอบในรอบนี้ — โดยเฉพาะรายละเอียดฝั่งการศึกษาไทย เช่นสถานะปัจจุบันของ "MHESI Sandboxes" หรือขอบเขตงานที่แท้จริงของ IPST ในโครงการ STEAM ซึ่งควรตรวจสอบเพิ่มเติมก่อนนำไปอ้างอิงในงานวิชาการหรือ Conceptual Atlas ของ Khwantum Project
+      </div>
+    </article>
+  </section>
+
+</main>
+
+<footer>Diagrams (FIG.01–03) synthesized from uploaded docs · Essay (Section 04) revised with web-verified sources, July 2026 · single-file HTML</footer>
+
+</body>
+</html>

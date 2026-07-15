@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta name="robots" content="noindex,nofollow">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แผนที่ภูมิทัศน์ศิลปะควอนตัมโลก — Prototype v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Serif+Thai:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b1826; --paper:#101f30; --panel:#0f2136; --line:#2b4a68;
+    --grid:rgba(150,190,220,0.10); --grid-strong:rgba(150,190,220,0.22);
+    --ink:#dce8f2; --ink-dim:#8ea3b8; --ink-faint:#5d7691;
+    --gold:#d9a441;
+    --c-installation:#4fa8a0;
+    --c-performance:#c9738f;
+    --c-sound:#9b7fc4;
+    --c-game:#8fae5d;
+    --c-graphic:#c9825a;
+    --r-europe:#5f89b3;
+    --r-global:#8fae5d;
+    --r-asia:#9b7fc4;
+    --r-china:#c96a55;
+    --r-th:#d9a441;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:
+      radial-gradient(ellipse at 15% -10%, rgba(217,164,65,0.06), transparent 45%),
+      radial-gradient(ellipse at 92% 6%, rgba(79,168,160,0.05), transparent 40%),
+      var(--bg);
+    color:var(--ink); font-family:'Noto Sans Thai','IBM Plex Mono',sans-serif; line-height:1.7;
+  }
+  .eyebrow{font-family:'IBM Plex Mono',monospace;letter-spacing:.2em;text-transform:uppercase;font-size:.7rem;color:var(--gold);}
+  header.hero{max-width:1260px;margin:0 auto;padding:5.5rem 2rem 3rem;border-bottom:1px solid var(--line);}
+  h1.title{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:500;font-size:clamp(1.9rem,4.6vw,3.2rem);line-height:1.2;margin:1rem 0 1rem;max-width:22ch;color:#f2f6fa;}
+  h1.title em{font-style:italic;color:var(--gold);}
+  .lede{font-family:'Noto Serif Thai',serif;font-size:1.02rem;color:var(--ink-dim);max-width:70ch;margin:0;}
+  .toc{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;margin-top:2rem;font-family:'IBM Plex Mono',monospace;font-size:.74rem;}
+  .toc a{color:var(--ink-dim);text-decoration:none;border-bottom:1px dotted var(--ink-faint);padding-bottom:2px;}
+  .toc a:hover{color:var(--gold);border-color:var(--gold);}
+  .toc span.n{color:var(--ink-faint);margin-right:.35rem;}
+  main{max-width:1260px;margin:0 auto;padding:0 2rem;}
+  section.block{padding:4rem 0;border-bottom:1px solid var(--line);}
+  section.block:last-of-type{border-bottom:none;}
+  .section-head{margin-bottom:1.8rem;max-width:80ch;}
+  h2.section-title{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:500;font-size:clamp(1.35rem,2.6vw,1.9rem);margin:.5rem 0 .6rem;color:#f2f6fa;}
+  .section-sub{color:var(--ink-dim);font-size:.95rem;font-family:'Noto Serif Thai',serif;}
+
+  .diagram-frame{background:var(--paper);border:1px solid var(--line);border-radius:6px;position:relative;overflow:hidden;}
+  .diagram-frame::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px;pointer-events:none;}
+  .frame-tag{position:absolute;top:14px;left:18px;font-family:'IBM Plex Mono',monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);z-index:3;}
+  .frame-tag b{color:var(--gold);font-weight:600;}
+  svg.diagram{width:100%;height:auto;display:block;position:relative;z-index:2;}
+  .diagram-body{padding:2.2rem 1rem 1rem;}
+
+  .axis-label{font-family:'IBM Plex Mono',monospace;font-size:11px;fill:var(--gold);font-weight:600;letter-spacing:.03em;}
+  .col-label{font-family:'IBM Plex Mono',monospace;font-size:12.5px;fill:var(--gold);font-weight:700;letter-spacing:.02em;}
+  .col-sub{font-family:'Noto Sans Thai',sans-serif;font-size:9.5px;fill:var(--ink-dim);}
+  .tick-label{font-family:'IBM Plex Mono',monospace;font-size:9.5px;fill:var(--ink-faint);}
+  .quad-label{font-family:'Noto Sans Thai',sans-serif;font-size:10px;fill:var(--ink-faint);}
+  .zone-label{font-family:'IBM Plex Mono',monospace;font-size:11px;fill:var(--ink-faint);letter-spacing:.08em;text-transform:uppercase;}
+  .net-label{font-family:'IBM Plex Mono',monospace;font-size:10px;fill:var(--ink);font-weight:600;}
+
+  .node{cursor:pointer;transition:opacity .2s;}
+  .node:hover circle, .node:hover path.dot{ stroke:#fff; stroke-width:2; }
+
+  /* legend / filter controls */
+  .legend{display:flex;flex-wrap:wrap;gap:.6rem;padding:1rem 1.4rem 1.5rem;border-top:1px solid var(--line);font-family:'IBM Plex Mono',monospace;font-size:.72rem;}
+  .chip{display:flex;align-items:center;gap:.45rem;padding:.35rem .7rem;border:1px solid var(--line);border-radius:20px;cursor:pointer;color:var(--ink-dim);user-select:none;transition:.15s;background:transparent;}
+  .chip .dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  .chip.active{color:var(--ink);border-color:currentColor;background:rgba(255,255,255,0.03);}
+  .chip.dim{opacity:.35;}
+  .hint{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-faint);padding:0 1.4rem 1.2rem;}
+
+  /* ---------- shared tooltip ---------- */
+  #tooltip{
+    position:fixed; z-index:9999; max-width:320px;
+    background:#0d1c2b; border:1px solid var(--gold); border-radius:6px;
+    padding:.85rem 1rem; font-family:'Noto Sans Thai',sans-serif; font-size:.8rem;
+    color:var(--ink); box-shadow:0 10px 30px rgba(0,0,0,.5);
+    opacity:0; pointer-events:none; transition:opacity .12s; line-height:1.55;
+  }
+  #tooltip.show{ opacity:1; pointer-events:auto; }
+  #tooltip .tt-title{ font-family:'Newsreader','Noto Serif Thai',serif; font-weight:600; font-size:1rem; color:#f2f6fa; display:block; margin-bottom:.15rem; }
+  #tooltip .tt-sub{ font-family:'IBM Plex Mono',monospace; font-size:.68rem; color:var(--gold); text-transform:uppercase; letter-spacing:.04em; display:block; margin-bottom:.5rem; }
+  #tooltip .tt-desc{ color:#cfdce8; margin-bottom:.5rem; }
+  #tooltip .tt-quote{ border-left:2px solid var(--ink-faint); padding-left:.6rem; font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--ink-dim); margin-bottom:.5rem; }
+  #tooltip .tt-link{ font-family:'IBM Plex Mono',monospace; font-size:.72rem; color:var(--gold); text-decoration:none; border-bottom:1px dotted var(--gold); }
+  #tooltip .tt-link:hover{ color:#fff; border-color:#fff; }
+
+  /* ---------- axis1 columns ---------- */
+  .col-zone{ fill:rgba(255,255,255,0.015); stroke:var(--grid-strong); }
+
+  /* ---------- institution & commentary cards ---------- */
+  .inst-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin:1.4rem 0;}
+  @media(max-width:800px){.inst-grid{grid-template-columns:1fr;}}
+  .inst-card{background:var(--paper);border:1px solid var(--line);border-left:2px solid var(--gold);border-radius:5px;padding:1rem 1.2rem;}
+  .inst-name{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:600;font-size:1.02rem;color:#f2f6fa;display:block;margin-bottom:.15rem;}
+  .inst-region{font-family:'IBM Plex Mono',monospace;font-size:.64rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:.55rem;}
+  .inst-desc{font-family:'Noto Sans Thai',sans-serif;font-size:.85rem;color:#cfdce8;margin-bottom:.6rem;}
+  .inst-link{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--gold);text-decoration:none;border-bottom:1px dotted var(--gold);}
+  .inst-link:hover{color:#fff;border-color:#fff;}
+
+  article.essay{font-family:'Noto Serif Thai',serif;font-size:.99rem;color:#cfdce8;max-width:80ch;}
+  article.essay h3{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:600;font-size:1.2rem;color:var(--gold);margin:1.8rem 0 .6rem;}
+  article.essay h3:first-child{margin-top:0;}
+  article.essay p{margin:0 0 1rem;}
+  article.essay strong{color:#f2f6fa;}
+  .callout{border-left:2px solid var(--gold);background:rgba(217,164,65,.06);padding:1rem 1.3rem;font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--ink-dim);margin:1.4rem 0;line-height:1.65;}
+
+  /* ---------- artwork cards ---------- */
+  .card-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin-top:1.6rem;}
+  @media(max-width:820px){.card-grid{grid-template-columns:1fr;}}
+  .art-card{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:1.1rem 1.25rem 1.2rem;position:relative;overflow:hidden;}
+  .art-card::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px;pointer-events:none;}
+  .art-head{position:relative;z-index:2;margin-bottom:.3rem;}
+  .art-name{font-family:'Newsreader','Noto Serif Thai',serif;font-weight:600;font-size:1.08rem;color:#f2f6fa;}
+  .art-meta{position:relative;z-index:2;font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:var(--ink-faint);margin-bottom:.6rem;}
+  .art-tags{position:relative;z-index:2;display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.65rem;}
+  .tag{font-family:'IBM Plex Mono',monospace;font-size:.64rem;padding:.2rem .55rem;border-radius:12px;border:1px solid currentColor;white-space:nowrap;}
+  .tag.medium-tag{opacity:.9;}
+  .art-desc{position:relative;z-index:2;font-family:'Noto Sans Thai',sans-serif;font-size:.84rem;color:#cfdce8;margin-bottom:.6rem;}
+  .art-quote{position:relative;z-index:2;border-left:2px solid var(--ink-faint);padding-left:.7rem;font-family:'IBM Plex Mono',monospace;font-size:.74rem;color:var(--ink-dim);margin-bottom:.65rem;line-height:1.6;}
+  .art-quote cite{display:block;margin-top:.3rem;font-family:'Noto Sans Thai',sans-serif;font-size:.66rem;color:var(--ink-faint);font-style:normal;}
+  .art-link{position:relative;z-index:2;font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--gold);text-decoration:none;border-bottom:1px dotted var(--gold);}
+  .art-link:hover{color:#fff;border-color:#fff;}
+
+  .tag-legend{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0 0;}
+
+  footer{max-width:1260px;margin:0 auto;padding:3rem 2rem 6rem;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--ink-faint);}
+
+  @media(max-width:720px){
+    header.hero{padding:3.5rem 1.2rem 2rem;} main{padding:0 1.2rem;} section.block{padding:2.6rem 0;}
+  }
+</style>
+</head>
+<body>
+
+<div id="tooltip"></div>
+
+<header class="hero">
+  <span class="eyebrow">Prototype v2 — Global Quantum Art Cartography</span>
+  <h1 class="title">แผนที่ภูมิทัศน์<em>ศิลปะควอนตัม</em>โลก</h1>
+  <p class="lede">
+    ฉบับปรับปรุง: แกนที่ 1 เปลี่ยนเป็น 3 หมวดชัดเจน (Quantum-inspired / Quantum-native / Data-driven) แทนสเกลต่อเนื่อง
+    เพิ่มแกนเครือข่ายสถาบัน-ผลงาน พร้อม hover tooltip แสดงรายละเอียดเต็มและลิงก์ต้นฉบับทุกจุด
+    และท้ายไฟล์มีการ์ดสรุปผลงานครบทุกชิ้นที่รวบรวมมา (26 ชิ้น) พร้อมป้ายกำกับกรอบการอ่านควอนตัม
+  </p>
+  <nav class="toc">
+    <a href="#axis1"><span class="n">01</span>Inspired / Native / Data-driven</a>
+    <a href="#axis2"><span class="n">02</span>Medium clusters</a>
+    <a href="#axis3"><span class="n">03</span>Ontological–Political matrix</a>
+    <a href="#axis4"><span class="n">04</span>Network: ผลงาน↔สถาบัน</a>
+    <a href="#institutions"><span class="n">05</span>สถาบัน</a>
+    <a href="#commentary"><span class="n">06</span>Commentary</a>
+    <a href="#cards"><span class="n">07</span>การ์ดผลงานทั้งหมด</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ================= AXIS 1 ================= -->
+  <section class="block" id="axis1">
+    <div class="section-head">
+      <span class="eyebrow">แกนที่ 1 — ปรับใหม่</span>
+      <h2 class="section-title">Quantum-inspired / Quantum-native / Data-driven</h2>
+      <p class="section-sub">สามหมวดแยกขาด แทนสเกลต่อเนื่อง 0–10 เดิม: <strong>Inspired</strong> = ยืมแนวคิด/อุปมาควอนตัม, <strong>Native</strong> = ใช้ฮาร์ดแวร์/โค้ดควอนตัมจริงเป็นสื่อ, <strong>Data-driven</strong> = ใช้ข้อมูลจากการทดลอง/เครื่องมือวัดจริงมาแปลงเป็นงาน — ไอคอนกระจายตามแนวตั้งในแต่ละคอลัมน์เพื่อไม่ให้ทับกัน</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.01 — <b>categorical columns</b> · 3 groups · N=26</span>
+      <div class="diagram-body">
+        <svg class="diagram" id="svg-axis1" viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="legend" id="legend-1"></div>
+      <div class="hint">hover ที่จุดเพื่อดูรายละเอียดเต็มและลิงก์ต้นฉบับ · คลิก legend เพื่อกรอง</div>
+    </div>
+  </section>
+
+  <!-- ================= AXIS 2 ================= -->
+  <section class="block" id="axis2">
+    <div class="section-head">
+      <span class="eyebrow">แกนที่ 2</span>
+      <h2 class="section-title">Medium / รูปแบบสื่อ</h2>
+      <p class="section-sub">จัดกลุ่มงานตามตัวกลางหลัก 5 กลุ่ม: installation, performance, sound, game, graphic/illustration</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.02 — <b>cluster diagram</b> · 5 zones · N=26</span>
+      <div class="diagram-body">
+        <svg class="diagram" id="svg-axis2" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="legend" id="legend-2"></div>
+    </div>
+  </section>
+
+  <!-- ================= AXIS 3 ================= -->
+  <section class="block" id="axis3">
+    <div class="section-head">
+      <span class="eyebrow">แกนที่ 3</span>
+      <h2 class="section-title">กรอบปรัชญา / การเมือง / จริยธรรม</h2>
+      <p class="section-sub">แกน X: Ontological ↔ Political · แกน Y: Individual ↔ Planetary</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.03 — <b>2×2 matrix scatter</b> · N=26</span>
+      <div class="diagram-body">
+        <svg class="diagram" id="svg-axis3" viewBox="0 0 900 620" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="legend" id="legend-3"></div>
+    </div>
+  </section>
+
+  <!-- ================= AXIS 4 : NETWORK ================= -->
+  <section class="block" id="axis4">
+    <div class="section-head">
+      <span class="eyebrow">แกนที่ 4 — ใหม่</span>
+      <h2 class="section-title">Network: ผลงาน ↔ สถาบัน</h2>
+      <p class="section-sub">โหนดใหญ่ = สถาบัน/พิพิธภัณฑ์/เทศกาล (ขนาดตามจำนวนผลงาน) · โหนดเล็กรอบๆ = ผลงานที่สังกัดอยู่ hover ทั้งสองระดับได้</p>
+    </div>
+    <div class="diagram-frame">
+      <span class="frame-tag">FIG.04 — <b>institution-artwork network</b> · 10 institutions · 26 works</span>
+      <div class="diagram-body">
+        <svg class="diagram" id="svg-axis4" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 05 INSTITUTIONS ================= -->
+  <section class="block" id="institutions">
+    <div class="section-head">
+      <span class="eyebrow">05 — Institutional context</span>
+      <h2 class="section-title">สถาบัน / พิพิธภัณฑ์ / เทศกาลที่ปรากฏในแผนที่</h2>
+      <p class="section-sub">คำอธิบายสั้นของสถาบันทั้ง 10 แห่งที่เป็น "บ้าน" ของผลงานในแผนที่นี้</p>
+    </div>
+    <div class="inst-grid" id="institutions-grid"></div>
+  </section>
+
+  <!-- ================= 06 COMMENTARY ================= -->
+  <section class="block" id="commentary">
+    <div class="section-head">
+      <span class="eyebrow">06 — Reading the categories</span>
+      <h2 class="section-title">Commentary: อ่านหมวดหมู่ในแต่ละแกนอย่างไร</h2>
+    </div>
+    <article class="essay">
+      <h3>ทำไมต้องแยก Inspired / Native / Data-driven ให้ขาดจากกัน</h3>
+      <p>สเกลต่อเนื่อง 0–10 ในเวอร์ชันก่อนหน้าให้ความรู้สึกว่า "ยิ่งใกล้ฮาร์ดแวร์ควอนตัมยิ่งดี" ซึ่งไม่ตรงกับความเป็นจริงของสนามนี้ ในทางปฏิบัติงานทั้งสามหมวดเป็นกลยุทธ์สร้างสรรค์ที่ต่างกันโดยสิ้นเชิง ไม่ใช่ระดับความเข้มข้นบนเส้นเดียวกัน — <strong>Quantum-inspired</strong> ใช้แนวคิดควอนตัมเป็นอุปมาเชิงปรัชญา/บทกวี (เช่น Epilogue ของจิตติที่ใช้ diffraction ของแสงเป็นภาษา ไม่ใช่ข้อมูลควอนตัมจริง) <strong>Quantum-native</strong> ใช้ฮาร์ดแวร์หรือโค้ดควอนตัมเป็นสื่อสร้างสรรค์โดยตรง (เช่น Ent- ที่ Libby Heaney เขียนโค้ด Qiskit เอง) และ <strong>Data-driven</strong> ใช้ข้อมูลจากการทดลอง/เครื่องมือวัดจริงมาแปลงเป็นงาน (เช่น Cascade ที่ใช้สัญญาณจากเครื่องตรวจจับมิวออนจริง) — งานในหมวด native หรือ data-driven ไม่ได้ "เข้มข้นกว่า" งานในหมวด inspired เชิงศิลปะแต่อย่างใด เป็นเพียงคนละยุทธศาสตร์การทำงาน</p>
+
+      <h3>ข้อสังเกตจากแหล่งข่าวภาษาจีน</h3>
+      <p>บทความวิชาการภาษาจีน 量子艺术：一个亟待研究的领域 (2020) จากสถาบันวิจัยศิลปะมณฑลเจียงซี ตั้งข้อสังเกตที่ตรงกับหมวดหมู่ในแผนที่นี้อย่างชัดเจน: ในช่วง 5 ปีก่อนตีพิมพ์ นิทรรศการศิลปะในจีนที่ใช้ชื่อ/แนวคิด "ควอนตัม" เพิ่มขึ้นเรื่อยๆ แต่ผู้เขียนแสดงความเสียดายว่าส่วนใหญ่เป็นเพียง <strong>"การหยิบยืมชื่อและแนวคิดอย่างง่ายเพื่อประกาศความ 'ใหม่'"</strong> เท่านั้น — ข้อสังเกตนี้สอดคล้องกับสิ่งที่แผนที่นี้แสดงให้เห็นเชิงปริมาณ: งานส่วนใหญ่จากบริบทจีนในชุดข้อมูลนี้ (Schrödinger's Box, Looking for Schrödinger's Cat, Get a Taste of Quantum Mechanics) อยู่ในหมวด <strong>quantum-inspired</strong> ทั้งหมด ไม่มีชิ้นใดอยู่ในหมวด native หรือ data-driven ต่างจากกลุ่ม CERN/LAS/Yale ที่กระจายอยู่ทั้งสามหมวด</p>
+      <p>บทความเดียวกันยังชี้ประเด็นสำคัญว่าศิลปะควอนตัม <strong>"ต้องแยกตัวออกจากหลักฐานทางวิทยาศาสตร์ที่เป็นรูปธรรมเป็นเงื่อนไขเบื้องต้น"</strong> และเตือนว่าควอนตัมในฐานะสัญลักษณ์กระแสยุคสมัยมีความเสี่ยงจะกลายเป็น "วาทศิลป์แต่งใหม่ของของเก่า" — คำเตือนนี้ตรงกับสิ่งที่นักวิจัยเรียกว่า "Quantum Sludge" ในบริบทอื่น คือการใช้ศัพท์ควอนตัมโดยไม่มีฐานทางญาณวิทยารองรับ</p>
+      <p>ในอีกทางหนึ่ง ข้อสังเกตจากการสืบค้นกรณี Pan Jianwei และ Hu Jihong ชี้ให้เห็นแนวโน้มเฉพาะของบริบทจีน คือการโยงควอนตัมเข้ากับนิทานพื้นบ้านและวัฒนธรรมท้องถิ่นแทนที่จะอ้างอิงข้อมูลทดลอง — Pan Jianwei เปรียบกลศาสตร์ควอนตัมกับ "ซุนหงอคง" ที่แยกร่างจากเส้นขนของตนเอง ส่วน Hu Jihong ใช้คำว่า quantum entanglement อธิบายความผูกพัน 5 ชั้นกับวัฒนธรรม Tunpu ซึ่งเป็นตัวอย่างที่ดีของการนำภาษาฟิสิกส์มาเป็นภาษาเชิงชาติพันธุ์วรรณาและปรัชญาวัฒนธรรม มากกว่าจะเป็นศิลปะควอนตัมเชิงทดลอง — จุดนี้เชื่อมโยงได้ตรงกับความสนใจเรื่อง indigenous knowledge และ embodiment ในงานวิจัยแบบ Khwantum</p>
+
+      <h3>อ่านแกน Ontological–Political (FIG.03) อย่างไร</h3>
+      <p>งานส่วนใหญ่ในชุดข้อมูลกระจุกตัวอยู่ฝั่ง <strong>Ontological</strong> มากกว่า Political — สะท้อนว่าศิลปะควอนตัมส่วนใหญ่ยังสนใจคำถามเรื่อง "อะไรคือความจริง/สสาร" มากกว่าจะเป็นเครื่องมือวิพากษ์การเมืองเทคโนโลยีโดยตรง ข้อยกเว้นชัดเจนคือ Ent- ของ Libby Heaney ที่ประกาศตัวชัดว่าวิพากษ์ Big Tech และการแบ่งขั้วแบบไบนารี จึงอยู่ฝั่ง Political มากกว่างานอื่น</p>
+
+      <div class="callout">
+        หมายเหตุระเบียบวิธี: การจัดหมวดในแผนที่นี้ยังเป็นการประเมินเชิงตีความเพื่อสาธิตต้นแบบเครื่องมือ ข้อมูลบางชิ้น (โดยเฉพาะกลุ่มจีน) มาจากบทความข่าว/เว็บสถาบันที่มีลิงก์กำกับในการ์ดท้ายไฟล์ ส่วนบางชิ้น (เช่น รายละเอียดการสร้างงาน CERN/LAS/Yale บางชิ้น) มาจากการสรุปงานวิจัยที่ส่งต่อกันมาและยังไม่ได้ตรวจสอบกับเว็บไซต์ต้นทางของผลงานนั้นโดยตรงทุกชิ้น จึงลิงก์ไปที่หน้าเว็บสถาบันแม่แทนในกรณีที่ไม่มีหน้าเฉพาะของผลงานให้ตรวจสอบ
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= 07 ARTWORK CARDS ================= -->
+  <section class="block" id="cards">
+    <div class="section-head">
+      <span class="eyebrow">07 — Full artwork gallery</span>
+      <h2 class="section-title">การ์ดสรุปผลงานทั้งหมด (26 ชิ้น)</h2>
+      <p class="section-sub">แต่ละการ์ดมี: สื่อ (medium), กรอบการอ่านควอนตัม (อาจมีมากกว่า 1 แท็ก), คำอธิบาย, คำพูดอ้างอิงถ้ามี, และลิงก์แหล่งที่มา</p>
+      <div class="tag-legend" id="tag-legend"></div>
+    </div>
+    <div class="card-grid" id="card-grid"></div>
+  </section>
+
+</main>
+
+<footer>FIG.01–04 · data-driven from a single JS dataset (26 works · 10 institutions) · single-file HTML prototype</footer>
+
+<script>
+/* ============ TAG TAXONOMY ============ */
+const TAGS = {
+  barad:      {label:'Barad (agential realism)', color:'#6fa8dc'},
+  bohm:       {label:'Bohm (implicate order)',    color:'#d9a441'},
+  deleuze:    {label:'Deleuze (deterritorialize)', color:'#c9738f'},
+  buddhism:   {label:'Buddhism / Asian ontology',  color:'#8fae5d'},
+  matter:     {label:'Ontology of matter / field', color:'#9b7fc4'},
+  embodiment: {label:'Embodiment & subjectivity',  color:'#4fa8a0'},
+  technopol:  {label:'Techno-politics & critique', color:'#c96a55'},
+  eco:        {label:'Eco-criticism / planetary & cosmic', color:'#5f89b3'},
+};
+
+const MEDIA = {
+  installation: {label:'Installation / Environment', color:'var(--c-installation)'},
+  performance:  {label:'Performance / Embodiment',   color:'var(--c-performance)'},
+  sound:        {label:'Sound / Sonification',        color:'var(--c-sound)'},
+  game:         {label:'Game / Interactive system',   color:'var(--c-game)'},
+  graphic:      {label:'Graphic / Narrative visualization', color:'var(--c-graphic)'},
+};
+
+/* ============ INSTITUTIONS ============ */
+const INSTITUTIONS = [
+  {id:'cern',    name:'Arts at CERN', region:'Geneva · Switzerland',
+    desc:'โปรแกรม residency ของห้องปฏิบัติการฟิสิกส์อนุภาคที่ใหญ่ที่สุดในโลก เชิญศิลปินมาสัมผัสการวิจัยพื้นฐานโดยตรง ก่อตั้ง 2012 มีศิลปินเข้าร่วมกว่า 250 คนนับถึงปี 2024',
+    link:'https://arts.cern/'},
+  {id:'las',     name:'LAS Art Foundation', region:'Berlin · Germany',
+    desc:'องค์กรไม่แสวงหากำไรที่ไม่มีอาคารถาวร เน้นงานเชิงคาดเดาอนาคต (speculative) ครอบคลุม AI, quantum computing, ecology, biotechnology',
+    link:'https://www.las-art.foundation/las-projects-overview'},
+  {id:'yale',    name:'Yale Quantum Institute', region:'New Haven · USA',
+    desc:'สถาบันวิจัยควอนตัมของมหาวิทยาลัยเยล เปิดโปรแกรม Artist-in-Residence ปี 2017 — โปรแกรมแรกของโลกที่เจาะจงจุดตัดควอนตัม-ศิลปะ',
+    link:'https://art.quantuminstitute.yale.edu/'},
+  {id:'asm',     name:'ArtScience Museum / CQT', region:'Singapore',
+    desc:'พิพิธภัณฑ์เอกชนใน Marina Bay Sands ร่วมกับ Centre for Quantum Technologies (NUS) จัดเทศกาล "In the Ether" เชื่อมศิลปะกับงานวิจัยควอนตัมแห่งชาติ',
+    link:'https://www.marinabaysands.com/museum/events/in-the-ether.html'},
+  {id:'artshouse', name:'The Arts House', region:'Singapore',
+    desc:'พื้นที่ศิลปะที่จัดนิทรรศการ "Quantum Perspective: The Art of Interference" (ต.ค. 2025) เชื่อมเครือข่าย DZeAsia และศิลปินยุโรป-สิงคโปร์',
+    link:'https://www.mediaartnexus.com/?p=7044'},
+  {id:'beiqiu',  name:'Beiqiu Museum of Contemporary Art', region:'Nanjing · China',
+    desc:'พิพิธภัณฑ์ศิลปะร่วมสมัยที่จัดแสดงงานเดี่ยวครั้งแรกในจีนของ Gabriel Rico ที่ใช้กรอบ quantum entanglement',
+    link:'https://www.beiqiuartmuseum.com/copy-of-草药-1'},
+  {id:'guangming', name:'Guangming Culture and Art Center', region:'Shenzhen · China',
+    desc:'ศูนย์วัฒนธรรมที่จัดนิทรรศการภาพประกอบ "Looking for Schrödinger\'s Cat" แปล thought experiment ให้เข้าถึงง่ายสำหรับสาธารณะ',
+    link:'https://www.sz.gov.cn/en_szgov/aboutsz/whatson/content/post_9401974.html'},
+  {id:'cas',     name:'Chinese Academy of Sciences (CAS)', region:'China',
+    desc:'สถาบันวิทยาศาสตร์แห่งชาติจีน จัดนิทรรศการ "Get a Taste of Quantum Mechanics" เน้น interactive exhibits มากกว่างานศิลปะบริสุทธิ์',
+    link:'http://www.bcas.cas.cn/head/202507/t20250725_1048518.html'},
+  {id:'guizhou', name:'Guizhou University Art Museum', region:'Guiyang · China',
+    desc:'พิพิธภัณฑ์มหาวิทยาลัยที่จัดแสดงผลงาน Hu Jihong ซึ่งใช้ quantum entanglement เป็นกรอบอธิบายความผูกพันกับวัฒนธรรม Tunpu ท้องถิ่น',
+    link:'https://www.eguizhou.gov.cn/2026-06/29/c_1193614.htm'},
+  {id:'seescape', name:'Gallery Seescape / Bangkok Art Biennale', region:'Chiang Mai · Thailand',
+    desc:'แกลเลอรีอิสระที่จัดแสดง Epilogue: A Diffraction Grating ของจิตติ เกษมกิจวัฒนา ศิลปินไทยที่งานเคยแสดงใน Bangkok Art Biennale',
+    link:'https://www.chittik.net/epilogue.html'},
+];
+
+/* ============ ARTWORKS (26) ============ */
+const ARTWORKS = [
+  // ---- CERN ----
+  {id:'cascade', name:'Cascade', artist:'Yunchul Kim', year:'2018', medium:'installation', native:'data', institution:'cern',
+    x:0.20, y:0.60, tags:['matter','eco'],
+    desc:'สามส่วนเชื่อมกัน (Argos มิวออนดีเทกเตอร์ · Impulse ปั๊มของเหลว · Tubular ท่อโพลิเมอร์) เมื่อดีเทกเตอร์จับมิวออนจากรังสีคอสมิกได้ จะกระตุ้นให้ของเหลวไหลเปลี่ยนดัชนีหักเหของแสงในท่อ ทำให้เหตุการณ์จักรวาลที่มองไม่เห็นกลายเป็นปรากฏการณ์ทางกายภาพจับต้องได้ ผลงานจากรางวัล Collide International Award 2016',
+    link:'https://arts.cern/'},
+  {id:'smallvoid', name:'Small Void', artist:'Alice Bucknell', year:'2025', medium:'game', native:'inspired', institution:'cern',
+    x:0.35, y:0.35, tags:['embodiment','technopol'],
+    desc:'วิดีโอเกมแบบ call-and-response พัฒนาร่วมกับนักฟิสิกส์ทฤษฎีของ CERN ใช้ nano-scanning สแกนไลเคนสร้างโลกในเกม ผู้เล่นสองคนสำรวจโลกที่เชื่อมโยงกันผ่านกลไกไม่ใช้คำพูด ดึงแนวคิด entanglement และหลุมดำมาสร้าง "affective interface"',
+    link:'https://arts.cern/'},
+  {id:'entangledbinary', name:'entangled binary network (Hello, world!) / NO MATTER', artist:'Joan Heemskerk', year:'2023', medium:'installation', native:'native', institution:'cern',
+    x:0.35, y:0.45, tags:['matter','technopol'],
+    desc:'ประติมากรรมลูกบอลสีดำ-ขาวใต้แสงยูวี จัดเป็น "สองสนามที่พันกัน" แลกเปลี่ยนวลี "Hello, world!" ในเครือข่ายอินเทอร์เน็ตควอนตัมเชิงคาดเดา วิดีโอ NO MATTER ใช้ภาพจากกล้องจุลทรรศน์สแกนอิมัลชันของ CERN ประมวลผลด้วย Hough line transform',
+    link:'https://arts.cern/'},
+  {id:'ekphrastic', name:'Ekphrastic Motion: Like One Hundred Electric Leeches', artist:'Johanna Bruckner', year:'2024', medium:'performance', native:'native', institution:'cern',
+    x:0.45, y:0.40, tags:['embodiment'],
+    desc:'ทำงานร่วมกับนักฟิสิกส์ Michele Grossi ทีม CERN Quantum Technology Initiative สำรวจการแสดงของร่างกายมนุษย์ที่สัมพันธ์กับ superposition และ entanglement ผ่านวิดีโอ ประติมากรรม การแสดงสด และดิจิทัลมีเดีย',
+    link:'https://arts.cern/'},
+  {id:'cosmicstrike', name:'Cosmic Strike', artist:'Lea Porsager', year:'2019', medium:'installation', native:'inspired', institution:'cern',
+    x:0.20, y:0.70, tags:['matter','eco'],
+    desc:'แอนิเมชัน 3D แบบ immersive ให้ผู้ชมสวมแว่นตาพิเศษจำลองประสบการณ์เป็นนิวทริโนเดินทางผ่าน neutrino horn ของ CERN บรรยายว่าเป็นงานที่ผสม "hard science กับ loopy mysticism" จัดแสดงในนิทรรศการ Quàntica (2019, CCCB บาร์เซโลนา)',
+    link:'https://arts.cern/'},
+  {id:'supralunar', name:'Supralunar', artist:'Juan Cortés', year:'2019', medium:'installation', native:'inspired', institution:'cern',
+    x:0.15, y:0.75, tags:['eco','matter'],
+    desc:'ติดตั้งสองส่วน แรงบันดาลใจจากงานวิจัยสสารมืดของ Vera Rubin ใช้เลนส์ให้เห็นแสงกะพริบและแผ่นสั่นสะเทือนให้พักคาง จัดแสดงในนิทรรศการ Quàntica เดียวกับ Cosmic Strike',
+    link:'https://arts.cern/'},
+  {id:'atmosomens', name:'Atmospheric Omens', artist:'Nanna Debois Buhl', year:'2025', medium:'installation', native:'inspired', institution:'cern',
+    x:0.50, y:0.82, tags:['eco'],
+    desc:'ผสานวรรณกรรม ทัศนศิลป์ และงานวิจัยวิทยาศาสตร์ อิงจากการทดลอง CLOUD ของ CERN ที่ศึกษาว่ารังสีคอสมิกส่งผลต่อการก่อตัวของเมฆอย่างไร ทอเรื่องเข้ากับนิยาย Frankenstein ของ Mary Shelley (Soft Robots, Copenhagen 2025)',
+    link:'https://arts.cern/'},
+
+  // ---- China ----
+  {id:'entangledwithnotme', name:'HEY! LOOK AT ME! I\'M TOTALLY ENTANGLED WITH NOT-ME!', artist:'Gabriel Rico', year:'2023', medium:'installation', native:'inspired', institution:'beiqiu',
+    x:0.30, y:0.30, tags:['matter','embodiment'],
+    desc:'นิทรรศการเดี่ยวครั้งแรกในจีนของศิลปินชาวเม็กซิกัน ใช้ "quantum entanglement" เป็นกรอบคิดเรื่องความพัวพันระหว่างตัวตนกับสิ่งอื่น เส้นลูกศร สัญลักษณ์คณิตศาสตร์ และวัตถุหลากชนิดจัดวางให้ผู้ชมคิดถึงตรรกะภายในที่ไม่ใช่เชิงเส้น',
+    link:'https://www.beiqiuartmuseum.com/copy-of-草药-1'},
+  {id:'schrodingerscat_sz', name:'Looking for Schrödinger\'s Cat', artist:'กลุ่มศิลปิน/ภัณฑารักษ์ (Guangming, Shenzhen)', year:'—', medium:'graphic', native:'inspired', institution:'guangming',
+    x:0.20, y:0.25, tags:['matter'],
+    desc:'นิทรรศการภาพประกอบ 120 ชิ้น ตีความ thought experiment "Schrödinger\'s Cat" ผ่านภาพวาดและกราฟิก ใช้แมวของ Schrödinger ตั้งคำถามเรื่องชีวิต/ความตาย การซ้อนทับสถานะ และการสังเกต ในแบบที่เข้าถึงง่ายสำหรับประชาชน',
+    link:'https://www.sz.gov.cn/en_szgov/aboutsz/whatson/content/post_9401974.html'},
+  {id:'tastequantum', name:'Get a Taste of Quantum Mechanics', artist:'Chinese Academy of Sciences', year:'—', medium:'graphic', native:'inspired', institution:'cas',
+    x:0.15, y:0.20, tags:['matter'],
+    desc:'นิทรรศการเชิงวิทยาศาสตร์ที่จัดโดย CAS ให้ประชาชน "สัมผัส" แนวคิดควอนตัมผ่านสื่อจัดแสดงและ interactive exhibits มากกว่างานศิลปะบริสุทธิ์ เป็นจุดเชื่อมระหว่าง science-center aesthetics กับ art-science',
+    link:'http://www.bcas.cas.cn/head/202507/t20250725_1048518.html'},
+  {id:'schrodingersbox', name:'Schrödinger\'s Box', artist:'Pan Jianwei', year:'—', medium:'installation', native:'inspired', institution:'cas',
+    x:0.25, y:0.30, tags:['matter'],
+    desc:'กล่องสีดำสนิทคล้ายตู้เซิร์ฟเวอร์ ก่อจากลูกบาศก์ฟองน้ำเล็กๆ ที่แยกออกเป็นแนวทแยงผ่านมอเตอร์ เผยรอยแตกที่บุ๋มเข้าไป สื่อถึงช่วงเวลาที่สสาร "ยุบตัว" ตามหลักการซ้อนทับควอนตัม โดยนักฟิสิกส์ผู้นำโครงการดาวเทียมควอนตัมจีน',
+    quote:'เปรียบกลศาสตร์ควอนตัมกับ "ซุนหงอคง" ที่แยกร่างเพิ่มขึ้นจากเส้นขนของตนเอง', quoteSource:'Pan Jianwei, ให้สัมภาษณ์กับ State Council Information Office',
+    link:'http://english.scio.gov.cn/in-depth/2017-05/31/content_40929606.htm'},
+  {id:'tunpu', name:'My Quantum Entanglement with Tunpu', artist:'Hu Jihong', year:'—', medium:'installation', native:'inspired', institution:'guizhou',
+    x:0.18, y:0.28, tags:['embodiment','matter'],
+    desc:'จากนิทรรศการ "The City of the Unyielding: Hu Jihong\'s Artistic Practice" ใช้ดิน indigo clay ประตูไม้เก่า กระดาษดิน ในงานติดตั้ง ภาพวาด และวัสดุพื้นบ้าน อธิบายความสัมพันธ์กับวัฒนธรรม Tunpu (ชุมชนทหารยุคหมิง) ว่าเป็น "quantum entanglement" ห้าชั้น — กับดินแดน เชื้อสาย ร่างกาย dispositions และเวลา',
+    link:'https://www.eguizhou.gov.cn/2026-06/29/c_1193614.htm'},
+
+  // ---- Non-China but referenced in Chinese article ----
+  {id:'wignersfriend', name:'Wigner\'s Friend', artist:'Diemut Strebe', year:'2014–18', medium:'installation', native:'data', institution:'yale',
+    x:0.30, y:0.55, tags:['matter'],
+    desc:'กล้องโทรทรรศน์ขนาดจิ๋วสองตัว ตัวหนึ่งบนสถานีอวกาศนานาชาติ อีกตัวบนโลก อ้างอิงปริศนา "เพื่อนของวิกเนอร์" ของ Eugene Wigner ผู้ชมนิทรรศการทำให้ superposition ของกล้องบนวงโคจรยุบตัวลงด้วยการสังเกต นักฟิสิกส์ Seth Lloyd (MIT) วิเคราะห์เชิงกลศาสตร์ควอนตัมอย่างจริงจัง แม้สรุปว่าไม่มีการพิสูจน์ quantum coherence จริง',
+    link:'https://art.quantuminstitute.yale.edu/'},
+  {id:'quantumcloud', name:'Quantum Cloud', artist:'Antony Gormley', year:'1999', medium:'installation', native:'inspired', institution:'las',
+    x:0.10, y:0.30, tags:['matter','bohm'],
+    desc:'ประติมากรรมเหล็กสูง 30 เมตร ริมแม่น้ำเทมส์ ลอนดอน ใช้สแกนเลเซอร์ร่างกายศิลปินเป็นแกนกลาง จำลองด้วย random walk algorithm และ chaos theory/fractal growth ได้แรงบันดาลใจจากบทสนทนากับนักฟิสิกส์ควอนตัม Basil Hiley เพื่อนร่วมงาน David Bohm ตั้งคำถามว่าร่างกายสร้างสนามพลังงานหรือสนามพลังงานสร้างร่างกาย',
+    link:'https://www.las-art.foundation/'},
+  {id:'quantumconsciousness', name:'Quantum Consciousness / Quantum Chaos', artist:'Paul Thomas', year:'2016 / 2019', medium:'installation', native:'data', institution:'yale',
+    x:0.40, y:0.35, tags:['embodiment','matter'],
+    desc:'งานภาพและเสียงที่ทำให้ผู้ชม "เข้าไปอยู่ใน" ภาวะซ้อนทับเชิงเสมือนของอนุภาคใต้อะตอม ใช้ข้อมูลจากการทดลองสปินอิเล็กตรอนของ Andrea Morello (UNSW) แปลงเป็นภาพและเสียง ผสาน "ข้อมูลความคิด" ของผู้ชมเข้ากับ "ข้อมูลควอนตัม" ของอิเล็กตรอนพร้อมกัน',
+    link:'https://art.quantuminstitute.yale.edu/'},
+
+  // ---- LAS ----
+  {id:'ent', name:'Ent-', artist:'Libby Heaney', year:'2022', medium:'installation', native:'native', institution:'las',
+    x:0.78, y:0.55, tags:['technopol','deleuze'],
+    desc:'งานติดตั้ง 360 องศา ตีความ The Garden of Earthly Delights ของ Hieronymus Bosch ใหม่ผ่านมุมมองควอนตัม Heaney (ปริญญาเอก Quantum Information Science) เขียนโค้ดควอนตัมเองด้วย IBM Qiskit บิดเบือนภาพวาดสีน้ำของตัวเอง สร้างสิ่งมีชีวิตลูกผสม เธอเชื่อว่าการคิดแบบ superposition ช่วยทลายกรอบไบนารีและขั้วการเมือง',
+    link:'https://www.las-art.foundation/las-projects-overview'},
+  {id:'starduying', name:'We Felt a Star Dying', artist:'Laure Prouvost', year:'2025–26', medium:'installation', native:'data', institution:'las',
+    x:0.55, y:0.88, tags:['eco','matter'],
+    desc:'งานติดตั้งขนาดใหญ่ที่ Kraftwerk Berlin ผสานวิดีโอ เสียง กลิ่น ประติมากรรม ได้สิทธิ์เข้าถึงควอนตัมคอมพิวเตอร์จริงผ่าน Google Quantum AI นำข้อมูลจากการคำนวณควอนตัมมาฝึก AI model สร้างภาพและเสียง',
+    quote:'invites visitors to rethink the limits of perception and technology', quoteSource:'คำอธิบายนิทรรศการ, visitBerlin.de',
+    link:'https://www.las-art.foundation/'},
+
+  // ---- Yale ----
+  {id:'qubit', name:'I\'ll be your qubit!', artist:'Martha Lewis', year:'2018', medium:'installation', native:'inspired', institution:'yale',
+    x:0.15, y:0.25, tags:['embodiment'],
+    desc:'ศิลปินประจำถิ่นคนแรกของ YQI งานติดตั้งเชิงโต้ตอบให้ผู้ชมเดินผ่านไดอะแกรมควอนตัมขนาดใหญ่ ทำให้พื้นที่สถาบันกลายเป็นการทดลองควอนตัมขนาดมนุษย์ ได้แรงบันดาลใจจากตู้เย็นแช่เย็น dilution fridge ในห้องแล็บจริง',
+    link:'https://art.quantuminstitute.yale.edu/'},
+  {id:'quantumsound', name:'Quantum Sound', artist:'Spencer Topel', year:'2018–19', medium:'sound', native:'data', institution:'yale',
+    x:0.12, y:0.18, tags:['matter'],
+    desc:'ดนตรีสดชิ้นแรกของโลกที่สร้างจากการวัดค่าโดยตรงของ superconducting qubits แปลงสัญญาณจากอุปกรณ์ควอนตัมตัวนำยิ่งยวดเป็นเสียงดนตรี ร่วมกับนักศึกษาบัณฑิตศึกษา Kyle Serniak และ Luke Burkhart',
+    link:'https://art.quantuminstitute.yale.edu/'},
+  {id:'scapagnini', name:'ผลงานของ Serena Scapagnini', artist:'Serena Scapagnini', year:'2024–25', medium:'installation', native:'data', institution:'yale',
+    x:0.20, y:0.22, tags:['embodiment','matter'],
+    desc:'แผ่นทองแดงแกะสลักแทนสถานะของแสง กระดาษทำมือ ภาพวาด ประติมากรรม ทำงานร่วมกับนักวิจัย Harshvardhan Babla แปลงรูปแบบควอนตัมจากงานวิจัย quantum error correction เป็นรูปทรงกลมและก้นหอย สื่อถึงความคล้ายคลึงระหว่างความจำเสื่อมของมนุษย์กับการแก้ไขข้อผิดพลาดควอนตัม',
+    link:'https://art.quantuminstitute.yale.edu/'},
+
+  // ---- Singapore ----
+  {id:'slimeqrawl', name:'slimeQrawl', artist:'Libby Heaney', year:'2003', medium:'installation', native:'inspired', institution:'asm',
+    x:0.32, y:0.20, tags:['matter'],
+    desc:'วิดีโอจัดวางฉายบนจอ LED ล็อบบี้ ชวนผู้ชมดำดิ่งสู่ความพัวพันกันระหว่างเครื่องจักร สิ่งมีชีวิต สสาร และโลกควอนตัม',
+    link:'https://www.marinabaysands.com/museum/events/in-the-ether.html'},
+  {id:'entangledhorizons', name:'Entangled Horizons', artist:'Amy Karle', year:'2023–24', medium:'installation', native:'inspired', institution:'asm',
+    x:0.35, y:0.85, tags:['embodiment','eco'],
+    desc:'งานติดตั้งมัลติมีเดียใช้การติดตามใบหน้าและร่างกาย สะท้อนธรรมชาติของความจริงที่ลื่นไหล พร้อมภูมิทัศน์เสียงแบบดื่มด่ำ ทำให้ "entanglement" จับต้องได้จริง เป็นส่วนหนึ่งของ Studio Quantum residency (Goethe-Institut) มีสำเนาถูกส่งขึ้นวงโคจรและวางแผนฝังบนดวงจันทร์',
+    link:'https://www.amykarle.com/fertilevoid_entangledhorizions/'},
+  {id:'quantumlogos', name:'Quantum Logos', artist:'Ina Conradi & Mark Chavez', year:'2025', medium:'installation', native:'inspired', institution:'artshouse',
+    x:0.28, y:0.32, tags:['matter'],
+    desc:'ส่วนหนึ่งของนิทรรศการ "Quantum Perspective: The Art of Interference" ที่ The Arts House สิงคโปร์ ใช้หลักการ interference และ superposition เป็นโครงสร้างเชิงภาพแบบ immersive projection',
+    link:'https://www.mediaartnexus.com/?p=7044'},
+  {id:'interferencia', name:'Interferencia', artist:'Camilo Bojaca', year:'2025', medium:'installation', native:'inspired', institution:'artshouse',
+    x:0.30, y:0.30, tags:['matter'],
+    desc:'งานวิดีโอ/อินสตอลเลชันในนิทรรศการ Quantum Perspective ใช้หลักการ interference เป็นกรอบภาพ จัดแสดงช่วง Formula 1 Singapore Grand Prix และ International Year of Quantum Science and Technology (IYQ 2025)',
+    link:'https://www.mediaartnexus.com/?p=7044'},
+  {id:'20hz', name:'20Hz', artist:'Semiconductor', year:'2025', medium:'sound', native:'data', institution:'artshouse',
+    x:0.22, y:0.55, tags:['matter','eco'],
+    desc:'งานเสียง/ภาพจากดูโอศิลปิน Semiconductor ที่มักใช้ข้อมูลวิทยาศาสตร์จริงมาแปลงเป็นภาพและเสียง จัดแสดงในนิทรรศการ Quantum Perspective ที่สิงคโปร์',
+    link:'https://www.mediaartnexus.com/?p=7044'},
+
+  // ---- Thailand ----
+  {id:'epilogue', name:'Epilogue: A Diffraction Grating', artist:'Chitti Kasemkitvatana', year:'2025–26', medium:'installation', native:'inspired', institution:'seescape',
+    x:0.35, y:0.25, tags:['buddhism','matter'],
+    desc:'ตอนสุดท้ายของไตรภาค "Epilogue" ว่าด้วยเวลา นิทรรศการเดี่ยวที่ Gallery Seescape เชียงใหม่ ใช้ diffraction grating เป็นโครงสร้างคิด — การเลี้ยวเบนของแสงทำให้ภาพและเรื่องเล่าแตกตัวทับซ้อนกัน สนใจความว่างเปล่าแบบพุทธ ความชั่วคราว และภาวะที่โลก/สาขาวิชาต่างๆ กลายเป็นรูพรุน เป็น quantum-inspired diffraction art มากกว่างานที่ใช้ฮาร์ดแวร์ควอนตัมจริง',
+    quote:'opens the world as something still in the process of formation', quoteSource:'ข่าวประชาสัมพันธ์, Gallery VER',
+    link:'https://www.chittik.net/epilogue.html'},
+];
+
+let activeMedia = new Set(Object.keys(MEDIA));
+
+/* ============ HELPERS ============ */
+function resolveVar(v){
+  if(v.startsWith('var(')){ return getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1)).trim(); }
+  return v;
+}
+function ns(tag){ return document.createElementNS('http://www.w3.org/2000/svg', tag); }
+function txt(x,y,content,cls,anchor){
+  const t = ns('text'); t.setAttribute('x',x); t.setAttribute('y',y);
+  if(cls) t.setAttribute('class',cls);
+  if(anchor) t.setAttribute('text-anchor',anchor);
+  t.textContent = content; return t;
+}
+
+/* ============ TOOLTIP ============ */
+const tooltipEl = document.getElementById('tooltip');
+let tooltipHideTimer = null;
+function showTooltip(evt, html){
+  clearTimeout(tooltipHideTimer);
+  tooltipEl.innerHTML = html;
+  tooltipEl.classList.add('show');
+  positionTooltip(evt);
+}
+function positionTooltip(evt){
+  const pad = 16;
+  let x = evt.clientX + pad, y = evt.clientY + pad;
+  const rect = tooltipEl.getBoundingClientRect();
+  if(x + rect.width > window.innerWidth - 10) x = evt.clientX - rect.width - pad;
+  if(y + rect.height > window.innerHeight - 10) y = evt.clientY - rect.height - pad;
+  tooltipEl.style.left = x + 'px';
+  tooltipEl.style.top = y + 'px';
+}
+function scheduleHideTooltip(){
+  tooltipHideTimer = setTimeout(()=>{ tooltipEl.classList.remove('show'); }, 220);
+}
+tooltipEl.addEventListener('mouseenter', ()=> clearTimeout(tooltipHideTimer));
+tooltipEl.addEventListener('mouseleave', scheduleHideTooltip);
+
+function artworkTooltipHTML(a){
+  const mediaLabel = MEDIA[a.medium].label;
+  const nativeLabel = {inspired:'Quantum-inspired', native:'Quantum-native', data:'Data-driven'}[a.native];
+  let html = `<span class="tt-title">${a.name}</span><span class="tt-sub">${a.artist} · ${a.year} · ${mediaLabel} · ${nativeLabel}</span>`;
+  html += `<div class="tt-desc">${a.desc}</div>`;
+  if(a.quote){ html += `<div class="tt-quote">"${a.quote}"<br><em>— ${a.quoteSource}</em></div>`; }
+  html += `<a class="tt-link" href="${a.link}" target="_blank" rel="noopener">เปิดลิงก์ต้นฉบับ →</a>`;
+  return html;
+}
+function institutionTooltipHTML(inst){
+  let html = `<span class="tt-title">${inst.name}</span><span class="tt-sub">${inst.region}</span>`;
+  html += `<div class="tt-desc">${inst.desc}</div>`;
+  html += `<a class="tt-link" href="${inst.link}" target="_blank" rel="noopener">เปิดลิงก์สถาบัน →</a>`;
+  return html;
+}
+function attachNodeEvents(g, htmlFn, data, link){
+  g.addEventListener('mouseenter', (e)=> showTooltip(e, htmlFn(data)));
+  g.addEventListener('mousemove', positionTooltip);
+  g.addEventListener('mouseleave', scheduleHideTooltip);
+  g.addEventListener('click', ()=>{ window.open(link, '_blank', 'noopener'); });
+}
+
+/* ============ AXIS 1 : categorical columns ============ */
+function renderAxis1(){
+  const svg = document.getElementById('svg-axis1');
+  svg.innerHTML='';
+  const W=900,H=900;
+  const cols = [
+    {key:'inspired', cx:170, label:'QUANTUM-INSPIRED', sub:'อุปมา/ปรัชญา ไม่ใช้ฮาร์ดแวร์'},
+    {key:'native',   cx:450, label:'QUANTUM-NATIVE',   sub:'ใช้โค้ด/ฮาร์ดแวร์ควอนตัมเป็นสื่อ'},
+    {key:'data',     cx:730, label:'DATA-DRIVEN',      sub:'แปลงข้อมูลทดลอง/เครื่องมือวัดจริง'},
+  ];
+  cols.forEach(c=>{
+    const zone = ns('rect'); zone.setAttribute('x',c.cx-140); zone.setAttribute('y',60); zone.setAttribute('width',280); zone.setAttribute('height',800);
+    zone.setAttribute('class','col-zone'); zone.setAttribute('rx',6);
+    svg.appendChild(zone);
+    svg.appendChild(txt(c.cx,95,c.label,'col-label','middle'));
+    svg.appendChild(txt(c.cx,113,c.sub,'col-sub','middle'));
+  });
+
+  const counters = {inspired:0, native:0, data:0};
+  const perCol = {inspired:[], native:[], data:[]};
+  ARTWORKS.forEach(a=> perCol[a.native].push(a));
+
+  cols.forEach(c=>{
+    const list = perCol[c.key];
+    const topY = 150, bottomY = 840;
+    const usableH = bottomY - topY;
+    const n = list.length;
+    list.forEach((a,i)=>{
+      // distribute vertically, alternate small horizontal jitter to avoid perfect line overlap
+      const y = topY + (usableH * (i+0.5) / n);
+      const jitter = (i % 2 === 0) ? -34 : 34;
+      const x = c.cx + jitter;
+      const dim = !activeMedia.has(a.medium);
+      const g = ns('g'); g.setAttribute('class','node'); g.style.opacity = dim?0.15:1;
+      const dot = ns('circle'); dot.setAttribute('cx',x); dot.setAttribute('cy',y); dot.setAttribute('r',7);
+      dot.setAttribute('fill', resolveVar(MEDIA[a.medium].color)); dot.setAttribute('stroke','#0b1826'); dot.setAttribute('stroke-width',1.3);
+      g.appendChild(dot);
+      const labelSide = jitter < 0 ? 'end' : 'start';
+      const labelX = jitter < 0 ? x - 11 : x + 11;
+      const label = txt(labelX, y+3, a.name.length>28 ? a.name.slice(0,26)+'…' : a.name, 'tick-label', labelSide);
+      label.style.fill = 'var(--ink-dim)';
+      g.appendChild(label);
+      // connecting line from dot to column center line for readability
+      const stem = ns('line'); stem.setAttribute('x1',x); stem.setAttribute('y1',y); stem.setAttribute('x2',c.cx); stem.setAttribute('y2',y);
+      stem.setAttribute('stroke','var(--grid-strong)'); stem.setAttribute('stroke-width',1);
+      g.insertBefore(stem, dot);
+      attachNodeEvents(g, artworkTooltipHTML, a, a.link);
+      svg.appendChild(g);
+    });
+  });
+}
+
+/* ============ AXIS 2 : cluster diagram ============ */
+const CLUSTERS = {
+  installation: {cx:230, cy:150, r:150},
+  performance:  {cx:650, cy:140, r:120},
+  sound:        {cx:150, cy:440, r:110},
+  game:         {cx:430, cy:470, r:100},
+  graphic:      {cx:720, cy:440, r:130},
+};
+function renderAxis2(){
+  const svg = document.getElementById('svg-axis2');
+  svg.innerHTML='';
+  Object.entries(CLUSTERS).forEach(([key,c])=>{
+    const circle = ns('circle');
+    circle.setAttribute('cx',c.cx); circle.setAttribute('cy',c.cy); circle.setAttribute('r',c.r);
+    circle.setAttribute('fill', resolveVar(MEDIA[key].color)); circle.setAttribute('opacity',0.08);
+    circle.setAttribute('stroke', resolveVar(MEDIA[key].color)); circle.setAttribute('stroke-opacity',0.5);
+    svg.appendChild(circle);
+    svg.appendChild(txt(c.cx, c.cy - c.r - 12, MEDIA[key].label, 'zone-label', 'middle'));
+  });
+  const counters = {};
+  ARTWORKS.forEach(a=>{
+    counters[a.medium] = (counters[a.medium]||0);
+    const idx = counters[a.medium]++;
+    const c = CLUSTERS[a.medium];
+    const angle = idx * 137.5 * Math.PI/180;
+    const radius = 12 + Math.sqrt(idx) * 22;
+    const x = c.cx + Math.min(radius, c.r-20)*Math.cos(angle);
+    const y = c.cy + Math.min(radius, c.r-20)*Math.sin(angle);
+    const dim = !activeMedia.has(a.medium);
+    const g = ns('g'); g.setAttribute('class','node'); g.style.opacity = dim?0.15:1;
+    const dot = ns('circle'); dot.setAttribute('cx',x); dot.setAttribute('cy',y); dot.setAttribute('r',6.5);
+    dot.setAttribute('fill', resolveVar(MEDIA[a.medium].color)); dot.setAttribute('stroke','#0b1826'); dot.setAttribute('stroke-width',1.2);
+    g.appendChild(dot);
+    attachNodeEvents(g, artworkTooltipHTML, a, a.link);
+    svg.appendChild(g);
+  });
+}
+
+/* ============ AXIS 3 : 2x2 matrix ============ */
+function renderAxis3(){
+  const svg = document.getElementById('svg-axis3');
+  svg.innerHTML='';
+  const pad=90, w=900-pad*2, h=620-pad*2;
+  const X0=pad, X1=900-pad, Y0=620-pad, Y1=pad;
+  const quad = ns('rect'); quad.setAttribute('x',X0); quad.setAttribute('y',Y1); quad.setAttribute('width',w); quad.setAttribute('height',h);
+  quad.setAttribute('fill','none'); quad.setAttribute('stroke','var(--grid-strong)'); svg.appendChild(quad);
+  const vline = ns('line'); vline.setAttribute('x1',(X0+X1)/2); vline.setAttribute('x2',(X0+X1)/2); vline.setAttribute('y1',Y1); vline.setAttribute('y2',Y0);
+  vline.setAttribute('stroke','var(--grid-strong)'); vline.setAttribute('stroke-dasharray','3 4'); svg.appendChild(vline);
+  const hline = ns('line'); hline.setAttribute('y1',(Y0+Y1)/2); hline.setAttribute('y2',(Y0+Y1)/2); hline.setAttribute('x1',X0); hline.setAttribute('x2',X1);
+  hline.setAttribute('stroke','var(--grid-strong)'); hline.setAttribute('stroke-dasharray','3 4'); svg.appendChild(hline);
+  svg.appendChild(txt(X0, Y0+34, 'ONTOLOGICAL', 'axis-label','start'));
+  svg.appendChild(txt(X1, Y0+34, 'POLITICAL', 'axis-label','end'));
+  svg.appendChild(txt(X0-16, Y0, 'INDIVIDUAL', 'axis-label','end'));
+  svg.appendChild(txt(X0-16, Y1+4, 'PLANETARY', 'axis-label','end'));
+  ARTWORKS.forEach(a=>{
+    const x = X0 + a.x*w;
+    const y = Y0 - a.y*h;
+    const dim = !activeMedia.has(a.medium);
+    const g = ns('g'); g.setAttribute('class','node'); g.style.opacity = dim?0.15:1;
+    const dot = ns('circle'); dot.setAttribute('cx',x); dot.setAttribute('cy',y); dot.setAttribute('r',6.5);
+    dot.setAttribute('fill', resolveVar(MEDIA[a.medium].color)); dot.setAttribute('stroke','#0b1826'); dot.setAttribute('stroke-width',1.2);
+    g.appendChild(dot);
+    attachNodeEvents(g, artworkTooltipHTML, a, a.link);
+    svg.appendChild(g);
+  });
+}
+
+/* ============ AXIS 4 : institution-artwork network ============ */
+function renderAxis4(){
+  const svg = document.getElementById('svg-axis4');
+  svg.innerHTML='';
+  const cx=500, cy=500, R=340;
+  const n = INSTITUTIONS.length;
+  const byId = {};
+  INSTITUTIONS.forEach((inst,i)=>{
+    const angle = (i/n) * 2*Math.PI - Math.PI/2;
+    inst._x = cx + R*Math.cos(angle);
+    inst._y = cy + R*Math.sin(angle);
+    byId[inst.id] = inst;
+  });
+
+  // group artworks by institution
+  const grouped = {};
+  ARTWORKS.forEach(a=>{ (grouped[a.institution] = grouped[a.institution]||[]).push(a); });
+
+  // draw edges + satellite artwork nodes first (under institution nodes)
+  INSTITUTIONS.forEach(inst=>{
+    const works = grouped[inst.id] || [];
+    const satR = 46 + works.length*2.2;
+    works.forEach((a, idx)=>{
+      const angle = idx * 137.5 * Math.PI/180;
+      const r = 14 + Math.sqrt(idx)*10;
+      const x = inst._x + Math.min(r, satR) * Math.cos(angle);
+      const y = inst._y + Math.min(r, satR) * Math.sin(angle);
+      const edge = ns('line'); edge.setAttribute('x1',inst._x); edge.setAttribute('y1',inst._y); edge.setAttribute('x2',x); edge.setAttribute('y2',y);
+      edge.setAttribute('stroke', resolveVar(MEDIA[a.medium].color)); edge.setAttribute('stroke-width',1); edge.setAttribute('opacity',0.45);
+      svg.appendChild(edge);
+      const g = ns('g'); g.setAttribute('class','node');
+      const dot = ns('circle'); dot.setAttribute('cx',x); dot.setAttribute('cy',y); dot.setAttribute('r',5);
+      dot.setAttribute('fill', resolveVar(MEDIA[a.medium].color)); dot.setAttribute('stroke','#0b1826'); dot.setAttribute('stroke-width',1);
+      g.appendChild(dot);
+      attachNodeEvents(g, artworkTooltipHTML, a, a.link);
+      svg.appendChild(g);
+    });
+  });
+
+  // institution nodes on top
+  INSTITUTIONS.forEach(inst=>{
+    const works = grouped[inst.id] || [];
+    const r = 14 + Math.sqrt(works.length)*5;
+    const g = ns('g'); g.setAttribute('class','node');
+    const dot = ns('circle'); dot.setAttribute('cx',inst._x); dot.setAttribute('cy',inst._y); dot.setAttribute('r',r);
+    dot.setAttribute('fill','var(--paper)'.startsWith('var')?resolveVar('var(--paper)'):'#101f30');
+    dot.setAttribute('stroke', resolveVar('var(--gold)')); dot.setAttribute('stroke-width',2);
+    g.appendChild(dot);
+    const labelAnchor = Math.cos(Math.atan2(inst._y-cy, inst._x-cx)) > 0 ? 'start' : 'end';
+    const labelX = inst._x + (labelAnchor==='start' ? r+8 : -(r+8));
+    g.appendChild(txt(labelX, inst._y+4, inst.name, 'net-label', labelAnchor));
+    attachNodeEvents(g, institutionTooltipHTML, inst, inst.link);
+    svg.appendChild(g);
+  });
+}
+
+/* ============ LEGEND / FILTER ============ */
+function buildLegend(containerId){
+  const el = document.getElementById(containerId);
+  el.innerHTML='';
+  Object.entries(MEDIA).forEach(([key,m])=>{
+    const chip = document.createElement('span');
+    chip.className = 'chip active';
+    chip.dataset.key = key;
+    chip.innerHTML = `<span class="dot" style="background:${resolveVar(m.color)}"></span>${m.label}`;
+    chip.addEventListener('click', ()=>{
+      if(activeMedia.has(key)) activeMedia.delete(key); else activeMedia.add(key);
+      syncLegends(); renderAll();
+    });
+    el.appendChild(chip);
+  });
+}
+function syncLegends(){
+  document.querySelectorAll('.chip[data-key]').forEach(chip=>{
+    const on = activeMedia.has(chip.dataset.key);
+    chip.classList.toggle('active', on);
+    chip.classList.toggle('dim', !on);
+  });
+}
+function renderAll(){ renderAxis1(); renderAxis2(); renderAxis3(); renderAxis4(); }
+
+/* ============ INSTITUTIONS SECTION ============ */
+function buildInstitutionsGrid(){
+  const el = document.getElementById('institutions-grid');
+  el.innerHTML = '';
+  INSTITUTIONS.forEach(inst=>{
+    const card = document.createElement('div');
+    card.className = 'inst-card';
+    card.innerHTML = `<span class="inst-name">${inst.name}</span><span class="inst-region">${inst.region}</span><p class="inst-desc">${inst.desc}</p><a class="inst-link" href="${inst.link}" target="_blank" rel="noopener">เยี่ยมชม →</a>`;
+    el.appendChild(card);
+  });
+}
+
+/* ============ ARTWORK CARDS SECTION ============ */
+function buildTagLegend(){
+  const el = document.getElementById('tag-legend');
+  el.innerHTML = '';
+  Object.entries(TAGS).forEach(([key,t])=>{
+    const span = document.createElement('span');
+    span.className = 'tag';
+    span.style.color = t.color;
+    span.textContent = t.label;
+    el.appendChild(span);
+  });
+}
+function buildCards(){
+  const el = document.getElementById('card-grid');
+  el.innerHTML = '';
+  ARTWORKS.forEach(a=>{
+    const card = document.createElement('div');
+    card.className = 'art-card';
+    const nativeLabel = {inspired:'Quantum-inspired', native:'Quantum-native', data:'Data-driven'}[a.native];
+    const mediumColor = resolveVar(MEDIA[a.medium].color);
+    let tagsHtml = `<span class="tag medium-tag" style="color:${mediumColor}">${MEDIA[a.medium].label}</span>`;
+    tagsHtml += `<span class="tag" style="color:var(--ink-faint)">${nativeLabel}</span>`;
+    a.tags.forEach(tk=>{ tagsHtml += `<span class="tag" style="color:${TAGS[tk].color}">${TAGS[tk].label}</span>`; });
+    let quoteHtml = '';
+    if(a.quote){ quoteHtml = `<div class="art-quote">"${a.quote}"<cite>— ${a.quoteSource}</cite></div>`; }
+    card.innerHTML = `
+      <div class="art-head"><span class="art-name">${a.name}</span></div>
+      <div class="art-meta">${a.artist} · ${a.year}</div>
+      <div class="art-tags">${tagsHtml}</div>
+      <div class="art-desc">${a.desc}</div>
+      ${quoteHtml}
+      <a class="art-link" href="${a.link}" target="_blank" rel="noopener">แหล่งที่มา →</a>
+    `;
+    el.appendChild(card);
+  });
+}
+
+/* ============ INIT ============ */
+buildLegend('legend-1'); buildLegend('legend-2'); buildLegend('legend-3');
+renderAll();
+buildInstitutionsGrid();
+buildTagLegend();
+buildCards();
+</script>
+</body>
+</html>
