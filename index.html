@@ -67,6 +67,9 @@ strong{color:var(--txt);font-weight:600}
 .on{background:rgba(56,212,200,.14);color:var(--c3)}
 .site{background:rgba(245,147,74,.16);color:var(--c4)}
 .show{background:rgba(224,64,160,.16);color:var(--c2)}
+.done{background:rgba(154,143,197,.18);color:var(--muted)}
+.day.past{opacity:.5}
+.day.past:hover{opacity:.7}
 
 .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px}
 .pillars.two{grid-template-columns:repeat(2,1fr)}
@@ -142,20 +145,20 @@ footer{padding:40px 0 60px;text-align:center;color:var(--dim);font-size:12.5px;
   <section id="schedule">
     <div class="eyebrow">Schedule · ตารางกิจกรรม</div>
     <div class="sched">
-      <div class="day">
+      <div class="day past">
         <div class="date">ศ. 10<span>ก.ค. FRI</span></div>
         <div class="what">
           <b>Online · ออนไลน์</b>
           <small>18:00–21:00 น. — แนะนำโปรเจกต์ + สัมภาษณ์พูดคุย + สำรวจ Quantum Art Landscape</small>
-          <span class="mode on">Online</span>
+          <span class="mode done">✓ เสร็จแล้ว</span>
         </div>
       </div>
-      <div class="day">
+      <div class="day past">
         <div class="date">อา. 12<span>ก.ค. SUN</span></div>
         <div class="what">
           <b>On-site · เจอตัว (เต็มวัน)</b>
           <small>Archive &amp; co-creation — สัมผัส "ช้าง" ด้วยกัน สังเกต แตกตัว และปลุกชีวิต archive</small>
-          <span class="mode site">On-site</span>
+          <span class="mode done">✓ เสร็จแล้ว</span>
         </div>
       </div>
       <div class="day">
@@ -201,16 +204,6 @@ footer{padding:40px 0 60px;text-align:center;color:var(--dim);font-size:12.5px;
       <div class="pill"><h3>Archive</h3><p>เก็บบันทึกกระบวนการและพลังงานในพื้นที่ เพื่อ "ปลูกชีวิต" ให้มันใหม่ได้ในอนาคต</p></div>
       <div class="pill"><h3>Quantum</h3><p>Superposition · Measurement · Entanglement เป็นเลนส์เรียนรู้และสร้างสรรค์</p></div>
     </div>
-  </section>
-
-  <section id="join">
-    <div class="eyebrow">For students · เผื่อน้องๆ สงสัย</div>
-    <ul class="notes">
-      <li><strong>ไม่ต้องมีพื้นความรู้ควอนตัมมาก่อน</strong> มาเรียนรู้ไปด้วยกัน</li>
-      <li><strong>ไม่บังคับฟอร์แมตผลงาน</strong> เลือกสื่อที่ถนัดได้อิสระ เขียน / วิดีโอ / เสียง / วาด / โค้ด</li>
-      <li><strong>เหมาะกับนักศึกษามีเดียอาร์ต</strong> ที่อยากลองพื้นที่ Art-Science</li>
-      <li><strong>ได้เป็นส่วนหนึ่งของ archive</strong> และนำไปจัดแสดงในงาน Syntopia</li>
-    </ul>
   </section>
 
   <section id="team">
@@ -276,12 +269,6 @@ footer{padding:40px 0 60px;text-align:center;color:var(--dim);font-size:12.5px;
         <div class="dd">เปรียบเทียบการปฏิบัติ Art-Science ในเอเชียแบบรายประเทศ</div>
       </a>
     </div>
-  </section>
-
-  <section id="apply" style="text-align:center;border-top:none">
-    <div class="eyebrow" style="color:var(--c1)">Join us · สนใจเข้าร่วม</div>
-    <p class="lead" style="margin-bottom:6px">รับจำนวนจำกัด — สนใจสมัคร / สอบถามรายละเอียด</p>
-    <p style="color:var(--muted)">ติดต่ออาจารย์แคน หรือช่องทางที่แจ้งในคลาส</p>
   </section>
 
   <footer>
